@@ -1,0 +1,112 @@
+/* ==========================================================================
+   NexERP — HomePage
+   --------------------------------------------------------------------------
+   Only the section rhythm lives here — the vertical scale and the shared
+   container. Every section's own appearance is in its own stylesheet next to
+   it in features/home/components/.
+
+   Glassmorphism note: --nx-section-pad is the one place the page decides how
+   much air each band gets, so every section can be re-spaced by changing a
+   single variable rather than seven rules.
+   ========================================================================== */
+
+.nx-home {
+  --nx-section-pad: clamp(4.5rem, 9vw, 8rem);
+  --nx-container: 1200px;
+}
+
+/* Shared width constraint for every section. */
+.nx-home__container {
+  width: 100%;
+  max-width: var(--nx-container);
+  margin-inline: auto;
+  padding-inline: var(--nx-space-6);
+}
+
+@media (max-width: 640px) {
+  .nx-home {
+    --nx-section-pad: clamp(3.25rem, 12vw, 4.5rem);
+  }
+
+  .nx-home__container {
+    padding-inline: var(--nx-space-4);
+  }
+
+  .nx-home [id] {
+    scroll-margin-top: 92px;
+  }
+}
+
+/* Anchored sections need scroll-margin so the floating header does not cover
+   their heading when jumped to from the footer. */
+.nx-home [id] {
+  scroll-margin-top: 120px;
+}
+
+/* Cancel the marketing shell's reading-measure clip for the home page so the
+   hero and every section run edge to edge. The shell clamps the page-transition
+   wrapper to 68rem; we lift that only when the wrapper holds the home page, so
+   the inner marketing pages keep their narrower measure. The sections cap their
+   own content width with `.nx-home__container`. */
+.nx-public__main > .nx-page-transition:has(> .nx-home__page) {
+  max-width: none;
+  padding: 0;
+}
+
+.nx-home__page {
+  width: 100%;
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   Animated section headings
+   --------------------------------------------------------------------------
+   Every marketing heading carries `nx-heading-fx`: a light sheen sweeps across
+   the lettering while a short accent underline draws itself in. This lives in
+   the page stylesheet (imported after each section's own sheet) so it can lift
+   the text fill without fighting the per-section colour rules.
+
+   The fill is a gradient clipped to the glyphs. `color: transparent` is what
+   lets the gradient show, so a fallback text colour is set for browsers that
+   do not support `background-clip: text`.
+   ========================================================================== */
+.nx-heading-fx {
+  position: relative;
+  background-image: linear-gradient(
+    100deg,
+    var(--nx-text) 0%,
+    var(--nx-accent) 34%,
+    var(--nx-text) 60%,
+    var(--nx-text) 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--nx-text);
+  -webkit-text-fill-color: transparent;
+  animation: nx-heading-sheen 7.5s var(--nx-ease, ease-in-out) infinite;
+}
+
+.nx-heading-fx::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -0.35em;
+  width: min(5rem, 40%);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--nx-accent), transparent);
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  animation: nx-heading-underline 7.5s var(--nx-ease, ease-in-out) infinite;
+}
+
+@keyframes nx-heading-sheen {
+  0% { background-position: 140% 50%; }
+  55%, 100% { background-position: -40% 50%; }
+}
+
+@keyframes nx-heading-underline {
+  0% { transform: translateX(-50%) scaleX(0); opacity: 0; }
+  45% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+  70%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.35; }
+}

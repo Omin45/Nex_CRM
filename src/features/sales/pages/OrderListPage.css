@@ -1,0 +1,185 @@
+/* ==========================================================================
+   NexERP — OrderListPage
+   --------------------------------------------------------------------------
+   The sales-order identity cell, the required-by treatment that carries
+   meaning beyond its value, the icon-only "open" control in the last column,
+   and the read-only detail dialog it raises.
+
+   Colour is never the only signal here. A missed delivery date says "late"
+   in words next to the date — the same reason the invoice page writes
+   "overdue" beside its due date — and the open button carries an aria-label
+   because its arrow glyph is the entire visual affordance.
+   ========================================================================== */
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-order-list__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-order-list__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-order-list__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-order-list__number {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-order-list__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-order-list__customer {
+  display: block;
+  max-width: 16rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- dates ---------------------------------------------------------------- */
+.nx-order-list__date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-order-list__date[data-late] {
+  color: var(--nx-danger);
+  font-weight: 500;
+}
+
+.nx-order-list__late-flag {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-danger);
+}
+
+/* ---- numbers -------------------------------------------------------------- */
+.nx-order-list__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-order-list__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+/* ---- row action ----------------------------------------------------------- */
+.nx-order-list__open {
+  display: inline-grid;
+  place-items: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-order-list__open:hover {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-strong);
+}
+
+.nx-order-list__open:focus-visible,
+.nx-order-list__filters .nx-segmented__item:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- status filter --------------------------------------------------------
+   Six segments overflow the toolbar's inline-flex pill at narrow widths, so
+   this page's copy of the control is allowed to wrap. Scoped to the block so
+   no other list screen inherits it. */
+.nx-order-list__filters .nx-segmented {
+  flex-wrap: wrap;
+}
+
+/* ---- detail dialog -------------------------------------------------------- */
+.nx-order-list__detail {
+  display: grid;
+  gap: var(--nx-space-3);
+  margin: 0;
+}
+
+.nx-order-list__detail-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+}
+
+.nx-order-list__detail-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-order-list__detail-value {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+  text-align: right;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-order-list__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-order-list__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-order-list__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}

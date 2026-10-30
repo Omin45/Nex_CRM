@@ -1,0 +1,116 @@
+/* ==========================================================================
+   NexERP — TicketListPage
+   --------------------------------------------------------------------------
+   The queue: subject-first identity cell, badges that pair colour with a
+   word, an "Unassigned" placeholder that says the quiet part out loud, and
+   two labelled selects in the toolbar — status and priority are both filters
+   over one loaded set, so they sit side by side as equals.
+
+   The SLA badge is always text-first ("Breached" / "Met"); the colour only
+   confirms what the word already said.
+   ========================================================================== */
+
+.nx-tickets :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-tickets__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-tickets__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-tickets__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-tickets__subject {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-tickets__number {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- plain text cells ----------------------------------------------------- */
+.nx-tickets__text {
+  display: block;
+  max-width: 12rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* An empty assignee is stated, not left blank — the placeholder carries the
+   meaning in words rather than an empty cell. */
+.nx-tickets__text[data-unassigned] {
+  font-style: italic;
+  color: var(--nx-text-dim);
+}
+
+.nx-tickets__date {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+/* ---- toolbar filters ------------------------------------------------------ */
+.nx-tickets__filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nx-space-3);
+}
+
+.nx-tickets__filter-field {
+  min-width: 156px;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-tickets__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-tickets__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-tickets__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}

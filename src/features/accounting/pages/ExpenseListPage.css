@@ -1,0 +1,153 @@
+/* ==========================================================================
+   NexERP — ExpenseListPage
+   --------------------------------------------------------------------------
+   The register's own vocabulary lives here: the identity cell that pairs a
+   reference with its description, the two-up form rows inside the "New
+   expense" dialog, and the decision cell that keeps Approve/Reject on a
+   single right-aligned edge so the amount column stays scannable.
+
+   Nothing here colours a status — the Badge and the button labels carry
+   the words; these rules only lay them out.
+   ========================================================================== */
+
+/* ---- expense identity cell ------------------------------------------------ */
+.nx-exp__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-exp__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-exp__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-exp__number {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-exp__meta {
+  overflow: hidden;
+  max-width: 28rem;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- plain cells ---------------------------------------------------------- */
+.nx-exp__category,
+.nx-exp__vendor {
+  display: block;
+  max-width: 12rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-exp__category {
+  color: var(--nx-text-muted);
+}
+
+.nx-exp__date {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-exp__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-exp__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+/* ---- decision cell -------------------------------------------------------- */
+.nx-exp__actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: var(--nx-space-2);
+}
+
+/* ---- new-expense form ----------------------------------------------------- */
+.nx-exp__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-exp__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+}
+
+@media (max-width: 640px) {
+  .nx-exp__form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nx-exp__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nx-exp__meta {
+    max-width: 14rem;
+  }
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-exp__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-exp__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-exp__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-exp :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

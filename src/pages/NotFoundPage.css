@@ -1,0 +1,25 @@
+/* ==========================================================================
+   NexERP — NotFoundPage
+   --------------------------------------------------------------------------
+   The 404 body is a single EmptyState, so the only thing this sheet needs to
+   own is the optional tip line below it.
+   ========================================================================== */
+
+.nx-notfound {
+  /* Centre the state vertically in the page body rather than pinning it to the
+     top, which reads as a rendering glitch rather than a designed screen. */
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.nx-notfound__tip {
+  margin-top: var(--nx-space-4);
+  text-align: center;
+}
+
+/* A wrapped keyboard hint should not break mid-token. */
+.nx-notfound__tip .nx-kbd {
+  white-space: nowrap;
+}

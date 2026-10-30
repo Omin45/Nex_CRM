@@ -1,0 +1,112 @@
+/* ==========================================================================
+   NexERP — MobileMenu
+   --------------------------------------------------------------------------
+   The full-screen glass menu the burger opens.
+
+   GLASSMORPHISM: a heavier glass than the header (the overlay covers content,
+   so it needs to read as a surface). Links stagger in from the top, one after
+   another, via nth-child delays driven by the data-step attribute the JSX sets.
+
+   `inert` (set in SiteHeader.jsx while closed) keeps the links out of the tab
+   order and unreachable by assistive tech when the menu is shut.
+   ========================================================================== */
+
+.nx-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nx-z-sidebar);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--nx-space-8);
+  padding: var(--nx-space-8) var(--nx-space-6);
+  background: var(--nx-glass-bg);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+
+  /* Hidden state: faded and a touch scaled down, still in the layer order but
+     not interactive (inert handles the a11y side). */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98);
+  transition:
+    opacity var(--nx-dur) var(--nx-ease),
+    transform var(--nx-dur) var(--nx-ease),
+    visibility var(--nx-dur) linear;
+}
+
+.nx-mobile-menu[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.nx-mobile-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.nx-mobile-menu__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-2);
+  border-bottom: 1px solid var(--nx-border-soft);
+  color: var(--nx-text-muted);
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-2xl);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+
+  /* Staggered entrance; the delay comes from data-step. */
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.nx-mobile-menu[data-open] .nx-mobile-menu__link {
+  animation: nx-menu-in 0.45s var(--nx-ease) both;
+  animation-delay: calc(var(--nx-menu-stagger) * 60ms);
+}
+
+.nx-mobile-menu__link[data-step='1'] { --nx-menu-stagger: 1; }
+.nx-mobile-menu__link[data-step='2'] { --nx-menu-stagger: 2; }
+.nx-mobile-menu__link[data-step='3'] { --nx-menu-stagger: 3; }
+.nx-mobile-menu__link[data-step='4'] { --nx-menu-stagger: 4; }
+.nx-mobile-menu__link[data-step='5'] { --nx-menu-stagger: 5; }
+
+@keyframes nx-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nx-mobile-menu__link.is-active,
+.nx-mobile-menu__link:active {
+  color: var(--nx-accent);
+}
+
+.nx-mobile-menu__index {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+.nx-mobile-menu__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.nx-mobile-menu[data-open] .nx-mobile-menu__actions {
+  animation: nx-menu-in 0.45s var(--nx-ease) both;
+  animation-delay: 360ms;
+}

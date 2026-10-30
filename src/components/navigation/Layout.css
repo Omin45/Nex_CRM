@@ -1,0 +1,729 @@
+/* ==========================================================================
+   NexERP — App shell layout styles
+   Sidebar rail, topbar, breadcrumb trail and footer. These are the only
+   fixed-position surfaces in the app, so they are grouped in one file rather
+   than scattered across the components that render them.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   SHELL GRID
+   The content column is defined once here; the layout components only decide
+   whether the sidebar is collapsed or the drawer is open.
+   -------------------------------------------------------------------------- */
+.nx-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.nx-shell__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  /* Fades in on every route change, which reads as the page settling in. */
+  animation: nx-fade var(--nx-dur-slow) var(--nx-ease);
+}
+
+.nx-shell__content {
+  flex: 1;
+  min-width: 0;
+  /* No padding here on purpose: `.page` (utility.css) already carries the
+     page padding, and stacking both doubled the gutter. */
+  scroll-margin-top: var(--nx-navbar-h);
+}
+
+.nx-shell__content--flush {
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   SIDEBAR
+   -------------------------------------------------------------------------- */
+.nx-sidebar {
+  position: sticky;
+  top: 0;
+  z-index: var(--nx-z-sidebar);
+  display: flex;
+  flex-direction: column;
+  width: var(--nx-sidebar-w);
+  height: 100vh;
+  height: 100dvh;
+  flex-shrink: 0;
+  background: var(--nx-sidebar-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  /* The rail edge is a hairline, not a heavy divider. */
+  border-right: 1px solid var(--nx-border-soft);
+  transition: width var(--nx-dur-slow) var(--nx-ease), transform var(--nx-dur-slow) var(--nx-ease);
+  overflow: hidden;
+}
+
+/* The super admin shell gets a violet cast so the two shells never get
+   confused in a screenshot. */
+.nx-sidebar[data-variant='admin'] {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--nx-indigo-rgb), 0.07),
+    transparent 40%
+  ), var(--nx-sidebar-bg);
+}
+
+.nx-sidebar.is-collapsed {
+  width: var(--nx-sidebar-w-collapsed);
+}
+
+/* ---- brand ---- */
+.nx-sidebar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  height: var(--nx-topbar-h);
+  padding: 0 var(--nx-space-4);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-sidebar__close {
+  display: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--nx-text-muted);
+  background: none;
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-xs);
+  transition: var(--nx-transition);
+}
+
+.nx-sidebar__close:hover {
+  color: var(--nx-accent);
+  border-color: var(--nx-border);
+}
+
+/* ---- tenant chip ---- */
+.nx-sidebar__tenant {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  margin: var(--nx-space-4) var(--nx-space-3) var(--nx-space-2);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-sidebar__tenant-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.14);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-sidebar__tenant-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-sidebar__tenant-name {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-sidebar__tenant-plan {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- groups ---- */
+.nx-sidebar__nav {
+  flex: 1;
+  min-height: 0;
+  padding: var(--nx-space-3) var(--nx-space-3) var(--nx-space-4);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+
+.nx-sidebar__nav::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.nx-sidebar__group + .nx-sidebar__group {
+  margin-top: var(--nx-space-4);
+}
+
+.nx-sidebar__group-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-1) var(--nx-space-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nx-sidebar__group-label.is-button {
+  width: 100%;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-sidebar__group-label.is-button:hover {
+  color: var(--nx-accent);
+}
+
+.nx-sidebar__chevron {
+  flex-shrink: 0;
+  transition: transform var(--nx-dur) var(--nx-ease);
+}
+
+.nx-sidebar__chevron.is-open {
+  transform: rotate(90deg);
+}
+
+.nx-sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--nx-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+  /* Collapsed state hides labels, so the list is always "open" visually. */
+}
+
+.nx-sidebar__list:not(.is-open) {
+  display: none;
+}
+
+.nx-sidebar.is-collapsed .nx-sidebar__list {
+  display: flex;
+}
+
+.nx-sidebar__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+  white-space: nowrap;
+}
+
+.nx-sidebar__link:hover {
+  color: var(--nx-text-strong);
+  background: var(--nx-overlay);
+  transform: translateX(2px);
+}
+
+.nx-sidebar__icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  color: var(--nx-text-dim);
+  transition: var(--nx-transition);
+}
+
+.nx-sidebar__link:hover .nx-sidebar__icon {
+  color: var(--nx-accent);
+}
+
+.nx-sidebar__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The active indicator: a glowing rail on the leading edge, plus a soft
+   accent wash so the item reads as "here" at a glance. */
+.nx-sidebar__link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 0;
+  background: var(--nx-gradient-accent);
+  border-radius: 0 3px 3px 0;
+  transform: translateY(-50%);
+  transition: height var(--nx-dur) var(--nx-ease);
+}
+
+.nx-sidebar__link.is-active {
+  color: var(--nx-text-strong);
+  background: var(--nx-gradient-pill);
+  font-weight: 600;
+}
+
+.nx-sidebar__link.is-active::before {
+  height: 60%;
+  box-shadow: 0 0 12px 0 rgba(var(--nx-accent-strong-rgb), 0.9);
+}
+
+.nx-sidebar__link.is-active .nx-sidebar__icon {
+  color: var(--nx-accent);
+}
+
+.nx-sidebar__badge {
+  margin-left: auto;
+  padding: 1px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-sidebar.is-collapsed .nx-sidebar__link {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.nx-sidebar.is-collapsed .nx-sidebar__group-label {
+  justify-content: center;
+}
+
+/* ---- collapse control ---- */
+.nx-sidebar__footer {
+  flex-shrink: 0;
+  padding: var(--nx-space-3);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-sidebar__collapse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-2);
+  width: 100%;
+  padding: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-sidebar__collapse:hover {
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.08);
+  border-color: var(--nx-border);
+}
+
+/* ---- scrim (mobile) ---- */
+.nx-sidebar__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nx-z-scrim);
+  background: rgba(3, 6, 12, 0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: nx-fade var(--nx-dur) var(--nx-ease);
+}
+
+/* --------------------------------------------------------------------------
+   TOPBAR
+   -------------------------------------------------------------------------- */
+.nx-topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--nx-z-navbar);
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  height: var(--nx-topbar-h);
+  padding: 0 var(--nx-space-5);
+  background: var(--nx-navbar-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  border-bottom: 1px solid var(--nx-border-soft);
+  flex-shrink: 0;
+}
+
+.nx-topbar__menu {
+  display: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-topbar__menu:hover {
+  color: var(--nx-accent);
+  border-color: var(--nx-border);
+}
+
+.nx-topbar__search {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  width: 100%;
+  max-width: 380px;
+  height: 36px;
+  padding: 0 var(--nx-space-2) 0 var(--nx-space-3);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-topbar__search:hover {
+  border-color: var(--nx-border);
+  background: var(--nx-overlay-strong);
+}
+
+.nx-topbar__search-text {
+  flex: 1;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-topbar__spacer {
+  flex: 1 1 auto;
+  min-width: var(--nx-space-2);
+}
+
+.nx-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Connection pill: reflects the socket state pushed by SocketContext. */
+.nx-conn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-1) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+  white-space: nowrap;
+}
+
+.nx-conn__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--nx-text-dim);
+}
+
+.nx-conn[data-status='connected'] .nx-conn__dot {
+  background: var(--nx-success);
+  box-shadow: 0 0 8px 0 var(--nx-success);
+  animation: nx-pulse-glow 2.6s var(--nx-ease) infinite;
+}
+
+.nx-conn[data-status='connecting'] .nx-conn__dot {
+  background: var(--nx-warning);
+  box-shadow: 0 0 8px 0 var(--nx-warning);
+}
+
+.nx-conn[data-status='disconnected'] .nx-conn__dot,
+.nx-conn[data-status='error'] .nx-conn__dot {
+  background: var(--nx-danger);
+}
+
+/* --------------------------------------------------------------------------
+   BREADCRUMB
+   -------------------------------------------------------------------------- */
+.nx-crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  flex-wrap: wrap;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+}
+
+.nx-crumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  color: var(--nx-text-dim);
+  transition: var(--nx-transition);
+}
+
+.nx-crumbs__item.is-link:hover {
+  color: var(--nx-accent);
+}
+
+.nx-crumbs__item.is-current {
+  color: var(--nx-text-strong);
+  font-weight: 600;
+}
+
+.nx-crumbs__sep {
+  color: var(--nx-text-faint);
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   PAGE HEADER
+   Canonical styles live in utility.css (`.page__header`, `.page__title`,
+   `.page__subtitle`, `.page__actions`). Only the shell's local alias is here
+   so a layout can set a title without importing a second source of truth.
+   -------------------------------------------------------------------------- */
+.nx-shell__content .page {
+  scroll-margin-top: var(--nx-navbar-h);
+}
+
+/* --------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+.nx-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+  flex-wrap: wrap;
+  padding: var(--nx-space-4) var(--nx-space-6);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  border-top: 1px solid var(--nx-border-soft);
+  flex-shrink: 0;
+}
+
+.nx-footer__links {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-4);
+  flex-wrap: wrap;
+}
+
+.nx-footer__link {
+  color: var(--nx-text-dim);
+  transition: var(--nx-transition);
+}
+
+.nx-footer__link:hover {
+  color: var(--nx-accent);
+}
+
+.nx-footer__version {
+  font-family: var(--nx-font-mono);
+}
+
+/* Small environment chip — reads as "not production" at a glance. */
+.nx-footer__env {
+  padding: 1px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-warning);
+  background: rgba(var(--nx-warning-rgb), 0.1);
+  border: 1px solid rgba(var(--nx-warning-rgb), 0.24);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* Topbar context: the current page title followed by the breadcrumb trail.
+   Defined here, not inside a media query — desktop needs it too. */
+.nx-topbar__context {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+  overflow: hidden;
+  flex: 1 1 auto;
+  max-width: 42%;
+}
+
+.nx-topbar__title {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+/* A vertical hairline separating the page title from the trail. */
+.nx-topbar__title + .nx-crumbs {
+  padding-left: var(--nx-space-3);
+  border-left: 1px solid var(--nx-border-soft);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   The sidebar leaves the flow below 1024px and becomes a drawer.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .nx-topbar {
+    padding: 0 var(--nx-space-4);
+    gap: var(--nx-space-2);
+  }
+
+  .nx-topbar__context {
+    max-width: 36%;
+  }
+
+  .nx-topbar__search {
+    max-width: 260px;
+  }
+
+  .nx-topbar__menu {
+    display: grid;
+  }
+
+  .nx-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* Tucked off-canvas until the topbar opens it. Sits above its own scrim. */
+    transform: translateX(-100%);
+    width: var(--nx-sidebar-w);
+    z-index: var(--nx-z-modal);
+    box-shadow: var(--nx-shadow-lg);
+  }
+
+  .nx-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Collapsing is meaningless on a drawer; always show labels. */
+  .nx-sidebar.is-collapsed {
+    width: var(--nx-sidebar-w);
+  }
+
+  .nx-sidebar.is-collapsed .nx-sidebar__link {
+    justify-content: flex-start;
+    padding-left: var(--nx-space-3);
+    padding-right: var(--nx-space-3);
+  }
+
+  .nx-sidebar.is-collapsed .nx-sidebar__group-label {
+    justify-content: space-between;
+  }
+
+  .nx-sidebar.is-collapsed .nx-sidebar__list {
+    display: flex;
+  }
+
+  .nx-sidebar.is-collapsed .nx-sidebar__text {
+    display: inline;
+  }
+
+  .nx-sidebar__close {
+    display: grid;
+  }
+
+  .nx-sidebar__collapse {
+    display: none;
+  }
+
+  .nx-footer {
+    padding: var(--nx-space-4);
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-topbar__search-text,
+  .nx-topbar__search .nx-kbd {
+    display: none;
+  }
+
+  .nx-topbar__search {
+    max-width: none;
+    padding: 0;
+    width: 36px;
+    flex: 0 0 auto;
+    justify-content: center;
+    border: none;
+    background: none;
+  }
+
+  .nx-topbar__context {
+    max-width: 44%;
+  }
+
+  .nx-conn {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nx-topbar__context {
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-topbar {
+    gap: var(--nx-space-2);
+    padding: 0 var(--nx-space-3);
+  }
+
+  /* On a phone the page title is the whole context; the trail would crowd it. */
+  .nx-topbar__context .nx-crumbs {
+    display: none;
+  }
+
+  .nx-topbar__title {
+    font-size: var(--nx-text-xs);
+  }
+
+  .nx-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--nx-space-3);
+  }
+}

@@ -1,0 +1,160 @@
+/* ==========================================================================
+   NexERP — BillingSettingsPage
+   --------------------------------------------------------------------------
+   Two facts cards, an invoices card and a modal — no table, because the
+   demo has no billing rows to put in one. The styling here is the seat
+   gauge (a native <progress>, width from the value attribute and never
+   from hand-written CSS), the em-dash fact list, and the dashed "held
+   elsewhere" payment block that makes an empty field read as deliberate.
+   ========================================================================== */
+
+.nx-billing__note {
+  margin: 0;
+}
+
+/* ---- seat gauge ------------------------------------------------------------ */
+.nx-billing__seats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin-bottom: var(--nx-space-5);
+}
+
+.nx-billing__seats-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-billing__seats-count {
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-billing__seats-note {
+  margin: 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* Native <progress>: width comes from the value attribute, never from CSS
+   written by hand. */
+.nx-billing__bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-billing__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-billing__bar::-webkit-progress-value {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-billing__bar::-moz-progress-bar {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-billing__bar[data-tone='warning']::-webkit-progress-value {
+  background: var(--nx-warning);
+}
+
+.nx-billing__bar[data-tone='warning']::-moz-progress-bar {
+  background: var(--nx-warning);
+}
+
+/* ---- fact lists ------------------------------------------------------------- */
+.nx-billing__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--nx-space-4) var(--nx-space-5);
+  margin: 0;
+  padding-top: var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-billing__fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-billing__fact dt {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-billing__fact dd {
+  margin: 0;
+  font-size: var(--nx-text-base);
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-billing__facts-note {
+  margin: var(--nx-space-3) 0 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- payment block ---------------------------------------------------------- */
+.nx-billing__payment {
+  margin-top: var(--nx-space-5);
+  padding: var(--nx-space-4);
+  background: var(--nx-overlay);
+  border: 1px dashed var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-billing__payment-title {
+  margin: 0 0 var(--nx-space-1);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-billing__payment-text {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-billing__muted {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- upgrade modal ----------------------------------------------------------- */
+.nx-billing__modal-text {
+  margin: 0;
+  font-size: var(--nx-text-base);
+  color: var(--nx-text);
+}
+
+.nx-billing__modal-text + .nx-billing__modal-text {
+  margin-top: var(--nx-space-3);
+}
+
+.nx-billing__modal-text--muted {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}

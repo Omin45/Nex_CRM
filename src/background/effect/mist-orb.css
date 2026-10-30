@@ -1,0 +1,79 @@
+/* ==========================================================================
+   NexERP — Mist Orb background
+   --------------------------------------------------------------------------
+   Three deep-blurred orbs drifting through a low haze. Softer and slower than
+   the shared SectionGlow — the orbs are larger and more diffuse, the motion
+   longer. Falls back to the shared accent/indigo tokens.
+   ========================================================================== */
+
+.mist-orb {
+  --mo-a: var(--nx-accent-rgb, 125, 211, 252);
+  --mo-b: var(--nx-indigo-rgb, 129, 140, 248);
+  --mo-c: var(--nx-info-rgb, 56, 189, 248);
+
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mist-orb__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.4;
+  animation: mo-drift 30s var(--nx-ease, ease-in-out) infinite alternate;
+}
+
+.mist-orb__orb--a {
+  top: -18%;
+  left: -8%;
+  width: min(52vw, 620px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 50%, rgba(var(--mo-a), 0.5), transparent 68%);
+}
+
+.mist-orb__orb--b {
+  bottom: -26%;
+  right: -10%;
+  width: min(58vw, 680px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 50%, rgba(var(--mo-b), 0.42), transparent 70%);
+  animation-duration: 38s;
+  animation-delay: -6s;
+}
+
+.mist-orb__orb--c {
+  top: 24%;
+  left: 46%;
+  width: min(34vw, 380px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 50%, rgba(var(--mo-c), 0.35), transparent 72%);
+  animation-duration: 24s;
+  animation-delay: -12s;
+}
+
+@keyframes mo-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(8%, -6%, 0) scale(1.15); }
+}
+
+/* A faint horizontal haze band so the orbs sit in a body of mist, not a vacuum. */
+.mist-orb__haze {
+  position: absolute;
+  inset: 20% 0 auto;
+  height: 60%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(var(--mo-a), 0.06) 50%,
+    transparent
+  );
+  animation: mo-haze 16s ease-in-out infinite alternate;
+}
+
+@keyframes mo-haze {
+  from { opacity: 0.4; transform: translateY(-8px); }
+  to   { opacity: 0.8; transform: translateY(8px); }
+}

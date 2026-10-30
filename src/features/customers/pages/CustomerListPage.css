@@ -1,0 +1,123 @@
+/* ==========================================================================
+   NexERP — CustomerListPage
+   --------------------------------------------------------------------------
+   Only the pieces the shared DataTable cannot express: the identity cell, the
+   two-line contact cell, and the money column.
+
+   .toolbar, .nx-segmented and the table chrome all come from shared
+   stylesheets — this file adds nothing that would fight them.
+   ========================================================================== */
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-cust__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-cust__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-family: var(--nx-font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-cust__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-cust__name {
+  overflow: hidden;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-cust__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- contact cell --------------------------------------------------------- */
+.nx-cust__contact {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.nx-cust__contact > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-cust__segment {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- money ---------------------------------------------------------------- */
+.nx-cust__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+}
+
+/* Tabular figures matter in a right-aligned numeric column: without them the
+   digits shift as each row's value changes width. */
+.nx-cust__num--money {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+.nx-cust__num--money[data-overdue] {
+  color: var(--nx-warning);
+}
+
+/* ---- search field --------------------------------------------------------- */
+.nx-cust__search {
+  min-width: 16rem;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-cust__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-cust__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-cust__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 640px) {
+  .nx-cust__search {
+    min-width: 0;
+    width: 100%;
+  }
+}

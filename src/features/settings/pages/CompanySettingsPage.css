@@ -1,0 +1,42 @@
+/* ==========================================================================
+   NexERP — CompanySettingsPage
+   --------------------------------------------------------------------------
+   Two form cards and a right-aligned action row. The layout work here is
+   small but load-bearing: the info banner explains session-only persistence
+   *before* the save button, and the action row stays right-aligned on every
+   screen width so Discard never sits where Save was.
+   ========================================================================== */
+
+.nx-company__form {
+  width: 100%;
+}
+
+/* The banner mirrors the card rhythm instead of floating above it. */
+.nx-company__note {
+  margin: 0;
+}
+
+.nx-company__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nx-space-3);
+}
+
+.nx-company__form :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .nx-company__actions {
+    justify-content: stretch;
+  }
+
+  /* Full-width stacked actions on a phone; scoped to this page's row so no
+     other button in the app inherits it. */
+  .nx-company__actions > * {
+    flex: 1;
+  }
+}

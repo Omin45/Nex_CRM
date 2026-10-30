@@ -1,0 +1,127 @@
+/* ==========================================================================
+   NexERP — SubscriptionsPage
+   --------------------------------------------------------------------------
+   Wrong lines to draw: a colour-coded status, an unchecked plan name, a
+   seat bar whose numbers live elsewhere. None of that happens here — the
+   seats cell is a native <progress> with "used of total" (and a percent)
+   written next to it, and every monetary value renders in the platform
+   home currency through formatCurrency.
+   ========================================================================== */
+
+/* ---- tenant cell ---------------------------------------------------------- */
+.nx-subs__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-subs__tenant {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-subs__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- money / ids ---------------------------------------------------------- */
+.nx-subs__mono {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- seats gauge ---------------------------------------------------------- */
+.nx-subs__seats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.nx-subs__seats-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.nx-subs__bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-subs__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-subs__bar::-webkit-progress-value {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-subs__bar::-moz-progress-bar {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* ---- cycle / renews ------------------------------------------------------- */
+.nx-subs__cycle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-subs__renews {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+/* ---- page-level error ----------------------------------------------------- */
+.nx-subs__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-subs__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-subs__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-subs__seats:focus-visible,
+.nx-subs__renews:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

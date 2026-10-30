@@ -1,0 +1,201 @@
+/* ==========================================================================
+   NexERP — Chart component styles
+   The card header/body/footer regions, the custom tooltip, the legend pills
+   and the donut centre overlay.
+   ========================================================================== */
+
+.nx-chart__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4) var(--nx-space-5) var(--nx-space-3);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-chart__title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-chart__subtitle {
+  margin-top: 2px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-chart__header-action {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-shrink: 0;
+}
+
+/* Recharts' ResponsiveContainer needs a parent with a definite height. */
+.nx-chart__body {
+  position: relative;
+  width: 100%;
+  padding: var(--nx-space-4) var(--nx-space-3);
+}
+
+.nx-chart__footer {
+  padding: var(--nx-space-3) var(--nx-space-5);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   TOOLTIP
+   A frosted panel that matches the rest of the product chrome.
+   -------------------------------------------------------------------------- */
+.nx-chart__tooltip {
+  min-width: 160px;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  background: var(--nx-glass-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-sm);
+  box-shadow: var(--nx-shadow-lg);
+  animation: nx-fade 0.12s var(--nx-ease);
+}
+
+.nx-chart__tooltip-label {
+  margin-bottom: var(--nx-space-2);
+  padding-bottom: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 600);
+  color: var(--nx-text-strong);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-chart__tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.nx-chart__tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+}
+
+.nx-chart__tooltip-swatch {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 6px -1px currentColor;
+}
+
+.nx-chart__tooltip-name {
+  flex: 1;
+  color: var(--nx-text-muted);
+}
+
+.nx-chart__tooltip-value {
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   LEGEND
+   -------------------------------------------------------------------------- */
+.nx-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2) var(--nx-space-4);
+  justify-content: center;
+}
+
+.nx-chart__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-chart__legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px -2px currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   PIE / DONUT
+   -------------------------------------------------------------------------- */
+.nx-chart__pie {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.nx-chart__slice {
+  transition: opacity var(--nx-dur) var(--nx-ease), transform var(--nx-dur) var(--nx-ease);
+  cursor: pointer;
+}
+
+/* Recharts sets opacity on the active shape; dim the rest for contrast. */
+.nx-chart__slice:hover {
+  filter: brightness(1.15) drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+}
+
+.nx-chart__pie-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.nx-chart__pie-value {
+  font-size: var(--nx-text-lg);
+  font-weight: 700;
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+  /* A faint glow ties the number to the ring around it. */
+  text-shadow: 0 0 18px rgba(var(--nx-accent-strong-rgb), 0.35);
+}
+
+.nx-chart__pie-label {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+}
+
+/* Recharts injects its own focus outline on slices; align it with the app. */
+.recharts-surface:focus {
+  outline: none;
+}
+
+.recharts-sector:focus,
+.recharts-rectangle:focus {
+  outline: 2px solid var(--nx-accent);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-chart__body {
+    padding: var(--nx-space-3) var(--nx-space-2);
+  }
+
+  .nx-chart__header,
+  .nx-chart__footer {
+    padding-left: var(--nx-space-4);
+    padding-right: var(--nx-space-4);
+  }
+}

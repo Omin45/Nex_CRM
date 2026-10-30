@@ -1,0 +1,124 @@
+/* ==========================================================================
+   NexERP — PlatformUsersPage
+   --------------------------------------------------------------------------
+   The account cell (avatar + name + email), the MFA state, and the two-line
+   "relative time over absolute date" treatment used by the last-active column.
+
+   MFA gets a tint only *and* a word: "Enabled" / "Not set up" is the signal,
+   the colour is decoration on top of it.
+   ========================================================================== */
+
+/* ---- account cell --------------------------------------------------------- */
+.nx-pusers__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-pusers__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-pusers__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-pusers__name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-pusers__tenant {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-pusers__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- MFA ------------------------------------------------------------------ */
+.nx-pusers__mfa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-pusers__mfa[data-on] {
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.1);
+  border-color: rgba(var(--nx-success-rgb), 0.3);
+}
+
+/* ---- last active ---------------------------------------------------------- */
+.nx-pusers__when {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- page-level error ----------------------------------------------------- */
+.nx-pusers__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-pusers__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-pusers__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-pusers__cell:focus-visible,
+.nx-pusers__mfa:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

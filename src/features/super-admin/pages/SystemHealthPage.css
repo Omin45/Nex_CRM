@@ -1,0 +1,173 @@
+/* ==========================================================================
+   NexERP — SystemHealthPage
+   --------------------------------------------------------------------------
+   The aggregate banner carries its status in words before any tint; the
+   services table's latency column flags (not colours) anything above the
+   comfort line; incidents are laid out like the small bulletins they are —
+   id and state first, then the headline, the impact, and when it happened.
+   ========================================================================== */
+
+/* ---- aggregate banner ----------------------------------------------------- */
+.nx-sys__banner {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-lg);
+}
+
+.nx-sys__banner strong {
+  color: var(--nx-text);
+}
+
+.nx-sys__banner[data-tone='success'] {
+  color: var(--nx-success);
+}
+
+.nx-sys__banner[data-tone='warning'] {
+  color: var(--nx-warning);
+}
+
+.nx-sys__banner[data-tone='danger'] {
+  color: var(--nx-danger);
+}
+
+/* ---- shared card head ----------------------------------------------------- */
+.nx-sys__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4) var(--nx-space-4) 0;
+}
+
+.nx-sys__card-title {
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-base);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-sys__card-subtitle {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+/* ---- services table ------------------------------------------------------- */
+.nx-sys__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-sys__name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-sys__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-sys__num {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-sys__num[data-high] {
+  color: var(--nx-warning);
+  font-weight: 600;
+}
+
+.nx-sys__skeleton {
+  padding: var(--nx-space-4);
+}
+
+/* ---- incidents ------------------------------------------------------------ */
+.nx-sys__incidents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-sys__incident {
+  padding: var(--nx-space-3);
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-md);
+}
+
+.nx-sys__incident-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-sys__incident-title {
+  margin: var(--nx-space-2) 0 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-sys__incident-impact {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-sys__incident-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: var(--nx-space-2) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- page-level error ----------------------------------------------------- */
+.nx-sys__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-sys__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-sys__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-sys__ident:focus-visible,
+.nx-sys__num:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

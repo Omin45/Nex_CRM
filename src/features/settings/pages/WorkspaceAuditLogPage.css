@@ -1,0 +1,162 @@
+/* ==========================================================================
+   NexERP — WorkspaceAuditLogPage
+   --------------------------------------------------------------------------
+   A table page with exactly one piece of layout of its own: the hand-built
+   footer pager, because the shared TablePagination says "Showing 1–10 of 60"
+   and this screen is asked to say "Page X of Y". Everything else — toolbar,
+   skeleton, rows, empty state, density — is the shared DataTable's; the rules
+   below only dress the stacked cell text, the error surfaces and the footer.
+   ========================================================================== */
+
+/* ---- error surfaces ------------------------------------------------------ */
+.nx-set-audit__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-set-audit__error-title {
+  margin: 0;
+  font-size: var(--nx-text-lg);
+  color: var(--nx-text);
+}
+
+.nx-set-audit__error-text {
+  margin: 0;
+  color: var(--nx-text-muted);
+}
+
+.nx-set-audit__refetch-error {
+  margin: 0;
+}
+
+.nx-set-audit__error :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- stacked cell text --------------------------------------------------- */
+.nx-set-audit__event,
+.nx-set-audit__ident,
+.nx-set-audit__when {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-set-audit__when {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.nx-set-audit__category {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-set-audit__action,
+.nx-set-audit__name {
+  color: var(--nx-text);
+}
+
+.nx-set-audit__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-audit__meta--truncate {
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- footer pager -------------------------------------------------------- */
+.nx-set-audit__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-set-audit__pager-count {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-audit__pager-count strong {
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-set-audit__pager-total {
+  color: var(--nx-text-dim);
+}
+
+.nx-set-audit__pager-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+.nx-set-audit__pager-size {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-right: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-audit__pager-select {
+  appearance: none;
+  padding: var(--nx-space-1) var(--nx-space-3);
+  font: inherit;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-xs);
+  cursor: pointer;
+  transition: border-color var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-set-audit__pager-select:hover {
+  border-color: var(--nx-border-strong);
+}
+
+.nx-set-audit__pager :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .nx-set-audit__pager {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nx-set-audit__pager-count {
+    text-align: center;
+  }
+
+  .nx-set-audit__pager-controls {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-set-audit__pager-select {
+    transition: none;
+  }
+}

@@ -1,0 +1,143 @@
+/* ==========================================================================
+   NexERP — SectionGlow
+   --------------------------------------------------------------------------
+   Decorative backdrop for marketing sections: two drifting radial orbs plus
+   one panning sheen. Everything sits under `z-index: -1` inside an
+   `overflow: hidden` layer, so the motion can never bleed over a neighbour or
+   intercept a click.
+
+   The RGB channels are tokenised (`--nx-fx-a` / `--nx-fx-b`) rather than
+   hard-coded so the light theme — which redefines those triplets — repaints
+   the whole family without a media query.
+   ========================================================================== */
+
+.nx-sectionfx {
+  --nx-fx-a: var(--nx-accent-rgb);
+  --nx-fx-b: var(--nx-indigo-rgb);
+
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.nx-sectionfx[data-tone='sky'] {
+  --nx-fx-a: var(--nx-info-rgb);
+  --nx-fx-b: var(--nx-accent-rgb);
+}
+
+.nx-sectionfx[data-tone='indigo'] {
+  --nx-fx-a: var(--nx-indigo-rgb);
+  --nx-fx-b: var(--nx-info-rgb);
+}
+
+/* ---- hosts ---------------------------------------------------------------
+   The sections that mount a SectionGlow. `position: relative` anchors the
+   layer, `z-index: 0` creates the stacking context that keeps the negative-z
+   glow above the section background yet below its content. Listed here so the
+   contract lives with the component instead of being copy-pasted seven times. */
+.nx-stats,
+.nx-modules,
+.nx-steps,
+.nx-showcase,
+.nx-quotes,
+.nx-cta,
+.nx-page-header {
+  position: relative;
+  z-index: 0;
+}
+
+/* ---- orbs ---------------------------------------------------------------- */
+.nx-sectionfx__orb {
+  position: absolute;
+  width: min(46vw, 560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+.nx-sectionfx__orb--a {
+  top: -30%;
+  left: -10%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--nx-fx-a), 0.3),
+    transparent 65%
+  );
+  animation: nx-fx-drift-a 26s var(--nx-ease) infinite alternate;
+}
+
+.nx-sectionfx__orb--b {
+  right: -12%;
+  bottom: -36%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--nx-fx-b), 0.24),
+    transparent 68%
+  );
+  animation: nx-fx-drift-b 34s var(--nx-ease) infinite alternate;
+}
+
+/* ---- sheen ---------------------------------------------------------------
+   A single soft diagonal band that crosses the band on a long loop. It is
+   masked to nothing at both ends, so no section shows a visible start or stop. */
+.nx-sectionfx__sheen {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 45%;
+  height: 120%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(var(--nx-fx-a), 0.12) 50%,
+    transparent 70%
+  );
+  animation: nx-fx-sheen 24s linear infinite;
+}
+
+/* ---- motion -------------------------------------------------------------- */
+@keyframes nx-fx-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(10%, 14%, 0) scale(1.18);
+  }
+}
+
+@keyframes nx-fx-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-12%, -8%, 0) scale(0.94);
+  }
+}
+
+@keyframes nx-fx-sheen {
+  from {
+    opacity: 0;
+    transform: translateX(-80%);
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(320%);
+  }
+}
+
+/* Small screens: the orbs are sized in vw, so they already scale down — but
+   the sheen crossing 4.5x its own width is pure travel on a phone. Shorten it
+   by slowing the loop instead of hiding the effect. */
+@media (max-width: 640px) {
+  .nx-sectionfx__sheen {
+    animation-duration: 34s;
+  }
+}

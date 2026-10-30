@@ -1,0 +1,787 @@
+/* ==========================================================================
+   NexERP — UTILITY LAYER
+   Reusable, single-purpose class helpers. Two families live here:
+     1. "Shell" classes  (.page, .page__header, .grid, .toolbar) that define
+        the standard page anatomy, so every feature page composes the same
+        structure without duplicating layout CSS.
+     2. "Primitive" helpers (.flex, .gap-4, .text-muted) for one-off spacing
+        and typography tweaks inside JSX.
+   Nothing here may define colour literals — tokens only.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BRAND WORDMARK
+   The animated "NexERP" gradient text required by the product spec. The text
+   fill is transparent and the gradient is clipped into the glyphs; animating
+   background-position makes the colour flow through the letters. The
+   keyframe (nx-brand-flow) lives in global.css.
+   -------------------------------------------------------------------------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  user-select: none;
+}
+
+.brand__text {
+  font-size: var(--nx-text-lg);
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-brand-flow 6s var(--nx-ease) infinite;
+  /* Fallback for engines without background-clip:text support. */
+  -webkit-text-stroke: 0;
+}
+
+.brand__text--lg {
+  font-size: var(--nx-text-2xl);
+}
+
+.brand__text--xl {
+  font-size: var(--nx-text-3xl);
+}
+
+/* Soft halo behind the mark, tinted by the accent. */
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--nx-radius-sm);
+  background: var(--nx-gradient-accent);
+  color: var(--nx-text-inverse);
+  font-size: var(--nx-text-md);
+  font-weight: 800;
+  box-shadow: 0 4px 14px -4px rgba(var(--nx-accent-strong-rgb), 0.6);
+  transition: var(--nx-transition);
+}
+
+.brand:hover .brand__mark {
+  transform: rotate(-6deg) scale(1.06);
+  box-shadow: 0 6px 20px -4px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.brand__mark--lg {
+  width: 42px;
+  height: 42px;
+  font-size: var(--nx-text-lg);
+  border-radius: var(--nx-radius);
+}
+
+/* --------------------------------------------------------------------------
+   PAGE SHELL
+   -------------------------------------------------------------------------- */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-6);
+  width: 100%;
+  max-width: var(--nx-page-max);
+  margin: 0 auto;
+  padding: var(--nx-topbar-offset) var(--nx-space-6) var(--nx-space-10);
+  animation: nx-fade var(--nx-dur-slow) var(--nx-ease);
+}
+
+.page--flush {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+}
+
+.page--narrow {
+  max-width: 900px;
+}
+
+.page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+  animation: nx-rise var(--nx-dur-slow) var(--nx-ease) both;
+}
+
+.page__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-bottom: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-accent);
+}
+
+.page__title {
+  font-size: var(--nx-text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page__subtitle {
+  margin-top: var(--nx-space-1);
+  font-size: var(--nx-text-base);
+  color: var(--nx-text-muted);
+  max-width: 68ch;
+}
+
+.page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+.page__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-6);
+}
+
+.page__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.page__section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+/* --------------------------------------------------------------------------
+   GRID SYSTEM
+   Auto-fit grids collapse gracefully without container queries.
+   -------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  gap: var(--nx-space-4);
+}
+
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Metric card row: 5 KPI cards on wide desktop, 2 on tablet, 1 on mobile. */
+.grid--metrics {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* Chart row: dominant chart + narrower side panel. */
+.grid--split {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.grid--split-even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--sidebar-right {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.grid--sidebar-left {
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+/* Intrinsic sizing — best for "as many cards as fit" collections. */
+.grid--auto {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.grid--auto-lg {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-full { grid-column: 1 / -1; }
+
+/* --------------------------------------------------------------------------
+   FLEX PRIMITIVES
+   -------------------------------------------------------------------------- */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
+.flex-auto { flex: auto; }
+
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.items-baseline { align-items: baseline; }
+
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+
+/* Vertical rhythm helper for stacked forms / detail rows. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.stack--sm { gap: var(--nx-space-2); }
+.stack--md { gap: var(--nx-space-3); }
+.stack--lg { gap: var(--nx-space-6); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+}
+
+.row--between {
+  justify-content: space-between;
+}
+
+.gap-1 { gap: var(--nx-space-1); }
+.gap-2 { gap: var(--nx-space-2); }
+.gap-3 { gap: var(--nx-space-3); }
+.gap-4 { gap: var(--nx-space-4); }
+.gap-5 { gap: var(--nx-space-5); }
+.gap-6 { gap: var(--nx-space-6); }
+.gap-8 { gap: var(--nx-space-8); }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-w-0 { min-width: 0; }
+.relative { position: relative; }
+.overflow-hidden { overflow: hidden; }
+
+/* --------------------------------------------------------------------------
+   TYPOGRAPHY HELPERS
+   -------------------------------------------------------------------------- */
+.text-xs { font-size: var(--nx-text-xs); }
+.text-sm { font-size: var(--nx-text-sm); }
+.text-base { font-size: var(--nx-text-base); }
+.text-lg { font-size: var(--nx-text-lg); }
+.text-xl { font-size: var(--nx-text-xl); }
+.text-2xl { font-size: var(--nx-text-2xl); }
+.text-3xl { font-size: var(--nx-text-3xl); }
+
+.text-muted { color: var(--nx-text-muted); }
+.text-dim { color: var(--nx-text-dim); }
+.text-strong { color: var(--nx-text-strong); }
+.text-accent { color: var(--nx-accent); }
+.text-success { color: var(--nx-success); }
+.text-warning { color: var(--nx-warning); }
+.text-danger { color: var(--nx-danger); }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.mono { font-family: var(--nx-font-mono); font-variant-numeric: tabular-nums; }
+.numeric { font-variant-numeric: tabular-nums; }
+
+.eyebrow {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   SEGMENTED CONTROL
+   A pill group for switching between 2-4 mutually exclusive options (date
+   range, status, view mode). Beyond four options use a <select> instead.
+   -------------------------------------------------------------------------- */
+.nx-segmented {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-segmented__item {
+  padding: var(--nx-space-1) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-dim);
+  background: none;
+  border: none;
+  border-radius: var(--nx-radius-pill);
+  white-space: nowrap;
+  transition: var(--nx-transition);
+}
+
+.nx-segmented__item:hover {
+  color: var(--nx-text-strong);
+}
+
+.nx-segmented__item.is-active {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  box-shadow: 0 2px 8px -2px rgba(var(--nx-accent-strong-rgb), 0.7);
+}
+
+.nx-segmented__item.is-active:hover {
+  color: var(--nx-text-inverse);
+}
+
+/* Applied to an icon while a refetch is in flight. */
+.nx-spin {
+  animation: nx-spin 0.9s linear infinite;
+}
+
+.label {
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+}
+
+/* Borderless inline action that reads as a link: "View all", "Mark all read",
+   "Clear filters". Resets the UA button chrome so it aligns with text. */
+.nx-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  padding: 0;
+  font: inherit;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-link:hover {
+  color: var(--nx-text-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nx-link:disabled {
+  color: var(--nx-text-faint);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.nx-link--danger {
+  color: var(--nx-danger);
+}
+
+.nx-link--sm {
+  font-size: var(--nx-text-xs);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Visible to screen readers only. Used for live-region announcements and for
+   controls that need a label without a visible label. */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Accent-filled text using the animated brand gradient (sparingly).
+   Animated here too, not just in the logo — the spec asks for a *moving*
+   gradient, and a static one reads as a bug on a page that advertises motion. */
+.text-gradient {
+  display: inline-block;
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-brand-flow 6s var(--nx-ease) infinite;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .text-gradient {
+    color: var(--nx-accent);
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   CARD INTERACTION
+   The signature hover recipe from the spec: lift 4px, gain the pale-blue
+   glow shadow, and light up the border. Applied to metric cards, list cards
+   and any other clickable surface.
+   -------------------------------------------------------------------------- */
+.card-hover {
+  transition: var(--nx-transition);
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-glow), var(--nx-shadow);
+}
+
+.card-hover:active {
+  transform: translateY(-1px);
+}
+
+/* Adds an accent sheen in the top-left corner on hover. */
+.card-hover--sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(var(--nx-accent-strong-rgb), 0.1),
+    transparent 45%
+  );
+  transition: opacity var(--nx-dur) var(--nx-ease);
+}
+
+.card-hover--sheen:hover::after {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   TOOLBAR / FILTER BAR
+   The shared filter row used above every master-data table.
+   -------------------------------------------------------------------------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border-radius: var(--nx-radius);
+  background: var(--nx-overlay), var(--nx-surface);
+  border: 1px solid var(--nx-border-soft);
+  box-shadow: var(--nx-inset-hairline);
+}
+
+.toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+.toolbar__spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar__divider {
+  width: 1px;
+  height: 24px;
+  background: var(--nx-border-soft);
+}
+
+/* Generic filter chip (used for status/quick filters). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  height: 32px;
+  padding: 0 var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+  white-space: nowrap;
+  transition: var(--nx-transition);
+}
+
+.chip:hover {
+  color: var(--nx-text);
+  border-color: var(--nx-border-strong);
+  background: var(--nx-overlay-strong);
+}
+
+.chip--active {
+  color: var(--nx-text-strong);
+  background: var(--nx-gradient-pill);
+  border-color: var(--nx-border-accent);
+  box-shadow: 0 4px 14px -6px rgba(var(--nx-accent-strong-rgb), 0.5);
+}
+
+.chip__count {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   SURFACES & DIVIDERS
+   -------------------------------------------------------------------------- */
+.divider {
+  height: 1px;
+  background: var(--nx-border-soft);
+  border: 0;
+}
+
+.divider--vertical {
+  width: 1px;
+  height: auto;
+  align-self: stretch;
+}
+
+/* Hairline top accent used to colour-code cards by status. */
+.edge-accent {
+  position: relative;
+  overflow: hidden;
+}
+
+.edge-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--nx-gradient-accent);
+  opacity: 0.85;
+}
+
+.edge-accent--success::before { background: linear-gradient(90deg, var(--nx-success), transparent); }
+.edge-accent--warning::before { background: linear-gradient(90deg, var(--nx-warning), transparent); }
+.edge-accent--danger::before { background: linear-gradient(90deg, var(--nx-danger), transparent); }
+.edge-accent--info::before { background: linear-gradient(90deg, var(--nx-info), transparent); }
+
+/* --------------------------------------------------------------------------
+   KEY / VALUE LIST — used in detail panels, summaries, profile menus.
+   -------------------------------------------------------------------------- */
+.kv {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.kv__label {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.kv__value {
+  font-size: var(--nx-text-base);
+  color: var(--nx-text);
+}
+
+/* --------------------------------------------------------------------------
+   SKELETON LOADER
+   -------------------------------------------------------------------------- */
+.skeleton {
+  border-radius: var(--nx-radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--nx-surface-2) 0%,
+    var(--nx-surface-3) 40%,
+    var(--nx-surface-2) 80%
+  );
+  background-size: 420px 100%;
+  animation: nx-skeleton 1.4s var(--nx-ease) infinite;
+}
+
+.skeleton--text {
+  height: 12px;
+  border-radius: var(--nx-radius-pill);
+}
+
+.skeleton--title {
+  height: 20px;
+  width: 40%;
+}
+
+/* --------------------------------------------------------------------------
+   LIVE / STATUS DOT
+   -------------------------------------------------------------------------- */
+.dot {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot--live {
+  background: var(--nx-success);
+  animation: nx-pulse-glow 2s var(--nx-ease) infinite;
+}
+
+.dot--success { background: var(--nx-success); }
+.dot--warning { background: var(--nx-warning); }
+.dot--danger { background: var(--nx-danger); }
+.dot--info { background: var(--nx-info); }
+.dot--neutral { background: var(--nx-text-dim); }
+
+/* --------------------------------------------------------------------------
+   ENTRANCE ANIMATION HELPERS
+   `--nx-delay` is read by .animate-rise, letting a parent stagger a list of
+   children with inline styles instead of writing N keyframe variants.
+   -------------------------------------------------------------------------- */
+.animate-rise {
+  animation: nx-rise var(--nx-dur-slow) var(--nx-ease) both;
+  animation-delay: var(--nx-delay, 0ms);
+}
+
+.animate-fade {
+  animation: nx-fade var(--nx-dur-slow) var(--nx-ease) both;
+  animation-delay: var(--nx-delay, 0ms);
+}
+
+.animate-scale-in {
+  animation: nx-scale-in var(--nx-dur) var(--nx-ease) both;
+  animation-delay: var(--nx-delay, 0ms);
+}
+
+/* Ready-made stagger steps for the first 8 children of a list. */
+.stagger-1 { --nx-delay: 40ms; }
+.stagger-2 { --nx-delay: 80ms; }
+.stagger-3 { --nx-delay: 120ms; }
+.stagger-4 { --nx-delay: 160ms; }
+.stagger-5 { --nx-delay: 200ms; }
+.stagger-6 { --nx-delay: 240ms; }
+.stagger-7 { --nx-delay: 280ms; }
+.stagger-8 { --nx-delay: 320ms; }
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE HELPERS
+   Breakpoints mirror the tokens in variables.css.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1280px) {
+  .grid--metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .grid--split,
+  .grid--split-even,
+  .grid--sidebar-right,
+  .grid--sidebar-left {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .span-2,
+  .span-3 {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--nx-space-4) var(--nx-space-4) var(--nx-space-8);
+  }
+
+  .grid--metrics,
+  .grid--3,
+  .grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page__actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid--4,
+  .grid--3,
+  .grid--2,
+  .grid--auto,
+  .grid--auto-lg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* KPI tiles stay two-up on a phone — a full-width tile per metric reads as
+     wasted vertical space and buries the numbers below the fold. */
+  .grid--metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page {
+    padding-left: var(--nx-space-3);
+    padding-right: var(--nx-space-3);
+  }
+
+  .page__title {
+    font-size: var(--nx-text-xl);
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   PRINT — strip the chrome so reports export cleanly.
+   -------------------------------------------------------------------------- */
+@media print {
+  .nx-sidebar,
+  .nx-navbar,
+  .nx-topbar,
+  .nx-footer,
+  .nx-toast-region,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+}

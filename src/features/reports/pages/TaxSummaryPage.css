@@ -1,0 +1,56 @@
+/* ==========================================================================
+   NexERP — TaxSummaryPage
+   --------------------------------------------------------------------------
+   The filings table carries the page's only meaning-bearing chrome: a due
+   date that has passed. Like the invoice register, the date turns danger-red
+   AND gains the word "overdue" — colour is corroboration, never the signal.
+
+   Everything else is money cells with tabular numerals plus the small gap
+   between the export-error alert and the KPI row, since alerts stack flush
+   against the tiles otherwise.
+   ========================================================================== */
+
+/* ---- due dates ----------------------------------------------------------- */
+.nx-tax__date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-tax__date[data-late] {
+  color: var(--nx-danger);
+  font-weight: 500;
+}
+
+.nx-tax__late {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-danger);
+}
+
+/* ---- money ---------------------------------------------------------------- */
+.nx-tax__num {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-tax__num--strong {
+  color: var(--nx-text);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS
+   -------------------------------------------------------------------------- */
+.nx-tax :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

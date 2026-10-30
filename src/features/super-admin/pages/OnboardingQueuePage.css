@@ -1,0 +1,156 @@
+/* ==========================================================================
+   NexERP — OnboardingQueuePage
+   --------------------------------------------------------------------------
+   Progress (bar + written step + percent), owners, due states and blockers.
+   The Due cell tints *and* says "in 3 days", and blockers are listed by
+   name instead of being summed into a number, because each one is a job.
+   ========================================================================== */
+
+/* ---- tenant / owner cells -------------------------------------------------- */
+.nx-onb__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-onb__tenant {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-onb__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-onb__owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  white-space: nowrap;
+}
+
+/* ---- progress ------------------------------------------------------------- */
+.nx-onb__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.nx-onb__progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-onb__pct {
+  font-weight: 600;
+  color: var(--nx-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-onb__bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-onb__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-onb__bar::-webkit-progress-value {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-onb__bar::-moz-progress-bar {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* ---- started / due -------------------------------------------------------- */
+.nx-onb__when {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-onb__due {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-onb__due[data-soon] {
+  color: var(--nx-warning);
+  font-weight: 600;
+}
+
+/* ---- blockers -------------------------------------------------------------- */
+.nx-onb__blockers {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+  max-width: 260px;
+}
+
+.nx-onb__none {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- page-level error ------------------------------------------------------ */
+.nx-onb__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-onb__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-onb__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ----------------------------------------------------------------- */
+.nx-onb__ident:focus-visible,
+.nx-onb__owner:focus-visible,
+.nx-onb__due:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

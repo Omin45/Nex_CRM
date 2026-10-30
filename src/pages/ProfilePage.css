@@ -1,0 +1,192 @@
+/* ==========================================================================
+   NexERP — ProfilePage
+   --------------------------------------------------------------------------
+   Two things this sheet owns: the identity card (initials block, read-only
+   facts) and the two-column security grid that puts the password form next to
+   the MFA status. Everything else is page/grid utility classes.
+
+   Colour is never the only status signal — the MFA pill is always paired with
+   the word "Enabled" or "Disabled", and the copy under it explains the
+   consequence in a sentence.
+   ========================================================================== */
+
+/* ---- identity card ------------------------------------------------------- */
+.nx-profile__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nx-profile__avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--nx-space-4);
+  border-radius: var(--nx-radius-lg);
+  background: var(--nx-gradient-accent);
+  box-shadow: 0 10px 24px -12px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.nx-profile__initials {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--nx-text-inverse);
+}
+
+.nx-profile__name {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-profile__job {
+  margin-top: var(--nx-space-1);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-profile__role {
+  margin-top: var(--nx-space-3);
+}
+
+.nx-profile__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  width: 100%;
+  margin-top: var(--nx-space-5);
+  padding-top: var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-profile__fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  min-width: 0;
+}
+
+.nx-profile__fact-value {
+  overflow-wrap: anywhere;
+}
+
+/* ---- profile form -------------------------------------------------------- */
+.nx-profile__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-5);
+}
+
+.nx-profile__form-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.nx-profile__form-title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-profile__form-hint {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 62ch;
+}
+
+.nx-profile__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+}
+
+/* The job title reads better at full width than stranded in a half-empty row. */
+.nx-profile__field--wide {
+  grid-column: 1 / -1;
+}
+
+.nx-profile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+/* ---- security ------------------------------------------------------------ */
+.nx-profile__security-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--nx-space-6);
+  align-items: start;
+}
+
+.nx-profile__password {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-profile__mfa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+  background: var(--nx-overlay);
+  box-shadow: var(--nx-inset-hairline);
+}
+
+.nx-profile__mfa-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  color: var(--nx-accent);
+  background: var(--nx-overlay-strong);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-profile__mfa-copy {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.nx-profile__mfa-title {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-profile__mfa-text {
+  margin-top: var(--nx-space-1);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  max-width: 44ch;
+}
+
+/* ---- focus --------------------------------------------------------------- */
+.nx-profile :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1024px) {
+  .nx-profile__security-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-profile__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

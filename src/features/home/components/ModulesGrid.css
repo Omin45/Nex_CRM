@@ -1,0 +1,155 @@
+/* ==========================================================================
+   NexERP — ModulesGrid
+   --------------------------------------------------------------------------
+   The 4x2 catalogue of modules.
+
+   Glassmorphism note: each card is a glass surface. The hover treatment is the
+   spec's "hover glow and a border that lights up": the border transitions to
+   --nx-border-strong and a --nx-glow shadow fades in. Both are opacity-safe
+   transitions on properties that do not trigger layout, so the grid does not
+   reflow on hover.
+
+   The hover lift is 4px. Anything more makes a 4-column row feel unstable.
+   ========================================================================== */
+
+.nx-modules {
+  padding-block: var(--nx-section-pad);
+}
+
+.nx-modules__heading {
+  margin: 0 0 var(--nx-space-4);
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.85rem, 3.6vw, 2.75rem);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--nx-text);
+}
+
+.nx-modules__sub {
+  max-width: 58ch;
+  margin: 0 auto var(--nx-space-12);
+  font-size: var(--nx-text-md);
+  line-height: var(--nx-leading-relaxed);
+  text-align: center;
+  color: var(--nx-text-muted);
+}
+
+.nx-modules__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--nx-space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-modules__cell {
+  display: flex;
+}
+
+.nx-modules__card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-6);
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-glass-highlight);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  transition: transform var(--nx-dur) var(--nx-ease), box-shadow var(--nx-dur) var(--nx-ease),
+    border-color var(--nx-dur) var(--nx-ease), background-color var(--nx-dur) var(--nx-ease);
+}
+
+/* The hover state lives on the card, but is triggered from the cell so the
+   whole grid cell is a hit target — a 44px-minimum touch area on mobile. */
+.nx-modules__cell:hover .nx-modules__card,
+.nx-modules__cell:focus-within .nx-modules__card {
+  transform: translateY(-4px);
+  border-color: var(--nx-border-strong);
+  background: var(--nx-surface-2);
+  box-shadow: var(--nx-glow), var(--nx-glass-highlight);
+}
+
+.nx-modules__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  color: var(--nx-accent);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  transition: var(--nx-transition);
+}
+
+.nx-modules__cell:hover .nx-modules__icon {
+  color: var(--nx-text);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-accent);
+  transform: scale(1.05);
+}
+
+.nx-modules__name {
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-modules__blurb {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+/* ==========================================================================
+   Responsive: 4 -> 3 -> 2 -> 1
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+  .nx-modules__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-modules__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-modules__sub {
+    margin-bottom: var(--nx-space-10);
+  }
+}
+
+@media (max-width: 560px) {
+  .nx-modules__grid {
+    grid-template-columns: 1fr;
+    gap: var(--nx-space-4);
+  }
+
+  .nx-modules__card {
+    padding: var(--nx-space-5);
+  }
+
+  /* No hover on touch, so the lift is removed rather than left to stick. */
+  .nx-modules__cell:hover .nx-modules__card {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-modules__card,
+  .nx-modules__icon {
+    transition: none;
+  }
+}

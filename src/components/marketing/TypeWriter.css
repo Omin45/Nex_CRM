@@ -1,0 +1,63 @@
+/* ==========================================================================
+   NexERP — TypeWriter
+   --------------------------------------------------------------------------
+   The rotating word plus its blinking caret. The gradient on the word is the
+   same brand gradient as the logo, so the two read as one system.
+   ========================================================================== */
+
+.nx-typewriter {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 1.2em; /* reserves the line so the page never reflows mid-type */
+  font-family: var(--nx-font-display);
+}
+
+.nx-typewriter__static {
+  color: var(--nx-text-strong);
+}
+
+.nx-typewriter__word {
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-brand-flow 6s var(--nx-ease) infinite;
+  white-space: nowrap;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .nx-typewriter__word {
+    color: var(--nx-accent);
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}
+
+/* Blinking block caret. Hidden while deleting so the deletion reads as the
+   line being erased rather than a second animation fighting for attention. */
+.nx-typewriter__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--nx-accent);
+  border-radius: 1px;
+  animation: nx-caret-blink 1s steps(2, start) infinite;
+}
+
+.nx-typewriter__caret[data-deleting='true'] {
+  opacity: 0.4;
+}
+
+@keyframes nx-caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

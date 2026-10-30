@@ -1,0 +1,252 @@
+/* ==========================================================================
+   NexERP — PlatformReportsPage
+   --------------------------------------------------------------------------
+   Workaday tables plus two pieces of furniture unique to this screen: the
+   plan-mix legend (which carries the per-plan tenant counts the chart
+   cannot) and the churn watchlist (a triage list where every reason is a
+   sentence). NPS never appears coloured by itself.
+   ========================================================================== */
+
+/* ---- section furniture ---------------------------------------------------- */
+.nx-plat__section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--nx-space-3);
+  margin-bottom: var(--nx-space-3);
+}
+
+.nx-plat__section-subtitle {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-plat__exports {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-wrap: wrap;
+}
+
+.nx-plat__export-error {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-danger);
+}
+
+/* ---- card head (watchlist) ------------------------------------------------ */
+.nx-plat__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  margin-bottom: var(--nx-space-4);
+}
+
+.nx-plat__card-title {
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-base);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-plat__card-subtitle {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+/* ---- plan-mix legend ------------------------------------------------------ */
+.nx-plat__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--nx-space-3);
+}
+
+.nx-plat__legend-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+}
+
+.nx-plat__legend-plan {
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-plat__legend-count {
+  color: var(--nx-text-dim);
+}
+
+.nx-plat__legend-mrr {
+  font-family: var(--nx-font-mono);
+  color: var(--nx-accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- watchlist ------------------------------------------------------------ */
+.nx-plat__watch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-plat__watch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-3);
+  text-align: left;
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-md);
+  transition: border-color 140ms ease;
+}
+
+.nx-plat__watch-row:hover {
+  border-color: var(--nx-border-accent);
+}
+
+.nx-plat__watch-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.nx-plat__watch-mrr {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- performance table ---------------------------------------------------- */
+.nx-plat__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-plat__name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-plat__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-plat__mono {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-plat__num {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-plat__nps {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-plat__nps[data-low] {
+  color: var(--nx-danger);
+}
+
+.nx-plat__gauge {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.nx-plat__gauge-head {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-plat__bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-plat__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-plat__bar::-webkit-progress-value {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-plat__bar::-moz-progress-bar {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* ---- page-level error ----------------------------------------------------- */
+.nx-plat__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-plat__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-plat__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-plat__watch-row:focus-visible,
+.nx-plat__ident:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

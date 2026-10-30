@@ -1,0 +1,29 @@
+/* ==========================================================================
+   NexERP — ForbiddenPage
+   --------------------------------------------------------------------------
+   Almost nothing to do here: ForbiddenState already centres itself and owns
+   its icon, copy and buttons. This sheet stacks that block under the page
+   header, centres the extra home action, and tightens the component's bottom
+   padding — which assumes it is the last thing on screen — so the home button
+   does not float a double gap below it.
+
+   Both overrides are scoped to this block; the shared component keeps its
+   generous spacing everywhere else it is used.
+   ========================================================================== */
+
+.nx-forbidden-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-4);
+}
+
+.nx-forbidden-page .nx-forbidden {
+  padding-bottom: var(--nx-space-4);
+}
+
+/* ---- focus --------------------------------------------------------------- */
+.nx-forbidden-page :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

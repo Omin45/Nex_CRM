@@ -1,0 +1,44 @@
+/* ==========================================================================
+   NexERP — SalesPipelinePage
+   --------------------------------------------------------------------------
+   Page-level layout for the pipeline. Almost everything visual lives in the
+   child components (PipelineSummary, KanbanBoard); this file only handles the
+   busy state and the two small text blocks the page owns itself.
+   ========================================================================== */
+
+.nx-pipeline__board {
+  transition: opacity var(--nx-dur) var(--nx-ease);
+}
+
+/* While a drop is committing, the board is still interactive-looking but is
+   actually disabled. Fading it is what tells the user their drop landed and
+   is being saved, rather than having been ignored. */
+.nx-pipeline__board[data-busy] {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.nx-pipeline__foot {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+.nx-pipeline__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-pipeline__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-pipeline__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}

@@ -1,0 +1,852 @@
+/* ==========================================================================
+   NexERP — Navigation component styles
+   Shared by GlobalSearchModal, NotificationDropdown, UserProfileDropdown and
+   the topbar's trigger buttons.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BRAND
+   The animated logo lockup. The mark fills with the brand gradient on hover,
+   and the wordmark's "ERP" runs the gradient permanently.
+   -------------------------------------------------------------------------- */
+.nx-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-brand__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  /* The gradient sits behind the glyph and is revealed by the ::after sweep
+     on hover, so the mark appears to fill up. */
+  background: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  border-radius: var(--nx-radius-sm);
+  box-shadow: 0 6px 18px -6px rgba(var(--nx-accent-strong-rgb), 0.8);
+  overflow: hidden;
+}
+
+.nx-brand__mark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 80%
+  );
+  transform: translateX(-120%);
+  animation: nx-shimmer 3.2s var(--nx-ease) infinite;
+}
+
+.nx-brand:hover .nx-brand__mark {
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.nx-brand__glyph {
+  position: relative;
+  z-index: 1;
+  font-size: var(--nx-text-md);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(2, 6, 23, 0.35);
+}
+
+.nx-brand__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+/* Spec: "The brand logo text 'NexERP' must feature an animated text gradient
+   (using background-clip: text, transparent fill, and a moving CSS linear
+   gradient animation effect)." The gradient is painted into the glyphs and
+   background-position is animated, so pale blue -> cyan -> indigo flows
+   through the wordmark. `--nx-gradient-brand-bg-size` (300% 100%) is what
+   makes the travel visible. */
+.nx-brand__name {
+  display: inline-block;
+  font-size: var(--nx-text-md);
+  font-weight: 700;
+  letter-spacing: var(--nx-tracking-tight);
+  white-space: nowrap;
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-brand-flow 6s var(--nx-ease) infinite;
+}
+
+/* No background-clip support (or a forced-colours/high-contrast session, where
+   the animation is disabled below): fall back to flat accent text. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .nx-brand__name {
+    color: var(--nx-accent);
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+.nx-brand__tagline {
+  font-size: 10px;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-brand.is-compact .nx-brand__text {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   NAVBAR SHELL
+   A thin wrapper so the sticky header is one element regardless of whether a
+   page replaced the default controls.
+   -------------------------------------------------------------------------- */
+.nx-navbar-shell {
+  position: relative;
+  z-index: var(--nx-z-navbar);
+}
+
+.nx-navbar-shell.is-admin .nx-topbar {
+  /* Distinguishes the platform shell at a glance. */
+  background: linear-gradient(
+    90deg,
+    rgba(var(--nx-indigo-rgb), 0.1),
+    var(--nx-navbar-bg) 40%
+  );
+}
+
+/* Marketing bar for the auth screens. */
+.nx-navbar--auth {
+  position: relative;
+  z-index: var(--nx-z-navbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+  height: var(--nx-navbar-h);
+  padding: 0 var(--nx-space-6);
+  background: var(--nx-navbar-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-navbar__aside {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-4);
+}
+
+.nx-navbar__note {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-navbar__note svg {
+  color: var(--nx-accent);
+}
+
+@media (max-width: 640px) {
+  .nx-navbar--auth {
+    padding: 0 var(--nx-space-4);
+  }
+
+  .nx-navbar__note {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   ANCHOR
+   Wraps a trigger and its dropdown so the panel can position against the
+   trigger without the navbar's flex gap breaking the anchor.
+   -------------------------------------------------------------------------- */
+.nx-nav-menu-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   TRIGGER BUTTONS (the navbar controls that open a surface)
+   -------------------------------------------------------------------------- */
+.nx-nav-trigger {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-nav-trigger:hover {
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.08);
+  border-color: var(--nx-border);
+  box-shadow: var(--nx-glow);
+}
+
+.nx-nav-trigger.is-open {
+  color: var(--nx-accent);
+  background: var(--nx-gradient-pill);
+  border-color: var(--nx-border-accent);
+  box-shadow: 0 0 0 3px rgba(var(--nx-accent-strong-rgb), 0.12);
+}
+
+.nx-nav-trigger__badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+  background: linear-gradient(135deg, #fb7185, #e11d48);
+  border: 2px solid var(--nx-surface);
+  border-radius: var(--nx-radius-pill);
+  box-shadow: 0 2px 8px -2px rgba(225, 29, 72, 0.8);
+  animation: nx-scale-in 0.25s var(--nx-ease-spring);
+}
+
+/* Dot-only indicator for secondary events. */
+.nx-nav-trigger__dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  background: var(--nx-accent);
+  border: 1.5px solid var(--nx-surface);
+  border-radius: 50%;
+  animation: nx-pulse-glow 2.4s var(--nx-ease) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   DROPDOWN SURFACE
+   Frosted panel anchored below its trigger.
+   -------------------------------------------------------------------------- */
+.nx-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: var(--nx-z-dropdown);
+  width: 340px;
+  max-width: calc(100vw - var(--nx-space-8));
+  background: var(--nx-glass-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow-lg);
+  animation: nx-scale-in var(--nx-dur) var(--nx-ease-spring);
+  transform-origin: top right;
+  overflow: hidden;
+}
+
+.nx-dropdown--left {
+  right: auto;
+  left: 0;
+  transform-origin: top left;
+}
+
+.nx-dropdown__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-dropdown__title {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-dropdown__subtitle {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-dropdown__list {
+  max-height: 380px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+}
+
+.nx-dropdown__list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nx-dropdown__list::-webkit-scrollbar-thumb {
+  background: rgba(var(--nx-accent-strong-rgb), 0.24);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-dropdown__footer {
+  padding: var(--nx-space-2) var(--nx-space-3);
+  text-align: center;
+  border-top: 1px solid var(--nx-border-soft);
+  background: rgba(var(--nx-accent-strong-rgb), 0.02);
+}
+
+/* --------------------------------------------------------------------------
+   DROPDOWN ITEMS
+   -------------------------------------------------------------------------- */
+.nx-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font: inherit;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  text-align: left;
+  background: none;
+  border: none;
+  transition: var(--nx-transition);
+}
+
+.nx-menu-item:hover {
+  color: var(--nx-text-strong);
+  background: rgba(var(--nx-accent-strong-rgb), 0.07);
+}
+
+.nx-menu-item.is-active {
+  color: var(--nx-text-strong);
+  background: var(--nx-gradient-pill);
+  box-shadow: inset 2px 0 0 var(--nx-accent);
+}
+
+.nx-menu-item__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.1);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+  transition: var(--nx-transition);
+}
+
+.nx-menu-item:hover .nx-menu-item__icon {
+  background: rgba(var(--nx-accent-strong-rgb), 0.18);
+  box-shadow: 0 0 12px -3px rgba(var(--nx-accent-strong-rgb), 0.7);
+}
+
+.nx-menu-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-menu-item__title {
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-menu-item__description {
+  margin-top: 1px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-menu-item__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  white-space: nowrap;
+}
+
+.nx-menu-item--danger {
+  color: var(--nx-danger);
+}
+
+.nx-menu-item--danger .nx-menu-item__icon {
+  color: var(--nx-danger);
+  background: rgba(var(--nx-danger-rgb), 0.1);
+  border-color: rgba(var(--nx-danger-rgb), 0.25);
+}
+
+.nx-menu-item--danger:hover {
+  background: rgba(var(--nx-danger-rgb), 0.09);
+}
+
+.nx-menu-separator {
+  height: 1px;
+  margin: var(--nx-space-1) 0;
+  background: var(--nx-border-soft);
+}
+
+.nx-menu-label {
+  padding: var(--nx-space-2) var(--nx-space-4) var(--nx-space-1);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+/* --------------------------------------------------------------------------
+   PROFILE HEADER BLOCK
+   -------------------------------------------------------------------------- */
+.nx-profile-head {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4);
+  background: linear-gradient(
+    120deg,
+    rgba(var(--nx-accent-strong-rgb), 0.12),
+    rgba(var(--nx-indigo-rgb), 0.06)
+  );
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-profile-head__avatar {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-sm);
+  font-weight: 700;
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px -4px rgba(var(--nx-accent-strong-rgb), 0.7);
+}
+
+.nx-profile-head__name {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-profile-head__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-top: 2px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.14);
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+}
+
+.nx-avatar--sm { width: 26px; height: 26px; font-size: 10px; }
+.nx-avatar--lg { width: 52px; height: 52px; font-size: var(--nx-text-md); }
+
+/* --------------------------------------------------------------------------
+   PROFILE DROPDOWN (the avatar menu)
+   The account menu opts out of the shared glass fill: a 70% panel over the
+   animated mesh read as transparent with the sign-out row inside it, so this
+   surface is opaque and theme-swapped, then dressed with the full glass
+   recipe (blur, hairline, deep shadow) on top. Positioning, scale-in and
+   item anatomy still come from .nx-dropdown above; only the fill, the
+   hover/focus states and the trigger's shrink-to-fit sizing are specific
+   to this menu.
+   -------------------------------------------------------------------------- */
+.nx-nav-trigger--avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  width: auto;
+  height: 38px;
+  padding: 0 var(--nx-space-2) 0 var(--nx-space-1);
+}
+
+.nx-dropdown--profile {
+  width: 340px;
+  background: var(--nx-surface-2);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(170%);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow-lg);
+}
+
+/* Hover on a solid fill: the flat overlay token reads cleanly, where the
+   translucent accent wash of the shared rule went muddy. */
+.nx-dropdown--profile .nx-menu-item:hover {
+  color: var(--nx-text-strong);
+  background: var(--nx-overlay-strong);
+}
+
+/* The global ring is offset outward, which this panel's overflow: hidden
+   would clip — pull it inside the row instead. */
+.nx-dropdown--profile .nx-menu-item:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: -2px;
+}
+
+/* Meta copy is bumped a step so descriptions clear 4.5:1 on the solid
+   surface instead of the glass tint they were tuned for. */
+.nx-dropdown--profile .nx-menu-item__description {
+  color: var(--nx-text-muted);
+}
+
+/* The danger row stays danger-tinted, just legibly so: title on danger,
+   meta on the muted step, and a tint strong enough to see on hover. */
+.nx-dropdown--profile .nx-menu-item--danger .nx-menu-item__title {
+  color: var(--nx-danger);
+}
+
+.nx-dropdown--profile .nx-menu-item--danger:hover {
+  background: rgba(var(--nx-danger-rgb), 0.12);
+}
+
+/* Account menu rhythm: a little more air between the rows and a hair of
+   letter-spacing, so the sentence-case labels read calmly instead of cramped.
+   Scoped to --profile so the notifications bell and the table toolbar keep
+   their own, tighter spacing. */
+.nx-dropdown--profile .nx-dropdown__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--nx-space-2);
+}
+
+.nx-dropdown--profile .nx-menu-item {
+  padding: var(--nx-space-3);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-dropdown--profile .nx-menu-item__title {
+  letter-spacing: 0.012em;
+  line-height: 1.4;
+}
+
+.nx-dropdown--profile .nx-menu-item__description {
+  margin-top: 3px;
+  letter-spacing: 0.012em;
+}
+
+/* The account menu is the one dropdown that carries whole sentences, so its
+   copy wraps instead of eliding: a description that ends in an ellipsis hides
+   the half that explains the row. */
+.nx-dropdown--profile .nx-menu-item__title,
+.nx-dropdown--profile .nx-menu-item__description {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+/* Long addresses and tenant names wrap inside the header block rather than
+   running past the panel's rounded edge. */
+.nx-dropdown--profile .nx-profile-head__meta {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.nx-dropdown--profile .nx-profile-head__meta > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The sign-out row sits outside the group, so inset it to match the rest. */
+.nx-dropdown--profile > .nx-menu-item {
+  width: auto;
+  margin: 0 var(--nx-space-2) var(--nx-space-2);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-dropdown--profile .nx-menu-separator {
+  margin: var(--nx-space-1) var(--nx-space-3);
+}
+
+.nx-profile-head__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-dropdown__group {
+  padding: var(--nx-space-2) 0;
+}
+
+/* Phones: the shared rule stretches dropdowns edge-to-edge; the fixed-width
+   panel yields to it here. */
+@media (max-width: 640px) {
+  .nx-dropdown--profile {
+    width: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   GLOBAL SEARCH MODAL
+   -------------------------------------------------------------------------- */
+.nx-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nx-z-modal);
+  display: flex;
+  justify-content: center;
+  /* Sits below the top edge, like a command palette. */
+  padding: 10vh var(--nx-space-4) var(--nx-space-4);
+}
+
+.nx-search__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 6, 12, 0.66);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: nx-fade var(--nx-dur) var(--nx-ease);
+}
+
+.nx-search__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 660px;
+  max-height: 70vh;
+  background: var(--nx-glass-bg);
+  -webkit-backdrop-filter: blur(calc(var(--nx-glass-blur) * 2)) saturate(180%);
+  backdrop-filter: blur(calc(var(--nx-glass-blur) * 2)) saturate(180%);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow-lg), 0 0 60px -20px rgba(var(--nx-accent-strong-rgb), 0.4);
+  overflow: hidden;
+  animation: nx-scale-in var(--nx-dur) var(--nx-ease-spring);
+}
+
+.nx-search__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4) var(--nx-space-5);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-search__icon {
+  font-size: var(--nx-text-lg);
+  color: var(--nx-accent);
+  flex-shrink: 0;
+}
+
+.nx-search__input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--nx-text-lg);
+  color: var(--nx-text-strong);
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.nx-search__input::placeholder {
+  color: var(--nx-text-faint);
+}
+
+/* Kbd hint chips, e.g. ⌘K and ESC. */
+.nx-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  font-family: var(--nx-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--nx-text-dim);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-bottom-width: 2px;
+  border-radius: var(--nx-radius-xs);
+  white-space: nowrap;
+}
+
+.nx-search__results {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--nx-space-2);
+}
+
+.nx-search__group-label {
+  padding: var(--nx-space-3) var(--nx-space-3) var(--nx-space-1);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+/* A search result row, highlighted when the arrow keys land on it. */
+.nx-search__result {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font: inherit;
+  text-align: left;
+  color: var(--nx-text-muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-search__result.is-active {
+  color: var(--nx-text-strong);
+  background: var(--nx-gradient-pill);
+  border-color: var(--nx-border-accent);
+}
+
+.nx-search__result-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.1);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-search__result.is-active .nx-search__result-icon {
+  background: rgba(var(--nx-accent-strong-rgb), 0.2);
+  box-shadow: 0 0 14px -3px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.nx-search__result-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-search__result-title {
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-search__result-subtitle {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-search__result-type {
+  flex-shrink: 0;
+}
+
+.nx-search__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+  background: rgba(var(--nx-accent-strong-rgb), 0.02);
+}
+
+.nx-search__hints {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+.nx-search__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-dropdown {
+    position: fixed;
+    top: auto;
+    right: var(--nx-space-3);
+    left: var(--nx-space-3);
+    width: auto;
+    max-width: none;
+  }
+
+  .nx-search-overlay {
+    padding: var(--nx-space-3);
+    align-items: flex-start;
+  }
+
+  .nx-search__panel {
+    max-height: 80vh;
+  }
+
+  .nx-search__input {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .nx-search__hints {
+    display: none;
+  }
+}

@@ -1,0 +1,235 @@
+/* ==========================================================================
+   NexERP — ActivityTimeline styles
+   The vertical rail, the tone-coloured nodes, and the entry body. The rail is
+   drawn as a pseudo-element on the node wrapper so it stops cleanly at the
+   last entry.
+   ========================================================================== */
+
+.nx-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+  padding: var(--nx-space-1) 0;
+}
+
+.nx-timeline--empty {
+  padding: var(--nx-space-6) 0;
+  text-align: center;
+}
+
+.nx-timeline__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-timeline__item.is-interactive {
+  cursor: pointer;
+  padding: var(--nx-space-2);
+  margin: calc(var(--nx-space-2) * -1) calc(var(--nx-space-2) * -1);
+  width: calc(100% + var(--nx-space-4));
+}
+
+.nx-timeline__item.is-interactive:hover {
+  background: rgba(var(--nx-accent-strong-rgb), 0.05);
+}
+
+.nx-timeline__item.is-interactive:hover .nx-timeline__node {
+  transform: scale(1.12);
+  box-shadow: 0 0 16px -2px rgba(var(--nx-node-rgb, 56, 189, 248), 0.8);
+}
+
+.nx-timeline__item:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   RAIL + NODE
+   -------------------------------------------------------------------------- */
+.nx-timeline__rail-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+/* The continuous line, hidden on the final entry. */
+.nx-timeline__rail-wrap::before {
+  content: '';
+  position: absolute;
+  top: 26px;
+  bottom: -18px;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    var(--nx-border),
+    rgba(148, 163, 184, 0.08)
+  );
+  transform: translateX(-50%);
+}
+
+.nx-timeline__rail-wrap.is-last::before {
+  display: none;
+}
+
+.nx-timeline__node {
+  --node-size: 24px;
+  --nx-node-rgb: var(--nx-accent-strong-rgb);
+
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgb(var(--nx-node-rgb));
+  background: color-mix(in srgb, rgb(var(--nx-node-rgb)) 14%, transparent);
+  border: 1px solid rgba(var(--nx-node-rgb), 0.35);
+  border-radius: 50%;
+  /* Faint ambient bloom so active nodes read as "live". */
+  box-shadow: 0 0 12px -3px rgba(var(--nx-node-rgb), 0.6);
+  transition: transform var(--nx-dur) var(--nx-ease), box-shadow var(--nx-dur) var(--nx-ease);
+}
+
+.nx-timeline__node--success { --nx-node-rgb: var(--nx-success-rgb); }
+.nx-timeline__node--warning { --nx-node-rgb: var(--nx-warning-rgb); }
+.nx-timeline__node--danger  { --nx-node-rgb: var(--nx-danger-rgb); }
+.nx-timeline__node--info    { --nx-node-rgb: var(--nx-info-rgb); }
+.nx-timeline__node--accent  { --nx-node-rgb: var(--nx-accent-strong-rgb); }
+.nx-timeline__node--violet  { --nx-node-rgb: 167, 139, 250; }
+.nx-timeline__node--neutral { --nx-node-rgb: 100, 116, 139; }
+
+.nx-timeline__node--skeleton {
+  background: var(--nx-surface-2);
+  border-color: var(--nx-border-soft);
+  box-shadow: none;
+  animation: nx-skeleton 1.4s var(--nx-ease) infinite;
+  background-size: 420px 100%;
+}
+
+/* --------------------------------------------------------------------------
+   CONTENT
+   -------------------------------------------------------------------------- */
+.nx-timeline__content {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: var(--nx-space-1);
+}
+
+.nx-timeline__text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  line-height: var(--nx-leading);
+}
+
+.nx-timeline__text strong {
+  color: var(--nx-text-strong);
+  font-weight: 600;
+}
+
+.nx-timeline__action {
+  color: var(--nx-text-muted);
+}
+
+.nx-timeline__target {
+  margin-left: 4px;
+  color: var(--nx-accent);
+  /* A subtle underline-on-hover affordance for navigable targets. */
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--nx-accent-strong-rgb), 0.3);
+  text-underline-offset: 2px;
+}
+
+.nx-timeline__item.is-interactive:hover .nx-timeline__target {
+  text-decoration-color: var(--nx-accent);
+}
+
+.nx-timeline__meta {
+  margin-top: 2px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-timeline__foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+  margin-top: var(--nx-space-2);
+}
+
+.nx-timeline__time {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-timeline__link {
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: var(--nx-transition);
+}
+
+.nx-timeline__item:hover .nx-timeline__link,
+.nx-timeline__item.is-interactive:focus-visible .nx-timeline__link {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nx-timeline__more {
+  align-self: flex-start;
+  margin-left: 38px;
+  padding: var(--nx-space-1) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.08);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-pill);
+  transition: var(--nx-transition);
+}
+
+.nx-timeline__more:hover {
+  background: rgba(var(--nx-accent-strong-rgb), 0.16);
+  border-color: var(--nx-border-accent);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-timeline__rail-wrap {
+    width: 20px;
+  }
+
+  .nx-timeline__node {
+    --node-size: 20px;
+    font-size: 9px;
+  }
+
+  .nx-timeline__more {
+    margin-left: 30px;
+  }
+}

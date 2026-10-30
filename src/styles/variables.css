@@ -1,0 +1,263 @@
+/* ==========================================================================
+   NexERP — DESIGN TOKENS (single source of truth)
+   --------------------------------------------------------------------------
+   Every colour, radius, shadow and motion value in the product resolves to a
+   variable declared here. Component stylesheets must NEVER hard-code a hex
+   value; they consume these tokens instead so a theme swap stays a one-file
+   change. ThemeContext flips `data-theme` on <html> to activate the light
+   override block at the bottom of this file.
+   ========================================================================== */
+
+:root {
+  /* --- BACKDROP / CANVAS --------------------------------------------------
+      Layer 0. Spec: "deep black #060910 with a slow-moving pale-blue mesh
+      gradient overlay". The mesh itself is drawn by `.nx-mesh` in global.css,
+      so the raw token stays flat and predictable. */
+  --nx-bg: #060910;
+  --nx-bg-alt: #080d16;
+  --nx-bg-deep: #04060c;
+
+  /* --- SURFACES -----------------------------------------------------------
+      Spec: "glassmorphic #0f1626 at 70% opacity + rgba(255,255,255,0.03)
+      overlay + backdrop-filter: blur(14px)". --nx-glass-* below is that
+      recipe as a single reusable token set; --nx-surface* are the opaque
+      fallbacks for anything that must not be translucent. */
+  --nx-surface: #0f1626;
+  --nx-surface-2: #141d31; /* raised: inputs, table headers, kanban columns  */
+  --nx-surface-3: #1a2540; /* raised further: hovers, active nav pills       */
+  --nx-overlay: rgba(255, 255, 255, 0.03);
+  --nx-overlay-strong: rgba(255, 255, 255, 0.06);
+  --nx-scrim: rgba(4, 6, 12, 0.75); /* modal / overlay backdrop            */
+
+  /* --- BRAND ACCENTS ------------------------------------------------------
+      Spec: "primary pale blue #7dd3fc (secondary #38bdf8, highlight
+      #818cf8)". Cyan is kept as a fourth for the logo's cyan stop. */
+  --nx-accent: #7dd3fc; /* pale blue — primary interactive + brand gradient */
+  --nx-accent-strong: #38bdf8; /* secondary — borders, focus rings, glow    */
+  --nx-indigo: #818cf8; /* highlight                                   */
+  --nx-cyan: #22d3ee; /* third stop in the logo gradient                 */
+  --nx-violet: #a78bfa;
+  --nx-accent-rgb: 125, 211, 252; /* for rgba() interpolation              */
+  --nx-accent-strong-rgb: 56, 189, 248;
+  --nx-indigo-rgb: 129, 140, 248;
+
+  /* --- TEXT --------------------------------------------------------------- */
+  --nx-text: #f8fafc;
+  --nx-text-strong: #ffffff;
+  --nx-text-muted: #94a3b8;
+  --nx-text-dim: #64748b;
+  --nx-text-faint: #475569;
+  --nx-text-inverse: #06121d;
+
+  /* --- BORDERS ------------------------------------------------------------
+      Spec: rgba(125, 211, 252, 0.15) — the *primary* pale blue, not the
+      stronger secondary. Translucent hairlines keep the grid weightless. */
+  --nx-border: rgba(125, 211, 252, 0.15);
+  --nx-border-soft: rgba(148, 163, 184, 0.1);
+  --nx-border-strong: rgba(125, 211, 252, 0.32);
+  --nx-border-accent: rgba(var(--nx-accent-rgb), 0.55);
+
+  /* --- SEMANTIC STATUS ---------------------------------------------------- */
+  --nx-success: #34d399;
+  --nx-success-rgb: 52, 211, 153;
+  --nx-warning: #fbbf24;
+  --nx-warning-rgb: 251, 191, 36;
+  --nx-danger: #fb7185;
+  --nx-danger-rgb: 251, 113, 133;
+  --nx-info: #38bdf8;
+  --nx-info-rgb: 56, 189, 248;
+  --nx-neutral: #94a3b8;
+
+  /* --- GRADIENTS ---------------------------------------------------------- */
+  --nx-gradient-brand: linear-gradient(
+    100deg,
+    #7dd3fc 0%,
+    #38bdf8 25%,
+    #22d3ee 50%,
+    #818cf8 75%,
+    #7dd3fc 100%
+  );
+  --nx-gradient-brand-bg-size: 300% 100%;
+  --nx-gradient-pill: linear-gradient(
+    90deg,
+    rgba(56, 189, 248, 0.22),
+    rgba(129, 140, 248, 0.12)
+  );
+  --nx-gradient-accent: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+  --nx-gradient-indigo: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
+
+  /* --- ELEVATION ---------------------------------------------------------- */
+  --nx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --nx-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.6);
+  --nx-shadow-lg: 0 24px 50px -18px rgba(0, 0, 0, 0.75);
+  /* Signature hover glow, referenced by every interactive card. */
+  --nx-glow: 0 10px 25px -5px rgba(56, 189, 248, 0.2);
+  --nx-glow-strong: 0 14px 34px -8px rgba(56, 189, 248, 0.35);
+  --nx-glow-accent: 0 0 0 1px rgba(var(--nx-accent-strong-rgb), 0.4),
+    0 12px 30px -10px rgba(var(--nx-accent-strong-rgb), 0.5);
+  --nx-inset-hairline: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* --- RADII --------------------------------------------------------------
+      Spec: "12px and 16px". */
+  --nx-radius-xs: 6px;
+  --nx-radius-sm: 8px;
+  --nx-radius: 12px;
+  --nx-radius-lg: 16px;
+  --nx-radius-xl: 20px;
+  --nx-radius-pill: 999px;
+
+  /* --- SPACING (4px base) ------------------------------------------------- */
+  --nx-space-1: 0.25rem;
+  --nx-space-2: 0.5rem;
+  --nx-space-3: 0.75rem;
+  --nx-space-4: 1rem;
+  --nx-space-5: 1.25rem;
+  --nx-space-6: 1.5rem;
+  --nx-space-8: 2rem;
+  --nx-space-10: 2.5rem;
+  --nx-space-12: 3rem;
+  --nx-space-16: 4rem;
+
+  /* --- TYPOGRAPHY ---------------------------------------------------------
+      Spec: "Space Grotesk for headings, Inter for body (Google Fonts)".
+      --nx-font-display is the heading face; everything else inherits
+      --nx-font-sans. Both are preloaded in index.html. */
+  --nx-font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  --nx-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --nx-font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --nx-text-xs: 0.6875rem;
+  --nx-text-sm: 0.8125rem;
+  --nx-text-base: 0.9375rem;
+  --nx-text-md: 1rem;
+  --nx-text-lg: 1.125rem;
+  --nx-text-xl: 1.375rem;
+  --nx-text-2xl: 1.75rem;
+  --nx-text-3xl: 2.25rem;
+  --nx-leading-tight: 1.15;
+  --nx-leading: 1.5;
+  --nx-leading-relaxed: 1.7;
+  --nx-tracking-tight: -0.01em;
+  --nx-tracking-wide: 0.08em;
+  --nx-tracking-wider: 0.14em;
+
+  /* --- MOTION -------------------------------------------------------------
+     One shared timing curve (the Material "standard" curve) plus duration
+     tokens, so every hover/enter transition in the app feels identical. */
+  --nx-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --nx-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --nx-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --nx-dur: 0.25s;
+  --nx-dur-fast: 0.15s;
+  --nx-dur-slow: 0.45s;
+  --nx-transition: all var(--nx-dur) var(--nx-ease);
+
+  /* --- GLASSMORPHISM ------------------------------------------------------
+      Spec: "glassmorphic #0f1626 at 70% opacity + rgba(255,255,255,0.03)
+      overlay + backdrop-filter: blur(14px)". Applied as one recipe by
+      .nx-glass (global.css) to the site header, sidebar, floating header,
+      modals and dropdowns. */
+  --nx-glass-blur: 14px;
+  --nx-glass-bg: rgba(15, 22, 38, 0.7);
+  --nx-glass-border: rgba(125, 211, 252, 0.15);
+  --nx-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* --- LAYOUT METRICS ----------------------------------------------------- */
+  --nx-navbar-h: 64px;
+  --nx-topbar-h: 64px; /* alias: the app shell's header is the topbar */
+  --nx-sidebar-w: 260px;
+  --nx-sidebar-w-collapsed: 76px;
+  --nx-page-max: 1680px;
+  --nx-topbar-offset: 24px;
+
+  /* --- CHROME BACKGROUNDS -------------------------------------------------
+     Slightly denser than --nx-glass-bg so the rails stay legible when a card
+     scrolls underneath them. */
+  --nx-navbar-bg: rgba(11, 17, 28, 0.78);
+  --nx-sidebar-bg: rgba(9, 14, 24, 0.82);
+
+  /* --- Z-INDEX SCALE ----------------------------------------------------- */
+  --nx-z-base: 0;
+  --nx-z-sticky: 100;
+  --nx-z-sidebar: 200;
+  --nx-z-navbar: 300;
+  --nx-z-dropdown: 400;
+  --nx-z-scrim: 500;
+  --nx-z-modal: 600;
+  --nx-z-toast: 700;
+
+  /* --- BREAKPOINTS (mirrored in useBreakpoint / media queries) ------------- */
+  --nx-bp-sm: 640px;
+  --nx-bp-md: 768px;
+  --nx-bp-lg: 1024px;
+  --nx-bp-xl: 1280px;
+  --nx-bp-2xl: 1536px;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDE
+   Activated by ThemeContext setting data-theme="light" on the root element.
+   Only the semantic layer is remapped — layout, motion and radii are shared.
+   ========================================================================== */
+[data-theme='light'] {
+  --nx-bg: #f1f5f9;
+  --nx-bg-alt: #e8eef6;
+  --nx-bg-deep: #dbe4ef;
+
+  --nx-surface: #ffffff;
+  --nx-surface-2: #f8fafc;
+  --nx-surface-3: #eef4fb;
+  --nx-surface-opaque: #ffffff;
+  --nx-overlay: rgba(15, 23, 42, 0.02);
+  --nx-overlay-strong: rgba(15, 23, 42, 0.05);
+  --nx-scrim: rgba(15, 23, 42, 0.42);
+
+  --nx-accent: #0284c7;
+  --nx-accent-strong: #0369a1;
+  --nx-indigo: #4f46e5;
+  --nx-cyan: #0891b2;
+  --nx-violet: #7c3aed;
+  --nx-accent-rgb: 2, 132, 199;
+  --nx-accent-strong-rgb: 3, 105, 161;
+  --nx-indigo-rgb: 79, 70, 229;
+
+  --nx-text: #0f172a;
+  --nx-text-strong: #020617;
+  --nx-text-muted: #475569;
+  --nx-text-dim: #64748b;
+  --nx-text-faint: #94a3b8;
+  --nx-text-inverse: #ffffff;
+
+  --nx-border: rgba(125, 211, 252, 0.4);
+  --nx-border-soft: rgba(15, 23, 42, 0.08);
+  --nx-border-strong: rgba(125, 211, 252, 0.7);
+  --nx-border-accent: rgba(2, 132, 199, 0.5);
+
+  --nx-gradient-brand: linear-gradient(
+    100deg,
+    #0284c7 0%,
+    #0369a1 25%,
+    #0891b2 50%,
+    #4f46e5 75%,
+    #0284c7 100%
+  );
+  --nx-gradient-pill: linear-gradient(
+    90deg,
+    rgba(2, 132, 199, 0.14),
+    rgba(79, 70, 229, 0.08)
+  );
+
+  --nx-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.18);
+  --nx-shadow-lg: 0 24px 50px -20px rgba(15, 23, 42, 0.22);
+  --nx-glow: 0 10px 25px -8px rgba(2, 132, 199, 0.18);
+  --nx-glow-strong: 0 14px 34px -10px rgba(2, 132, 199, 0.28);
+  --nx-inset-hairline: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  --nx-glass-bg: rgba(255, 255, 255, 0.78);
+  --nx-glass-border: rgba(3, 105, 161, 0.12);
+  --nx-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --nx-navbar-bg: rgba(255, 255, 255, 0.82);
+  --nx-sidebar-bg: rgba(248, 250, 252, 0.88);
+}

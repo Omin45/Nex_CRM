@@ -1,0 +1,132 @@
+/* ==========================================================================
+   NexERP — StockMovementPage
+   --------------------------------------------------------------------------
+   Cell treatments for the movement log: the reference/product identity stacks,
+   the signed quantity, and the route a row travelled between warehouses.
+
+   The quantity's sign is carried in the text (+/−) and only reinforced by
+   colour, so a colourblind reader still sees which way the stock went.
+   ========================================================================== */
+
+.nx-moves :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- identity cells ------------------------------------------------------- */
+.nx-moves__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-moves__ref {
+  overflow: hidden;
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-moves__product {
+  max-width: 18rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-moves__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- signed quantity ------------------------------------------------------ */
+.nx-moves__qty {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+}
+
+.nx-moves__qty[data-sign='minus'] {
+  color: var(--nx-warning);
+}
+
+/* ---- route ---------------------------------------------------------------- */
+.nx-moves__route {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  min-width: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-moves__wh {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-moves__arrow {
+  flex: none;
+  color: var(--nx-text-dim);
+}
+
+/* ---- when ----------------------------------------------------------------- */
+.nx-moves__when {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nx-moves__date {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- type filter ---------------------------------------------------------- */
+.nx-moves__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+}
+
+@media (max-width: 768px) {
+  .nx-moves__filters {
+    flex-basis: 100%;
+  }
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-moves__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-moves__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-moves__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}

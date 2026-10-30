@@ -1,0 +1,302 @@
+/* ==========================================================================
+   NexERP — KanbanBoard
+   --------------------------------------------------------------------------
+   The sales pipeline board.
+
+   Layout: a single horizontally-scrolling row of fixed-width columns. Fixed
+   width rather than `1fr` per column, because a pipeline has a fixed number of
+   stages and squeezing six into a laptop viewport makes every card unreadable.
+   The board scrolls instead.
+
+   Glassmorphism note: columns are glass surfaces (70% surface, 3% overlay, 14px
+   blur) so the animated mesh shows through behind the board. Cards are opaque
+   --nx-surface-2 — a card you cannot read the text on is worse than a card that
+   breaks the glass metaphor. The lift on drag comes from opacity and shadow.
+
+   The dashed drop target: a dashed border on the column itself when a card is
+   over it, plus a "Drop here" hint. The border is what carries the affordance;
+   the hint is the text equivalent for anyone who cannot see the border change.
+   ========================================================================== */
+
+.nx-kanban {
+  /* The board is the scroll container, not the page, so the toolbar above it
+     stays put. */
+  overflow-x: auto;
+  padding-bottom: var(--nx-space-3);
+  /* Room for the columns' shadows, which would otherwise be clipped. */
+  margin-inline: calc(-1 * var(--nx-space-2));
+  padding-inline: var(--nx-space-2);
+  scrollbar-width: thin;
+}
+
+.nx-kanban__board {
+  display: flex;
+  gap: var(--nx-space-4);
+  min-width: min-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- column -------------------------------------------------------------- */
+.nx-kanban__column {
+  display: flex;
+  flex: 1 0 260px;
+  flex-direction: column;
+  min-height: 320px;
+  padding: var(--nx-space-3);
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  transition: border-color var(--nx-dur) var(--nx-ease), background-color var(--nx-dur) var(--nx-ease);
+}
+
+/* Won and Lost get a status tint on the header rule, so the two terminal stages
+   are distinguishable without relying on their position at the end. */
+.nx-kanban__column[data-stage='won'] {
+  --nx-stage-hue: var(--nx-success);
+}
+.nx-kanban__column[data-stage='lost'] {
+  --nx-stage-hue: var(--nx-danger);
+}
+.nx-kanban__column {
+  --nx-stage-hue: var(--nx-accent);
+}
+
+.nx-kanban__column-head {
+  padding-bottom: var(--nx-space-3);
+  margin-bottom: var(--nx-space-3);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-kanban__column-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+/* A hue dot, coloured from the column's --nx-stage-hue. */
+.nx-kanban__column-title::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: auto;
+  background: var(--nx-stage-hue);
+  border-radius: 50%;
+}
+
+.nx-kanban__count {
+  padding: 0.1rem 0.45rem;
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-stage-hue);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-kanban__column-total {
+  margin: var(--nx-space-2) 0 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+}
+
+/* ---- drop target --------------------------------------------------------- */
+.nx-kanban__column[data-over] {
+  background: var(--nx-surface-2);
+  border-color: var(--nx-stage-hue);
+  border-style: dashed;
+}
+
+.nx-kanban__drop-hint {
+  margin: var(--nx-space-3) 0 0;
+  padding: var(--nx-space-4);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  text-align: center;
+  color: var(--nx-stage-hue);
+  border: 1px dashed var(--nx-stage-hue);
+  border-radius: var(--nx-radius-sm);
+  opacity: 0.8;
+}
+
+/* ---- cards --------------------------------------------------------------- */
+.nx-kanban__cards {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-kanban__card {
+  padding: var(--nx-space-3);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: grab;
+  transition: transform var(--nx-dur) var(--nx-ease), box-shadow var(--nx-dur) var(--nx-ease),
+    opacity var(--nx-dur) var(--nx-ease), border-color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-kanban__card:hover {
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-shadow);
+  transform: translateY(-2px);
+}
+
+.nx-kanban__card:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: 2px;
+}
+
+/* Lifted by the pointer. */
+.nx-kanban__card[data-dragging] {
+  opacity: 0.45;
+  cursor: grabbing;
+  box-shadow: var(--nx-shadow-lg);
+}
+
+/* Held by the keyboard — the visual equivalent, plus a stronger ring so the
+   two states are never confused. */
+.nx-kanban__card[data-holding] {
+  border-color: var(--nx-accent-strong);
+  box-shadow: 0 0 0 2px rgba(var(--nx-accent-strong-rgb), 0.35), var(--nx-glow);
+  transform: scale(1.02);
+}
+
+/* ---- card content -------------------------------------------------------- */
+.nx-kanban__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+}
+
+.nx-kanban__card-name {
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--nx-text);
+}
+
+.nx-kanban__grip {
+  flex: none;
+  color: var(--nx-text-faint);
+  opacity: 0;
+  transition: opacity var(--nx-dur) var(--nx-ease);
+}
+
+.nx-kanban__card:hover .nx-kanban__grip,
+.nx-kanban__card:focus-visible .nx-kanban__grip {
+  opacity: 1;
+}
+
+.nx-kanban__card-company {
+  margin: 2px 0 0;
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-kanban__card-value {
+  margin: var(--nx-space-2) 0 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-base);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+}
+
+.nx-kanban__card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  margin-top: var(--nx-space-3);
+  padding-top: var(--nx-space-2);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-kanban__owner {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-radius: 50%;
+}
+
+.nx-kanban__age {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-dim);
+}
+
+/* An old lead is worth flagging: the same "days since contact" number that is
+   information on a fresh deal is a warning on a stale one. */
+.nx-kanban__age[data-stale] {
+  color: var(--nx-warning);
+}
+
+.nx-kanban__empty {
+  margin: 0;
+  padding: var(--nx-space-5) 0;
+  font-size: var(--nx-text-xs);
+  text-align: center;
+  color: var(--nx-text-faint);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Below 900px the six columns cannot be shown legibly side by side, so the
+   board becomes a single full-width column that you scroll through. Cards get
+   a minimum height so they remain comfortable touch targets. */
+@media (max-width: 900px) {
+  .nx-kanban__column {
+    flex: 1 0 82vw;
+  }
+
+  .nx-kanban__card {
+    padding: var(--nx-space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-kanban__column,
+  .nx-kanban__card,
+  .nx-kanban__grip {
+    transition: none;
+  }
+
+  .nx-kanban__card:hover,
+  .nx-kanban__card[data-holding] {
+    transform: none;
+  }
+}

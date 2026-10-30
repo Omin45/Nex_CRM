@@ -1,0 +1,161 @@
+/* ==========================================================================
+   NexERP — LeaveListPage
+   --------------------------------------------------------------------------
+   The approval queue: identity cell, a date range that reads as one span,
+   the decision pair pinned to the right of a Pending row, and a request form
+   whose day count updates as the dates change.
+
+   Approved / rejected / cancelled rows render no buttons at all — an action
+   that is visually present but would fail is worse than one that is absent.
+   ========================================================================== */
+
+.nx-leave :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-leave__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-leave__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-leave__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-leave__name {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-leave__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- plain cells ---------------------------------------------------------- */
+.nx-leave__text {
+  display: block;
+  max-width: 11rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-leave__dates {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-leave__days {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+  white-space: nowrap;
+}
+
+/* ---- decision buttons ----------------------------------------------------- */
+.nx-leave__actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: var(--nx-space-2);
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-leave__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-leave__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-leave__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- request form --------------------------------------------------------- */
+.nx-leave__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-leave__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+}
+
+/* A quiet readout beside the type select: the inclusive day count the
+   request will be submitted with, updated as the dates change. */
+.nx-leave__days-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--nx-space-1);
+  padding: var(--nx-space-1) 0;
+}
+
+.nx-leave__days-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-leave__days-value {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-accent);
+}
+
+@media (max-width: 560px) {
+  .nx-leave__form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

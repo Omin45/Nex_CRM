@@ -1,0 +1,69 @@
+/* ==========================================================================
+   NexERP — TeamSettingsPage
+   --------------------------------------------------------------------------
+   Roster table plus the invite dialog. The member cell (initials avatar +
+   name/id stack) is the only custom layout in the table — every other column
+   is plain text or a Badge, so DataTable column widths keep working.
+   ========================================================================== */
+
+.nx-set-team__member {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-set-team__avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--nx-accent-strong);
+  background: rgba(var(--nx-accent-rgb), 0.1);
+  border: 1px solid var(--nx-border-accent);
+  border-radius: var(--nx-radius-full);
+}
+
+.nx-set-team__ident {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-set-team__name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-set-team__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-set-team__email {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-team__active {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-set-team__active--none {
+  color: var(--nx-text-dim);
+}
+
+.nx-set-team__invite {
+  gap: var(--nx-space-4);
+}

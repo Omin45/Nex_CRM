@@ -1,0 +1,124 @@
+/* ==========================================================================
+   NexERP — TableToolbar styles
+   A three-zone strip (controls / caller slots / view controls) that collapses
+   to two rows on narrow viewports.
+   ========================================================================== */
+
+.nx-ttool {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  flex-wrap: wrap;
+  padding: var(--nx-space-3);
+}
+
+.nx-ttool__left {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* The search field keeps a comfortable minimum but is allowed to shrink. */
+.nx-ttool__search {
+  width: 260px;
+  min-width: 180px;
+  max-width: 100%;
+  flex: 0 1 260px;
+}
+
+.nx-ttool__field .nx-field__label {
+  display: none;
+}
+
+.nx-ttool__field .nx-field__control {
+  min-height: 36px;
+}
+
+.nx-ttool__center {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-wrap: wrap;
+}
+
+.nx-ttool__right {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-left: auto;
+}
+
+/* Refresh spins while a refetch is in flight. */
+.nx-ttool__right .is-spinning svg {
+  animation: nx-spin 0.9s linear infinite;
+}
+
+.nx-ttool__columns {
+  padding: var(--nx-space-2) 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+/* --------------------------------------------------------------------------
+   SEGMENTED FILTER
+   A small pill group. More than four options belong in a <select>, which is
+   why TableToolbar slices to four.
+
+   The control itself (.nx-segmented) is a global primitive — see utility.css —
+   because the dashboard header and page filters use it too.
+   -------------------------------------------------------------------------- */
+.nx-ttool__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+.nx-ttool__filter-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-dim);
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .nx-ttool {
+    gap: var(--nx-space-2);
+  }
+
+  .nx-ttool__left {
+    flex: 1 1 100%;
+    width: 100%;
+    gap: var(--nx-space-2);
+  }
+
+  .nx-ttool__search {
+    flex: 1 1 260px;
+    min-width: 200px;
+  }
+
+  .nx-ttool__center {
+    flex: 1 1 100%;
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .nx-ttool__right {
+    margin-left: auto;
+    order: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-ttool__right {
+    margin-left: 0;
+  }
+
+  .nx-ttool__search {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}

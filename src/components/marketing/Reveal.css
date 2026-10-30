@@ -1,0 +1,79 @@
+/* ==========================================================================
+   NexERP — Reveal
+   --------------------------------------------------------------------------
+   Scroll-reveal transition. The element starts offset in the direction named
+   by `data-from` and transparent, then settles once `useScrollReveal` flips
+   the `is-visible` class.
+
+   The offset is expressed as two custom properties (--nx-rx / --nx-ry) so the
+   four directions share one transform and one transition; `data-distance`
+   scales the travel for call sites that want a longer or shorter glide.
+
+   `transform` and `opacity` only — both are compositor-friendly, so a long
+   landing page does not jank while scrolling. `will-change` is set on the
+   visible state rather than the hidden one to avoid leaving a promoted layer
+   on every section of the page permanently.
+   ========================================================================== */
+
+.nx-reveal {
+  --nx-rx: 0px;
+  --nx-ry: 18px;
+
+  opacity: 0;
+  transform: translate3d(var(--nx-rx), var(--nx-ry), 0);
+  transition:
+    opacity var(--nx-dur-slow) var(--nx-ease),
+    transform var(--nx-dur-slow) var(--nx-ease);
+}
+
+.nx-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: opacity, transform;
+}
+
+/* ---- direction ----------------------------------------------------------- */
+.nx-reveal[data-from='up'] {
+  --nx-rx: 0px;
+  --nx-ry: 18px;
+}
+
+.nx-reveal[data-from='down'] {
+  --nx-rx: 0px;
+  --nx-ry: -18px;
+}
+
+.nx-reveal[data-from='left'] {
+  --nx-rx: -44px;
+  --nx-ry: 0px;
+}
+
+.nx-reveal[data-from='right'] {
+  --nx-rx: 44px;
+  --nx-ry: 0px;
+}
+
+/* ---- distance ------------------------------------------------------------
+   Overrides the travel magnitude per direction. Declared after the direction
+   rules so a distance always wins over the default offset. */
+.nx-reveal[data-distance='sm'][data-from='up'] { --nx-ry: 10px; }
+.nx-reveal[data-distance='sm'][data-from='down'] { --nx-ry: -10px; }
+.nx-reveal[data-distance='sm'][data-from='left'] { --nx-rx: -22px; }
+.nx-reveal[data-distance='sm'][data-from='right'] { --nx-rx: 22px; }
+
+.nx-reveal[data-distance='md'][data-from='up'] { --nx-ry: 26px; }
+.nx-reveal[data-distance='md'][data-from='down'] { --nx-ry: -26px; }
+.nx-reveal[data-distance='md'][data-from='left'] { --nx-rx: -60px; }
+.nx-reveal[data-distance='md'][data-from='right'] { --nx-rx: 60px; }
+
+.nx-reveal[data-distance='lg'][data-from='up'] { --nx-ry: 40px; }
+.nx-reveal[data-distance='lg'][data-from='down'] { --nx-ry: -40px; }
+.nx-reveal[data-distance='lg'][data-from='left'] { --nx-rx: -90px; }
+.nx-reveal[data-distance='lg'][data-from='right'] { --nx-rx: 90px; }
+
+/* Staggered children, keyed off the data-step attribute rather than an inline
+   custom property. Four steps is enough for any list in the product. */
+.nx-reveal[data-step='1'] { transition-delay: 90ms; }
+.nx-reveal[data-step='2'] { transition-delay: 180ms; }
+.nx-reveal[data-step='3'] { transition-delay: 270ms; }
+.nx-reveal[data-step='4'] { transition-delay: 360ms; }

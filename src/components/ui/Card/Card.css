@@ -1,0 +1,262 @@
+/* ==========================================================================
+   NexERP — Card styles
+   The frosted surface (nx-card), the signature hover lift + glow
+   (.nx-card--hover), the status rail (.nx-card--edge-*) and the header/body
+   region spacing.
+   ========================================================================== */
+
+.nx-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* Glassmorphic base: translucent white overlay over the surface token. */
+  background: var(--nx-overlay), var(--nx-surface);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+  /* Inset top hairline reads as light catching the card edge. */
+  box-shadow: var(--nx-inset-hairline), var(--nx-shadow-sm);
+  transition: var(--nx-transition);
+}
+
+/* Heavier blur variant for cards that sit above the animated mesh. */
+.nx-card--glass {
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(150%);
+  background: var(--nx-glass-bg);
+  border-color: var(--nx-glass-border);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   PADDING MODES
+   `flush` is applied to the body, so a card wrapping a table can keep its
+   table edge-to-edge while the header stays padded.
+   -------------------------------------------------------------------------- */
+.nx-card--pad-none { padding: 0; }
+.nx-card--pad-sm { padding: var(--nx-space-3); }
+.nx-card--pad-md { padding: var(--nx-space-5); }
+.nx-card--pad-lg { padding: var(--nx-space-6); }
+
+/* --------------------------------------------------------------------------
+   HOVER — the signature interaction from the product spec:
+   lift 4px, gain the pale-blue glow, light up the border.
+   -------------------------------------------------------------------------- */
+.nx-card--hover {
+  cursor: pointer;
+  will-change: transform;
+}
+
+.nx-card--hover:hover {
+  transform: translateY(-4px);
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-glow), var(--nx-shadow);
+}
+
+.nx-card--hover:active {
+  transform: translateY(-1px);
+}
+
+/* Cursor-tracked radial sheen. The parent component writes --mx/--my from a
+   pointer-move handler, so the highlight follows the cursor. */
+.nx-card--sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    460px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(var(--nx-accent-strong-rgb), 0.11),
+    transparent 42%
+  );
+  transition: opacity var(--nx-dur) var(--nx-ease);
+}
+
+.nx-card--sheen:hover::after {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   STATUS RAIL
+   A 2px gradient bar across the top edge, colour-coded by tone. Purely
+   decorative, so it is hidden from assistive technology via aria-hidden on
+   the parent when needed.
+   -------------------------------------------------------------------------- */
+.nx-card--edge {
+  overflow: hidden;
+}
+
+.nx-card--edge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--nx-gradient-accent);
+  opacity: 0.9;
+  transition: opacity var(--nx-dur) var(--nx-ease), height var(--nx-dur) var(--nx-ease);
+}
+
+.nx-card--hover.nx-card--edge:hover::before {
+  height: 3px;
+  opacity: 1;
+}
+
+.nx-card--edge-success::before { background: linear-gradient(90deg, var(--nx-success), transparent); }
+.nx-card--edge-warning::before { background: linear-gradient(90deg, var(--nx-warning), transparent); }
+.nx-card--edge-danger::before  { background: linear-gradient(90deg, var(--nx-danger), transparent); }
+.nx-card--edge-info::before    { background: linear-gradient(90deg, var(--nx-info), transparent); }
+.nx-card--edge-neutral::before { background: linear-gradient(90deg, var(--nx-text-dim), transparent); }
+
+/* --------------------------------------------------------------------------
+   HEADER
+   -------------------------------------------------------------------------- */
+.nx-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding-bottom: var(--nx-space-4);
+  margin-bottom: var(--nx-space-4);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-card--pad-none .nx-card__header {
+  padding: var(--nx-space-5) var(--nx-space-5) var(--nx-space-4);
+  margin-bottom: 0;
+}
+
+.nx-card__header-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-md);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.12);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-card__header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-card__title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-card__subtitle {
+  margin-top: 2px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-card__header-action {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   BODY / FOOTER / DIVIDER
+   -------------------------------------------------------------------------- */
+.nx-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-card--pad-none .nx-card__body {
+  padding: var(--nx-space-5);
+}
+
+.nx-card--pad-sm .nx-card__body { padding: 0; }
+.nx-card--pad-md .nx-card__body { padding: 0; }
+.nx-card--pad-lg .nx-card__body { padding: 0; }
+
+/* Opt out of body padding when a table must run to the card edge. */
+.nx-card__body--flush {
+  padding: 0 !important;
+}
+
+.nx-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding-top: var(--nx-space-4);
+  margin-top: var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-card--pad-none .nx-card__footer {
+  padding: var(--nx-space-4) var(--nx-space-5);
+  margin-top: 0;
+}
+
+.nx-card__divider {
+  height: 1px;
+  margin: var(--nx-space-4) 0;
+  background: var(--nx-border-soft);
+  border: none;
+}
+
+/* --------------------------------------------------------------------------
+   LOADING STATE
+   Dim the body while an async action is in flight, without collapsing height.
+   -------------------------------------------------------------------------- */
+.nx-card.is-pending {
+  pointer-events: none;
+}
+
+.nx-card.is-pending .nx-card__body {
+  opacity: 0.55;
+  transition: opacity var(--nx-dur) var(--nx-ease);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .nx-card--pad-md,
+  .nx-card--pad-lg {
+    padding: var(--nx-space-4);
+  }
+
+  .nx-card--hover:hover {
+    /* Touch devices cannot hover, so the lift would stick after a tap. */
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* The flush card (a table or list inside it) keeps its edge-to-edge body but
+     pulls the header/footer inset in to match the tighter page gutter. */
+  .nx-card--pad-none .nx-card__header {
+    padding: var(--nx-space-4) var(--nx-space-4) var(--nx-space-3);
+  }
+
+  .nx-card--pad-none .nx-card__body {
+    padding: var(--nx-space-4);
+  }
+
+  .nx-card--pad-none .nx-card__footer {
+    padding: var(--nx-space-3) var(--nx-space-4);
+  }
+
+  .nx-card__header {
+    flex-wrap: wrap;
+  }
+
+  .nx-card__header-action {
+    margin-left: auto;
+  }
+}

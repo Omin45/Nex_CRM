@@ -1,0 +1,191 @@
+/* ==========================================================================
+   NexERP — Modal styles
+   Portal root, blurred scrim, the frosted panel (heavier blur than the navbar
+   so it reads as sitting closer to the viewer), and the entrance choreography.
+   ========================================================================== */
+
+.nx-modal-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nx-z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--nx-space-4);
+}
+
+/* --------------------------------------------------------------------------
+   SCRIM
+   Heavy blur + dark tint. The animation fades in only; the panel handles the
+   scale, so the two do not read as a single heavy transition.
+   -------------------------------------------------------------------------- */
+.nx-modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--nx-scrim);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: nx-fade var(--nx-dur) var(--nx-ease);
+}
+
+/* --------------------------------------------------------------------------
+   PANEL
+   Glassmorphic surface: translucent fill, 1.75x the base blur, accent border.
+   -------------------------------------------------------------------------- */
+.nx-modal__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100vh - var(--nx-space-8));
+  background: var(--nx-glass-bg);
+  -webkit-backdrop-filter: blur(calc(var(--nx-glass-blur) * 1.75)) saturate(180%);
+  backdrop-filter: blur(calc(var(--nx-glass-blur) * 1.75)) saturate(180%);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow-lg), 0 0 0 1px rgba(var(--nx-accent-strong-rgb), 0.08);
+  /* The scale-in keyframe is the dialog's entrance choreography. */
+  animation: nx-scale-in var(--nx-dur) var(--nx-ease-spring);
+  outline: none;
+}
+
+/* Slight accent bloom along the top edge. */
+.nx-modal__panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--nx-accent-strong-rgb), 0.7),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   SIZES
+   -------------------------------------------------------------------------- */
+.nx-modal__panel--xs { max-width: 380px; }
+.nx-modal__panel--sm { max-width: 480px; }
+.nx-modal__panel--md { max-width: 640px; }
+.nx-modal__panel--lg { max-width: 880px; }
+.nx-modal__panel--xl { max-width: 1140px; }
+/* Full-bleed variant for data-heavy dialogs (e.g. the invoice builder). */
+.nx-modal__panel--full {
+  max-width: min(1400px, 96vw);
+  height: calc(100vh - var(--nx-space-8));
+}
+
+/* --------------------------------------------------------------------------
+   HEADER / BODY / FOOTER
+   -------------------------------------------------------------------------- */
+.nx-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+  padding: var(--nx-space-5) var(--nx-space-5) var(--nx-space-4);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-modal__header-text {
+  min-width: 0;
+}
+
+.nx-modal__title {
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.nx-modal__subtitle {
+  margin-top: 2px;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-modal__close {
+  flex-shrink: 0;
+  margin: -4px -6px 0 0;
+}
+
+.nx-modal__body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--nx-space-5);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+}
+
+.nx-modal__body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.nx-modal__body::-webkit-scrollbar-thumb {
+  background: rgba(var(--nx-accent-strong-rgb), 0.24);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-4) var(--nx-space-5);
+  border-top: 1px solid var(--nx-border-soft);
+  background: rgba(var(--nx-accent-strong-rgb), 0.03);
+}
+
+/* A footer that needs space for secondary actions on the left. */
+.nx-modal__footer--split {
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   ANIMATION REDUCTION
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nx-modal__panel {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — dialogs become near-full-screen sheets on tablets and phones.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .nx-modal-root {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .nx-modal__panel,
+  .nx-modal__panel--xs,
+  .nx-modal__panel--sm,
+  .nx-modal__panel--md,
+  .nx-modal__panel--lg,
+  .nx-modal__panel--xl {
+    max-width: none;
+    max-height: 92vh;
+    border-radius: var(--nx-radius-lg) var(--nx-radius-lg) 0 0;
+    border-bottom: none;
+    animation: nx-rise var(--nx-dur) var(--nx-ease);
+  }
+
+  .nx-modal__header,
+  .nx-modal__body,
+  .nx-modal__footer {
+    padding-left: var(--nx-space-4);
+    padding-right: var(--nx-space-4);
+  }
+
+  .nx-modal__footer {
+    /* Stack the actions so the primary stays a full-width tap target. */
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

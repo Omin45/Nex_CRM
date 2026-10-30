@@ -1,0 +1,144 @@
+/* ==========================================================================
+   NexERP — Dashboard backdrop
+   The decorative 3D layer behind the executive dashboard: a perspective
+   stage, a tilted grid plane drifting toward its horizon, two palette
+   glows and a token scrim. It mirrors .nx-site-header__bg's technique
+   (perspective on the stage, the plane genuinely in 3D) but is tuned for a
+   page rather than a pill — slower, darker, and capped at 0.5 opacity so
+   headline and card contrast never moves. Mounted as the first child of the
+   .nx-dash root; see DashBackdrop.jsx.
+   ========================================================================== */
+
+.nx-dash-backdrop {
+  position: absolute;
+  inset: 0;
+  /* -1 keeps it above .nx-dash's own background but below every word of
+     content — safe only because .nx-dash owns a stacking context. */
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Legibility budget for the whole layer; the child opacities below are
+     chosen as fractions of this, not as standalone values. */
+  opacity: 0.5;
+  animation: nx-fade 0.7s var(--nx-ease);
+}
+
+.nx-dash-backdrop__stage {
+  position: absolute;
+  inset: 0;
+  /* The perspective sits on the stage, so the plane beneath is a real 3D
+     plane receding to a vanishing point rather than a 2D skew. Wide enough
+     that a page-height plane never crosses the camera. */
+  perspective: 1300px;
+  perspective-origin: 50% 28%;
+}
+
+/* --- THE DRIFTING GRID PLANE --------------------------------------------
+   Sized in viewport units, not percentages of the (tall) page, so the
+   rotateX geometry below stays valid on any document height: at 62deg the
+   nearest edge lands well inside the 1300px camera even on a 1400px-tall
+   viewport. The mask fades all four edges in local space, before the
+   transform, which is what turns a rectangle of lines into a horizon. */
+.nx-dash-backdrop__grid {
+  position: absolute;
+  top: 0;
+  left: -60%;
+  right: -60%;
+  height: 110vh;
+  background-image:
+    linear-gradient(rgba(var(--nx-accent-rgb), 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--nx-accent-rgb), 0.22) 1px, transparent 1px);
+  background-size: 68px 68px;
+  transform: rotateX(62deg) translateZ(-90px);
+  transform-origin: 50% 32%;
+  -webkit-mask-image: radial-gradient(
+    ellipse 60% 55% at 50% 40%,
+    #000 22%,
+    transparent 80%
+  );
+  mask-image: radial-gradient(
+    ellipse 60% 55% at 50% 40%,
+    #000 22%,
+    transparent 80%
+  );
+  /* Rasterise once, then move only the transform on the compositor — the
+     same cost argument as the header's blurred plane. */
+  will-change: transform;
+  animation: nx-dash-grid 34s var(--nx-ease) infinite alternate;
+}
+
+/* --- GLOWS ---------------------------------------------------------------
+   Two soft radial pools, one per corner diagonal, low enough that white
+   text keeps better than 10:1 against their brightest point. */
+.nx-dash-backdrop__glow {
+  position: absolute;
+  width: 46vw;
+  max-width: 720px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.55;
+}
+
+.nx-dash-backdrop__glow--lead {
+  top: -14%;
+  left: -10%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--nx-accent-rgb), 0.5) 0%,
+    transparent 66%
+  );
+  animation: nx-dash-glow-lead 26s var(--nx-ease) infinite alternate;
+}
+
+.nx-dash-backdrop__glow--trail {
+  top: 30%;
+  right: -14%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--nx-indigo-rgb), 0.45) 0%,
+    transparent 68%
+  );
+  animation: nx-dash-glow-trail 32s var(--nx-ease) infinite alternate;
+}
+
+/* --- SCRIM ---------------------------------------------------------------
+   A token-built shade over the top of the page, where the greeting and the
+   KPI labels sit directly on the backdrop rather than on a card. */
+.nx-dash-backdrop__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--nx-scrim) 0%, transparent 42%);
+  opacity: 0.55;
+}
+
+/* Reduced motion: global.css collapses the durations, so each animation
+   completes on its first frame and leaves the element at its declared,
+   unanimated style — which is a designed pose (grid at rest, glows in
+   place), never an invisible one. No fill mode anywhere, on purpose. */
+@keyframes nx-dash-grid {
+  from {
+    transform: rotateX(66deg) translate3d(-3%, 2%, -140px);
+  }
+  to {
+    transform: rotateX(58deg) translate3d(3%, -4%, 40px);
+  }
+}
+
+@keyframes nx-dash-glow-lead {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6%, 8%, 0) scale(1.12);
+  }
+}
+
+@keyframes nx-dash-glow-trail {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.06);
+  }
+  to {
+    transform: translate3d(-7%, -6%, 0) scale(0.96);
+  }
+}

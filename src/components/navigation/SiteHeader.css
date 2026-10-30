@@ -1,0 +1,502 @@
+/* ==========================================================================
+   NexERP — SiteHeader
+   --------------------------------------------------------------------------
+   The floating pill header.
+
+   Spec: "a floating, centered, pill-shaped glass header that detaches from the
+   top edge with a margin. Shrinks and gains a stronger blur/border glow once
+   the user scrolls."
+
+   The pill shape comes from a large border-radius; the detachment from the top
+   edge is a fixed position plus --nx-space-4 of margin. Scrolling swaps the
+   `is-scrolled` class, which tightens the padding, deepens the blur, and adds a
+   pale-blue glow to the border.
+
+   GLASSMORPHISM: the glass recipe (70% surface + 0.03 white overlay + 14px
+   blur) is written out here rather than inherited, because the header needs
+   *stronger* blur than the standard .nx-glass — it floats over content and has
+   to stay legible while the page scrolls beneath it.
+   ========================================================================== */
+
+.nx-skip-link {
+  position: fixed;
+  top: var(--nx-space-2);
+  left: 50%;
+  transform: translate(-50%, -200%);
+  z-index: var(--nx-z-toast);
+  padding: var(--nx-space-2) var(--nx-space-4);
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border-strong);
+  color: var(--nx-text-strong);
+  font-size: var(--nx-text-sm);
+  text-decoration: none;
+  transition: transform var(--nx-dur) var(--nx-ease);
+}
+
+.nx-skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}
+
+.nx-site-header {
+  position: fixed;
+  top: var(--nx-space-4);
+  left: 0;
+  right: 0;
+  z-index: var(--nx-z-navbar);
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--nx-space-4);
+  pointer-events: none;
+}
+
+.nx-site-header__inner {
+  /* The animated backdrop is a child, so the pill has to establish the box it
+     gets clipped to (border-radius pill) and the containing block for it. */
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-4);
+  width: 100%;
+  max-width: 68rem;
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-glass-bg);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  box-shadow: var(--nx-inset-hairline), var(--nx-shadow);
+  pointer-events: auto;
+  transition:
+    padding var(--nx-dur) var(--nx-ease),
+    background var(--nx-dur) var(--nx-ease),
+    border-color var(--nx-dur) var(--nx-ease),
+    box-shadow var(--nx-dur) var(--nx-ease),
+    backdrop-filter var(--nx-dur) var(--nx-ease);
+}
+
+/* --- THE ANIMATED 3D BACKDROP --------------------------------------------
+   Two layers inside one perspective container:
+
+   ::before  a tilted plane banded with every theme hue, drifting and rotating
+             on the X axis. The perspective sits on .nx-site-header__bg, so
+             the plane is genuinely in 3D space rather than skewed in 2D —
+             that is what makes it read as depth instead of a skewed gradient.
+   ::after   a linear sheen that travels the length of the pill, the "gradient
+             animation" half of the request.
+
+   Both are decoration, so the layer is aria-hidden and ignores the pointer.
+   It sits at z-index 0, above the pill's own glass fill and below everything
+   readable. */
+.nx-site-header__bg {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  perspective: 640px;
+}
+
+.nx-site-header__bg::before {
+  content: '';
+  position: absolute;
+  /* Sized well beyond the pill on purpose: once rotateX is applied the plane
+     foreshortens to roughly a third of its height, so it has to be this tall
+     to still fill the pill at the steepest point of the animation. */
+  inset: -220% -70%;
+  /* Held low on purpose: this layer sits *between* the glass and the nav
+     text, so its opacity is a legibility decision, not a taste one. Raise it
+     and the nav links lose contrast against the brand hues. */
+  opacity: 0.35;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    var(--nx-accent) 0deg,
+    var(--nx-accent-strong) 70deg,
+    var(--nx-cyan) 145deg,
+    var(--nx-indigo) 215deg,
+    var(--nx-violet) 285deg,
+    var(--nx-accent) 360deg
+  );
+  transform: rotateX(64deg) translateZ(-40px);
+  transform-origin: 50% 50%;
+  filter: blur(46px);
+  /* The blur is rasterised once and the layer is then animated on the
+     compositor, so a 46px blur that would otherwise re-render every frame
+     costs a transform instead. Kept deliberately slow: the hue drift should
+     read as ambient, not as something the eye has to track. */
+  will-change: transform;
+  animation: nx-nav-plane 26s var(--nx-ease) infinite alternate;
+}
+
+.nx-site-header__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(var(--nx-accent-rgb), 0.45) 34%,
+    rgba(var(--nx-indigo-rgb), 0.35) 56%,
+    transparent 84%
+  );
+  background-size: 300% 100%;
+  mix-blend-mode: screen;
+  animation: nx-nav-sweep 22s linear infinite;
+}
+
+/* The plane tilts, shifts and pushes forward on Z — kept slow so it reads as
+   ambient depth rather than motion the eye has to track. */
+@keyframes nx-nav-plane {
+  0% {
+    transform: rotateX(64deg) translate3d(-6%, 2%, -50px);
+  }
+  55% {
+    transform: rotateX(56deg) translate3d(5%, -3%, 30px);
+  }
+  100% {
+    transform: rotateX(70deg) translate3d(-3%, 4%, -20px);
+  }
+}
+
+@keyframes nx-nav-sweep {
+  0% {
+    background-position: 220% 50%;
+  }
+  100% {
+    background-position: -120% 50%;
+  }
+}
+
+/* --- THE 3D ORB FIELD -----------------------------------------------------
+   Four soft light blooms that float through the pill's depth. They sit inside
+   the same perspective container as the plane, so `translate3d` on Z makes them
+   genuinely nearer/farther rather than a flat drift. Opacity and blur are held
+   low: this is glow, not content, and the nav links must stay the brightest
+   thing in the pill. Each orb has its own size, colour and loop length so the
+   field never pulses in unison. */
+.nx-site-header__orb {
+  position: absolute;
+  z-index: 2;
+  width: var(--nx-orb-size, 90px);
+  height: var(--nx-orb-size, 90px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--nx-accent-rgb), 0.55),
+    transparent 70%
+  );
+  filter: blur(var(--nx-orb-blur, 12px));
+  opacity: var(--nx-orb-opacity, 0.45);
+  will-change: transform;
+  animation: nx-nav-orb-drift var(--nx-orb-dur, 16s) ease-in-out infinite;
+}
+
+.nx-site-header__orb--1 {
+  top: -70%;
+  left: 12%;
+  --nx-orb-size: 120px;
+  --nx-orb-dur: 19s;
+  --nx-orb-blur: 16px;
+}
+
+.nx-site-header__orb--2 {
+  top: -60%;
+  right: 16%;
+  --nx-orb-size: 88px;
+  --nx-orb-dur: 15s;
+  --nx-orb-blur: 12px;
+  --nx-orb-opacity: 0.4;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--nx-indigo-rgb), 0.5),
+    transparent 70%
+  );
+  animation-delay: -4s;
+}
+
+.nx-site-header__orb--3 {
+  bottom: -75%;
+  left: 38%;
+  --nx-orb-size: 100px;
+  --nx-orb-dur: 21s;
+  --nx-orb-blur: 15px;
+  --nx-orb-opacity: 0.38;
+  animation-delay: -8s;
+}
+
+.nx-site-header__orb--4 {
+  bottom: -85%;
+  right: 30%;
+  --nx-orb-size: 72px;
+  --nx-orb-dur: 13s;
+  --nx-orb-blur: 10px;
+  --nx-orb-opacity: 0.5;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--nx-accent-strong-rgb), 0.55),
+    transparent 70%
+  );
+  animation-delay: -6s;
+}
+
+/* A slow lissajous-ish wander: sideways and up/down out of phase, with a Z
+   push that scales the bloom as it comes forward. */
+@keyframes nx-nav-orb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(34px, -18px, 60px) scale(1.18);
+  }
+  66% {
+    transform: translate3d(-26px, 16px, -40px) scale(0.88);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* --- THE LOGO REVEAL ------------------------------------------------------
+   The NexERP wordmark on the left is what should catch the light when the
+   gradient animates. The same `nx-nav-sweep` band that crosses the pill also
+   passes over the logo, and a `screen` blend lets it brighten the letters
+   underneath instead of covering them. Reusing the keyframes and duration
+   keeps the reveal locked to the pill sweep. */
+.nx-site-header__logo {
+  position: relative;
+}
+
+.nx-site-header__logo::after {
+  content: '';
+  position: absolute;
+  inset: -10% -6%;
+  background-image: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgba(var(--nx-accent-rgb), 0.95) 49%,
+    rgba(var(--nx-indigo-rgb), 0.85) 55%,
+    transparent 66%
+  );
+  background-size: 300% 100%;
+  mix-blend-mode: screen;
+  filter: blur(3px);
+  pointer-events: none;
+  animation: nx-nav-sweep 22s linear infinite;
+}
+
+/* Everything readable stays above the backdrop. */
+.nx-site-header__logo,
+.nx-site-header__nav,
+.nx-site-header__actions {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- THE SCROLLED STATE --------------------------------------------------
+   "Shrinks and gains a stronger blur/border glow". Padding collapses, the
+   surface darkens so text stays crisp over bright content, and the border
+   picks up the accent glow. */
+.nx-site-header.is-scrolled .nx-site-header__inner {
+  padding-top: var(--nx-space-2);
+  padding-bottom: var(--nx-space-2);
+  background: var(--nx-sidebar-bg);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-inset-hairline), var(--nx-glow), var(--nx-shadow);
+}
+
+.nx-site-header__logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.nx-site-header__nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  margin: 0 auto;
+}
+
+/* --- THE SPOTLIGHT PILL --------------------------------------------------
+   One shared element. SiteHeader.jsx measures the hovered/active link and
+   writes --nx-pill-left / --nx-pill-width; the transition is what makes it
+   glide rather than jump. */
+.nx-site-header__spotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(var(--nx-pill-left, 0));
+  width: var(--nx-pill-width, 0);
+  transition:
+    transform 0.32s var(--nx-ease-spring),
+    width 0.32s var(--nx-ease-spring),
+    opacity var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-site-header__spotlight[data-visible] {
+  opacity: 1;
+}
+
+.nx-site-header__link {
+  position: relative;
+  z-index: 1;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  border-radius: var(--nx-radius-pill);
+  color: var(--nx-text-muted);
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-site-header__link:hover,
+.nx-site-header__link:focus-visible {
+  color: var(--nx-text-strong);
+}
+
+.nx-site-header__link.is-active {
+  color: var(--nx-text-strong);
+  font-weight: 600;
+}
+
+.nx-site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-shrink: 0;
+}
+
+/* --- THE LOGIN BUTTON: CONTINUOUS BLINK ----------------------------------
+   A box-shadow that swells to an accent glow and falls back, forever. Two
+   shadows are used so the halo has both a soft bloom and a tight core, which
+   is what keeps it reading as *light* rather than a thick border.
+
+   The app-wide reduced-motion rule caps iteration at one, so anyone who has
+   asked for less motion gets a single fade and then stillness. */
+@keyframes nx-login-blink {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(var(--nx-accent-rgb), 0),
+      0 0 0 0 rgba(var(--nx-indigo-rgb), 0);
+  }
+  50% {
+    box-shadow:
+      0 0 22px 3px rgba(var(--nx-accent-rgb), 0.65),
+      0 0 8px 1px rgba(var(--nx-indigo-rgb), 0.55);
+  }
+}
+
+.nx-blink-glow {
+  animation: nx-login-blink 1.7s ease-in-out infinite;
+}
+
+/* --- THE GET STARTED CTA: ARROW-OUT THEN NAVIGATE -------------------------
+   SiteHeader.jsx adds `is-leaving` on click and only calls navigate() once
+   CTA_EXIT_MS has elapsed, so the sequence the visitor sees is: the button
+   presses in, the arrow drives forward and flies off the right edge, the label
+   follows, and then the page swaps. Nothing navigates before the arrow has
+   actually moved.
+
+   The keyframe ends at opacity 0 and uses `forwards`, so the arrow is gone
+   rather than snapping back during the wait. */
+@keyframes nx-cta-arrow-fly {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: translateX(0.4rem) scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(2.25rem) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.nx-site-header__cta.is-leaving {
+  transform: scale(0.97);
+}
+
+/* An animation wins over the hover nudges in Button.css, so the fly-out is not
+   fighting the 2px hover shift. */
+.nx-site-header__cta.is-leaving .nx-btn__icon:last-child:not(:first-child) {
+  animation: nx-cta-arrow-fly 0.42s var(--nx-ease) forwards;
+}
+
+.nx-site-header__cta.is-leaving .nx-btn__label {
+  transform: translateX(-0.2rem);
+  opacity: 0.65;
+  transition:
+    transform 0.42s var(--nx-ease),
+    opacity 0.42s var(--nx-ease);
+}
+
+/* The "Get Started" button carries a shimmer sweep on hover, per the spec.
+   The sweep is the ::after highlight defined in Button.css; this rule adds the
+   accent glow so the primary CTA reads as the hero of the header. */
+.nx-site-header__cta:hover {
+  box-shadow: var(--nx-glow-accent);
+}
+
+/* --- HAMBURGER ----------------------------------------------------------- */
+
+.nx-site-header__burger {
+  display: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  background: var(--nx-overlay);
+  color: var(--nx-text);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-site-header__burger:hover {
+  border-color: var(--nx-border-strong);
+  color: var(--nx-accent);
+}
+
+/* --- RESPONSIVE ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  /* Below tablet the inline nav cannot fit next to the actions. */
+  .nx-site-header__nav {
+    display: none;
+  }
+
+  .nx-site-header__burger {
+    display: grid;
+  }
+
+  .nx-site-header__login {
+    display: none;
+  }
+
+  .nx-site-header__actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-site-header__cta {
+    display: none;
+  }
+}

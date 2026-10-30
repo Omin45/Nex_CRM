@@ -1,0 +1,103 @@
+/* ==========================================================================
+   NexERP — ProductListPage
+   --------------------------------------------------------------------------
+   The product identity cell and the two numeric treatments that the shared
+   DataTable cannot express: an inline comparison ("on hand / reorder level")
+   and a margin that flags itself when it gets thin.
+   ========================================================================== */
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-prod__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-prod__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-family: var(--nx-font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-prod__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-prod__name {
+  overflow: hidden;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-prod__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-prod__truncate {
+  display: block;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- numerics ------------------------------------------------------------- */
+.nx-prod__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-prod__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+/* The reorder level rides along in muted text so "is this enough?" can be
+   answered from one cell, without a second column or a tooltip. */
+.nx-prod__reorder {
+  color: var(--nx-text-faint);
+}
+
+/* A thin margin is a problem even when the product is otherwise healthy, so it
+   gets the warning colour rather than the neutral default. */
+.nx-prod__num[data-thin] {
+  color: var(--nx-warning);
+  font-weight: 500;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-prod__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-prod__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-prod__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}

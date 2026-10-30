@@ -1,0 +1,231 @@
+/* ==========================================================================
+   NexERP — Input / form field styles
+   The control shell, the blue-accent focus ring, the invalid state and the
+   message slots. Text colour is inherited from the token layer so the control
+   follows the active theme automatically.
+   ========================================================================== */
+
+.nx-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  min-width: 0;
+}
+
+.nx-field--full {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   LABEL
+   -------------------------------------------------------------------------- */
+.nx-field__label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  cursor: pointer;
+}
+
+.nx-field__required {
+  color: var(--nx-danger);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   CONTROL SHELL
+   The border and background live on the wrapper, not the native input, so the
+   focus ring can be drawn as a box-shadow without clipping the caret.
+   -------------------------------------------------------------------------- */
+.nx-field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--nx-overlay), var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  box-shadow: var(--nx-inset-hairline);
+  transition:
+    border-color var(--nx-dur) var(--nx-ease),
+    box-shadow var(--nx-dur) var(--nx-ease),
+    background var(--nx-dur) var(--nx-ease);
+}
+
+.nx-field__control--sm { min-height: 34px; }
+.nx-field__control--md { min-height: 40px; }
+.nx-field__control--lg { min-height: 46px; }
+
+/* The native control fills the shell and paints nothing itself. */
+.nx-field__input {
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  background: transparent;
+  border: none;
+  outline: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-field__control--sm .nx-field__input { font-size: var(--nx-text-xs); }
+.nx-field__control--lg .nx-field__input { font-size: var(--nx-text-base); }
+
+/* Leave room for the icon / suffix. */
+.nx-field__input:has(+ .nx-field__suffix),
+.nx-field__icon--left + .nx-field__input {
+  padding-left: 0;
+}
+
+textarea.nx-field__input {
+  padding: var(--nx-space-3);
+  line-height: var(--nx-leading);
+  resize: vertical;
+  min-height: 84px;
+}
+
+select.nx-field__input {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  /* Space for the custom chevron. */
+  padding-right: var(--nx-space-8);
+}
+
+/* Placeholder stays quiet so the entered value is the focus. */
+.nx-field__input::placeholder {
+  color: var(--nx-text-faint);
+}
+
+/* --------------------------------------------------------------------------
+   ICONS + SUFFIX
+   -------------------------------------------------------------------------- */
+.nx-field__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--nx-text-dim);
+  pointer-events: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-field__icon--left {
+  padding-left: var(--nx-space-3);
+  font-size: var(--nx-text-md);
+}
+
+.nx-field__icon--right {
+  padding-right: var(--nx-space-3);
+  font-size: var(--nx-text-md);
+}
+
+/* The icon slot suppresses pointer events so clicks fall through to the input,
+   but an interactive right slot (e.g. the password reveal toggle) must stay
+   clickable. */
+.nx-field__icon--right :is(button, a, [role='button']) {
+  pointer-events: auto;
+}
+
+.nx-field__suffix {
+  padding: 0 var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-dim);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.nx-field__chevron {
+  position: absolute;
+  right: var(--nx-space-3);
+  display: grid;
+  place-items: center;
+  color: var(--nx-text-dim);
+  pointer-events: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS — the blue accent state called for in the spec.
+   -------------------------------------------------------------------------- */
+.nx-field__control:hover:not(:focus-within):not(.is-disabled) {
+  border-color: var(--nx-border);
+}
+
+.nx-field__control:focus-within {
+  background: var(--nx-overlay-strong), var(--nx-surface-2);
+  border-color: var(--nx-border-accent);
+  /* Layered ring: a tight accent line plus a wide ambient bloom. */
+  box-shadow:
+    0 0 0 3px rgba(var(--nx-accent-strong-rgb), 0.16),
+    0 0 18px -4px rgba(var(--nx-accent-strong-rgb), 0.45),
+    var(--nx-inset-hairline);
+}
+
+/* Icons pick up the accent while the field is focused. */
+.nx-field__control:focus-within .nx-field__icon,
+.nx-field__control:focus-within .nx-field__chevron {
+  color: var(--nx-accent);
+}
+
+/* --------------------------------------------------------------------------
+   VALIDATION
+   -------------------------------------------------------------------------- */
+.nx-field.has-error .nx-field__control {
+  border-color: rgba(var(--nx-danger-rgb), 0.5);
+}
+
+.nx-field.has-error .nx-field__control:focus-within {
+  box-shadow:
+    0 0 0 3px rgba(var(--nx-danger-rgb), 0.16),
+    0 0 18px -4px rgba(var(--nx-danger-rgb), 0.4);
+}
+
+.nx-field__error,
+.nx-field__hint {
+  font-size: var(--nx-text-xs);
+  line-height: 1.5;
+}
+
+.nx-field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  color: var(--nx-danger);
+  animation: nx-rise 0.2s var(--nx-ease);
+}
+
+.nx-field__hint {
+  color: var(--nx-text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   DISABLED / READ-ONLY
+   -------------------------------------------------------------------------- */
+.nx-field.is-disabled .nx-field__control {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--nx-surface);
+}
+
+.nx-field__input:read-only:not(:disabled) {
+  color: var(--nx-text-muted);
+  cursor: default;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-field__control--md,
+  .nx-field__control--lg {
+    min-height: 44px; /* comfortable touch target */
+  }
+
+  .nx-field__input {
+    /* 16px prevents iOS Safari from zooming on focus. */
+    font-size: 16px;
+  }
+}

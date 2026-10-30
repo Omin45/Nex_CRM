@@ -1,0 +1,131 @@
+/* ==========================================================================
+   NexERP — SiteFooter
+   --------------------------------------------------------------------------
+   Sits on the mesh, so it needs its own hairline to separate from the
+   background rather than a filled surface. The top border picks up the pale
+   blue so the footer reads as part of the same system as the header.
+   ========================================================================== */
+
+.nx-site-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--nx-space-16);
+  border-top: 1px solid var(--nx-border);
+  background: linear-gradient(to bottom, transparent, rgba(4, 6, 12, 0.6));
+}
+
+.nx-site-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+  gap: var(--nx-space-10);
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: var(--nx-space-12) var(--nx-space-6) var(--nx-space-8);
+}
+
+.nx-site-footer__blurb {
+  margin: var(--nx-space-4) 0;
+  max-width: 34ch;
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+.nx-site-footer__socials {
+  display: flex;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-site-footer__social {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  color: var(--nx-text-muted);
+  transition: var(--nx-transition);
+}
+
+.nx-site-footer__social:hover {
+  color: var(--nx-accent);
+  border-color: var(--nx-border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--nx-glow);
+}
+
+.nx-site-footer__groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nx-space-6);
+}
+
+.nx-site-footer__group-title {
+  margin: 0 0 var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+.nx-site-footer__group ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-site-footer__link {
+  color: var(--nx-text-muted);
+  font-size: var(--nx-text-sm);
+  text-decoration: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-site-footer__link:hover {
+  color: var(--nx-accent);
+}
+
+.nx-site-footer__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: var(--nx-space-5) var(--nx-space-6);
+  border-top: 1px solid var(--nx-border-soft);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+.nx-site-footer__legal {
+  display: flex;
+  gap: var(--nx-space-4);
+}
+
+@media (max-width: 900px) {
+  .nx-site-footer__inner {
+    grid-template-columns: 1fr;
+    gap: var(--nx-space-8);
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-site-footer__groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-site-footer__base {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

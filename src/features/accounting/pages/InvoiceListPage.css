@@ -1,0 +1,124 @@
+/* ==========================================================================
+   NexERP — InvoiceListPage
+   --------------------------------------------------------------------------
+   The invoice identity cell and the two date/number treatments that carry
+   meaning beyond their value: a due date that has passed, and a balance that
+   is still owed.
+
+   Colour is never the only signal here. An overdue date says "overdue" in
+   words, and a non-zero balance shows a dash instead of ₦0.00 — both because
+   "red" alone tells a colourblind reader nothing.
+   ========================================================================== */
+
+.nx-inv-list__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-inv-list__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-inv-list__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-inv-list__number {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-inv-list__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-inv-list__customer {
+  display: block;
+  max-width: 16rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- dates ---------------------------------------------------------------- */
+.nx-inv-list__date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-inv-list__date[data-late] {
+  color: var(--nx-danger);
+  font-weight: 500;
+}
+
+.nx-inv-list__late-flag {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-danger);
+}
+
+/* ---- numbers -------------------------------------------------------------- */
+.nx-inv-list__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-inv-list__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+.nx-inv-list__num[data-due] {
+  color: var(--nx-warning);
+  font-weight: 500;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-inv-list__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-inv-list__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-inv-list__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}

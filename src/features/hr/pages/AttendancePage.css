@@ -1,0 +1,121 @@
+/* ==========================================================================
+   NexERP — AttendancePage
+   --------------------------------------------------------------------------
+   The register: identity cell, monospace punch times, an overtime column
+   that shows a dash rather than a zero, and the toolbar's status select.
+
+   Seven statuses do not fit a pill row, so the filter is a select — labelled
+   in the toolbar, keyboard-native, and styled from the same tokens as every
+   other control.
+   ========================================================================== */
+
+.nx-attend :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-attend__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-attend__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-attend__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-attend__name {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-attend__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- time and duration cells ---------------------------------------------- */
+.nx-attend__date {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-attend__time {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text);
+  white-space: nowrap;
+}
+
+.nx-attend__hours {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+/* Overtime reads brighter than regular hours; the "+Nh" prefix already says
+   it in text, so the colour is reinforcement only. */
+.nx-attend__hours[data-overtime] {
+  color: var(--nx-success);
+  font-weight: 600;
+}
+
+/* ---- toolbar status filter ------------------------------------------------- */
+.nx-attend__status {
+  display: flex;
+  align-items: center;
+}
+
+/* The select keeps its visible label — it is a filter, not a placeholder. */
+.nx-attend__status-field {
+  min-width: 168px;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-attend__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-attend__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-attend__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}

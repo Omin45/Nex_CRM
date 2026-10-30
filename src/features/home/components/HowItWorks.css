@@ -1,0 +1,145 @@
+/* ==========================================================================
+   NexERP — HowItWorks
+   --------------------------------------------------------------------------
+   Four numbered steps on a single vertical gradient rail.
+
+   The rail: one ::before on the <ol>, inset to span from the first marker to
+   the last. It is a gradient that is transparent at both ends, so it fades in
+   under step 1 and out below step 4 instead of being sliced off. It sits behind
+   the markers (z-index) so the numbered discs read as sitting *on* the line.
+
+   On mobile the steps stack but the rail stays vertical and shifts to the left
+   edge — a horizontal rail would need a different DOM, and a vertical rhythm
+   still reads correctly on a phone.
+   ========================================================================== */
+
+.nx-steps {
+  padding-block: var(--nx-section-pad);
+}
+
+.nx-steps__heading {
+  margin: 0 0 var(--nx-space-12);
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.85rem, 3.6vw, 2.75rem);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--nx-text);
+}
+
+.nx-steps__list {
+  --nx-marker-size: 48px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-10);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  counter-reset: nx-step;
+}
+
+/* THE RAIL. inset-block is measured from the first and last marker centres
+   (--nx-marker-size / 2), so the line starts and ends at the discs, not at the
+   item boxes. */
+.nx-steps__list::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--nx-marker-size) / 2);
+  bottom: calc(var(--nx-marker-size) / 2);
+  left: calc(var(--nx-marker-size) / 2);
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--nx-accent) 12%,
+    var(--nx-indigo) 78%,
+    transparent
+  );
+  opacity: 0.4;
+}
+
+.nx-steps__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--nx-marker-size) minmax(0, 1fr);
+  gap: var(--nx-space-6);
+  align-items: start;
+}
+
+.nx-steps__marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--nx-marker-size);
+  height: var(--nx-marker-size);
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-text);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px var(--nx-bg);
+}
+
+.nx-steps__body {
+  padding-top: var(--nx-space-2);
+}
+
+.nx-steps__icon {
+  display: inline-flex;
+  margin-bottom: var(--nx-space-3);
+  font-size: 1.35rem;
+  color: var(--nx-accent);
+}
+
+.nx-steps__title {
+  margin: 0 0 var(--nx-space-2);
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xl);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-steps__text {
+  max-width: 52ch;
+  margin: 0;
+  font-size: var(--nx-text-base);
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .nx-steps__list {
+    --nx-marker-size: 38px;
+    gap: var(--nx-space-8);
+  }
+
+  .nx-steps__item {
+    gap: var(--nx-space-4);
+  }
+
+  .nx-steps__marker {
+    font-size: var(--nx-text-base);
+  }
+
+  .nx-steps__title {
+    font-size: var(--nx-text-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-steps__list::before {
+    opacity: 0.55;
+  }
+}

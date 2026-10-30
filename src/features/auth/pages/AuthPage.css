@@ -1,0 +1,364 @@
+/* ==========================================================================
+   NexERP — AuthPage
+   --------------------------------------------------------------------------
+   The form column of the auth shell.
+
+   Mode swap: the <form> is keyed on `mode` in the JSX, so React remounts it
+   and the enter animation replays. The animation is a short fade-and-rise, not
+   a height transition — animating height on a form with validation would mean
+   animating a layout property, which janks and can clip the error messages.
+
+   The reveal-password button is styled here rather than inline: it sits inside
+   Input's rightIcon slot, and Input's own stylesheet owns that slot, so the
+   button needs to reset the inherited button chrome.
+   ========================================================================== */
+
+.nx-authpage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+/* ---- heading ------------------------------------------------------------- */
+.nx-authpage__heading {
+  animation: nx-authpage-rise 0.45s var(--nx-ease) both;
+}
+
+.nx-authpage__title {
+  margin: 0 0 var(--nx-space-2);
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--nx-text);
+}
+
+.nx-authpage__subtitle {
+  margin: 0;
+  font-size: var(--nx-text-base);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+/* ---- form ---------------------------------------------------------------- */
+.nx-authpage__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  animation: nx-authpage-rise 0.45s var(--nx-ease) both;
+}
+
+/* Each row rises in just after the one above it, so the form assembles rather
+   than appearing all at once. The delays stay small — this is texture, not a
+   sequence the user has to wait through. */
+.nx-authpage__form > * {
+  animation: nx-authpage-rise 0.5s var(--nx-ease) both;
+}
+
+.nx-authpage__form > *:nth-child(1) { animation-delay: 0.03s; }
+.nx-authpage__form > *:nth-child(2) { animation-delay: 0.06s; }
+.nx-authpage__form > *:nth-child(3) { animation-delay: 0.09s; }
+.nx-authpage__form > *:nth-child(4) { animation-delay: 0.12s; }
+.nx-authpage__form > *:nth-child(5) { animation-delay: 0.15s; }
+.nx-authpage__form > *:nth-child(6) { animation-delay: 0.18s; }
+.nx-authpage__form > *:nth-child(7) { animation-delay: 0.21s; }
+.nx-authpage__form > *:nth-child(8) { animation-delay: 0.24s; }
+
+@keyframes nx-authpage-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ---- password ------------------------------------------------------------ */
+.nx-authpage__password {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- terms --------------------------------------------------------------- */
+.nx-authpage__terms {
+  align-items: flex-start;
+  line-height: var(--nx-leading);
+}
+
+.nx-authpage__terms a {
+  color: var(--nx-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.nx-authpage__terms-error {
+  margin-top: calc(-1 * var(--nx-space-2));
+}
+
+/* ---- dev note ------------------------------------------------------------ */
+.nx-authpage__dev-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-2);
+  margin: 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+/* ---- mode switch --------------------------------------------------------- */
+.nx-authpage__switch {
+  margin: 0;
+  padding-top: var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  text-align: center;
+  color: var(--nx-text-muted);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+/* ---- register role picker ------------------------------------------------ */
+.nx-authpage__roles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.nx-authpage__roles-legend {
+  padding: 0;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+}
+
+.nx-authpage__role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+}
+
+.nx-authpage__role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  padding: 0.3rem var(--nx-space-3);
+  font: inherit;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-text-muted);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+  cursor: pointer;
+  transition:
+    color 0.2s var(--nx-ease),
+    background 0.2s var(--nx-ease),
+    border-color 0.2s var(--nx-ease),
+    transform 0.2s var(--nx-ease);
+}
+
+.nx-authpage__role-chip:hover {
+  color: var(--nx-text);
+  border-color: var(--nx-border);
+  transform: translateY(-1px);
+}
+
+.nx-authpage__role-chip[data-active='true'] {
+  color: var(--nx-text-inverse);
+  background-image: var(--nx-gradient-accent);
+  border-color: transparent;
+}
+
+.nx-authpage__role-chip:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-authpage__heading,
+  .nx-authpage__form,
+  .nx-authpage__form > * {
+    animation: none;
+  }
+}
+
+/* ---- demo account picker -------------------------------------------------
+   Mock mode only. The tiles are the answer to "which email signs me in as
+   whom?" � without them the roster in config/demoAccounts.js is invisible and
+   the mock's email-selects-identity behaviour looks arbitrary.
+
+   Grid collapses to a single column well before the form column does, so the
+   tiles stay tappable rather than shrinking into unreadable slivers. */
+.nx-authpage__demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  padding-top: var(--nx-space-4);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-authpage__demo-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-authpage__demo-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-authpage__demo-hint {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+.nx-authpage__demo-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-authpage__demo-tile {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-3);
+  text-align: left;
+  font: inherit;
+  color: var(--nx-text);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+  cursor: pointer;
+  transition:
+    background 0.25s var(--nx-ease),
+    border-color 0.25s var(--nx-ease),
+    transform 0.25s var(--nx-ease),
+    box-shadow 0.25s var(--nx-ease);
+}
+
+.nx-authpage__demo-tile:hover {
+  background: var(--nx-surface-3);
+  border-color: var(--nx-border);
+  transform: translateY(-1px);
+  box-shadow: var(--nx-glow);
+}
+
+.nx-authpage__demo-tile:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-authpage__demo-tile[data-active='true'] {
+  background: var(--nx-surface-3);
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-glow);
+}
+
+.nx-authpage__demo-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--nx-accent-strong);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-authpage__demo-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-authpage__demo-name {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  line-height: var(--nx-leading-tight);
+}
+
+.nx-authpage__demo-role {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-accent);
+}
+
+.nx-authpage__demo-blurb {
+  font-size: var(--nx-text-xs);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+.nx-authpage__demo-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  color: var(--nx-accent-strong);
+  background: rgba(var(--nx-accent-rgb), 0.14);
+  border-radius: var(--nx-radius-pill);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s var(--nx-ease), transform 0.2s var(--nx-ease);
+}
+
+.nx-authpage__demo-tile[data-active='true'] .nx-authpage__demo-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.nx-authpage__demo-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-2);
+  width: 100%;
+  padding: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-text-muted);
+  background: transparent;
+  border: 1px dashed var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: color 0.25s var(--nx-ease), border-color 0.25s var(--nx-ease);
+}
+
+.nx-authpage__demo-more:hover {
+  color: var(--nx-accent);
+  border-color: var(--nx-border);
+}
+
+.nx-authpage__demo-more:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,51 @@
+/* ==========================================================================
+   NexERP — CashFlowPage
+   --------------------------------------------------------------------------
+   The page is almost entirely shared surfaces — metric tiles, the line-chart
+   wrapper, the table primitive — so this stylesheet covers what they cannot:
+   money cells with tabular numerals so the six periods align; the totals
+   footer, right-aligned under the table's own tfoot treatment; and a stronger
+   net column — the computed answer — emphasised by weight, not colour, since
+   a negative movement is information rather than a failure.
+   ========================================================================== */
+
+.nx-cf__num {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-cf__num--net {
+  color: var(--nx-text);
+  font-weight: 600;
+}
+
+/* ---- totals footer -------------------------------------------------------
+   Mirrors the table's own tfoot recipe (the generic rule only targets <td>,
+   so the row-header cell needs it here) and right-aligns every figure. */
+.nx-cf__foot th {
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  font-weight: 700;
+  color: var(--nx-text-strong);
+  background: var(--nx-surface-2);
+  border-top: 1px solid var(--nx-border-soft);
+  text-align: left;
+}
+
+.nx-cf__foot td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--nx-text-strong);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS
+   -------------------------------------------------------------------------- */
+.nx-cf :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,341 @@
+/* ==========================================================================
+   NexERP — Customer360Page
+   --------------------------------------------------------------------------
+   A two-column top: identity on the left, money on the right. Then a
+   trend/activity split, then a full-width timeline.
+
+   Layout rule used throughout: identity is a narrow, mostly-static column and
+   money is the wide one. The reverse would be wrong — a reader arrives here
+   asking "how much do they owe", not "what is their postcode".
+   ========================================================================== */
+
+/* ---- back link ------------------------------------------------------------ */
+.nx-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-back:hover {
+  color: var(--nx-accent);
+}
+
+.nx-back:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: 2px;
+  border-radius: var(--nx-radius-sm);
+}
+
+/* ---- top split ------------------------------------------------------------ */
+.nx-c360__top {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--nx-space-4);
+  align-items: start;
+}
+
+.nx-c360__money {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-c360__tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nx-space-3);
+}
+
+/* ---- identity ------------------------------------------------------------- */
+.nx-c360__id-head {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding-bottom: var(--nx-space-4);
+  margin-bottom: var(--nx-space-4);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-c360__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 700;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+}
+
+.nx-c360__tax {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-c360__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+  margin: 0;
+}
+
+.nx-c360__facts > div {
+  min-width: 0;
+}
+
+.nx-c360__facts dt {
+  margin-bottom: 3px;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+.nx-c360__facts dd {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-c360__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-c360__link:hover {
+  color: var(--nx-accent);
+  text-decoration: underline;
+}
+
+.nx-c360__note {
+  margin: var(--nx-space-4) 0 0;
+  padding: var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  line-height: 1.55;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border-left: 2px solid var(--nx-accent);
+  border-radius: 0 var(--nx-radius-sm) var(--nx-radius-sm) 0;
+}
+
+/* ---- money tiles ---------------------------------------------------------- */
+.nx-c360__tile-label {
+  margin: 0;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+.nx-c360__tile-value {
+  margin: var(--nx-space-2) 0 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--nx-text);
+}
+
+.nx-c360__tile-value--good {
+  color: var(--nx-success);
+}
+
+.nx-c360__tile-value[data-tone='warn'] {
+  color: var(--nx-warning);
+}
+
+.nx-c360__tile-hint {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- credit bar ----------------------------------------------------------- */
+.nx-c360__credit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  margin-bottom: var(--nx-space-3);
+}
+
+/* A native <progress>, restyled. The width comes from the element's `value`
+   attribute, so nothing here is data-driven — only the colour is, and colour
+   is a pure function of the tone attribute. */
+.nx-c360__credit-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-c360__credit-bar::-webkit-progress-bar {
+  background: var(--nx-overlay);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-c360__credit-bar::-webkit-progress-value {
+  background: var(--nx-success);
+  border-radius: var(--nx-radius-pill);
+  transition: width var(--nx-dur-slow) var(--nx-ease);
+}
+
+.nx-c360__credit-bar::-moz-progress-bar {
+  background: var(--nx-success);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-c360__credit-bar[data-tone='warning']::-webkit-progress-value {
+  background: var(--nx-warning);
+}
+
+.nx-c360__credit-bar[data-tone='warning']::-moz-progress-bar {
+  background: var(--nx-warning);
+}
+
+.nx-c360__credit-bar[data-tone='danger']::-webkit-progress-value {
+  background: var(--nx-danger);
+}
+
+.nx-c360__credit-bar[data-tone='danger']::-moz-progress-bar {
+  background: var(--nx-danger);
+}
+
+.nx-c360__degraded-text {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- trend + invoices ----------------------------------------------------- */
+.nx-c360__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--nx-space-4);
+  align-items: start;
+}
+
+.nx-c360__invoices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-c360__invoice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: border-color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-c360__invoice:hover {
+  border-color: var(--nx-border);
+}
+
+.nx-c360__invoice-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-c360__invoice-number {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-c360__invoice-date {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-c360__invoice-side {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--nx-space-3);
+}
+
+.nx-c360__invoice-total {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+}
+
+.nx-c360__last {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ==========================================================================
+   Responsive
+   ==========================================================================
+   Both splits collapse to one column below 900px. The tiles go to a single
+   column below 640px: three money figures side by side on a phone is three
+   numbers too narrow to read.
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .nx-c360__top,
+  .nx-c360__split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-c360__tiles,
+  .nx-c360__facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

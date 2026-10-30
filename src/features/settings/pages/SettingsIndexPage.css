@@ -1,0 +1,82 @@
+/* ==========================================================================
+   NexERP — SettingsIndexPage
+   --------------------------------------------------------------------------
+   Five link tiles. The tile is a Card used as an <a>, so it needs the link
+   reset (no underline, inherited colour) and a bottom-pinned footer: tiles in
+   the same row have different description lengths, and the chevron has to stay
+   aligned or the grid reads as broken.
+   ========================================================================== */
+
+.nx-set-index__tile {
+  gap: var(--nx-space-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.nx-set-index__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-set-index__tile:hover .nx-set-index__icon {
+  border-color: var(--nx-border-accent);
+  box-shadow: 0 0 0 4px rgba(var(--nx-accent-rgb), 0.08);
+}
+
+.nx-set-index__title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-set-index__desc {
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-index__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  /* Pushes the footer to the bottom of the tile so rows of differing copy
+     height still line their chevrons up. */
+  margin-top: auto;
+  padding-top: var(--nx-space-3);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-set-index__meta {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-set-index__go {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  color: var(--nx-accent);
+  transition: var(--nx-transition);
+}
+
+.nx-set-index__tile:hover .nx-set-index__go {
+  color: var(--nx-accent-strong);
+  transform: translateX(3px);
+}
+
+.nx-set-index__tile:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

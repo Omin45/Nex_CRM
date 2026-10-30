@@ -1,0 +1,57 @@
+/* ==========================================================================
+   NexERP — PageHeader
+   --------------------------------------------------------------------------
+   The shared opening block for the inner marketing pages.
+
+   Sits in the normal flow rather than being full-height: on a long page like
+   Pricing, a full-viewport hero would push the actual content below the fold
+   twice over.
+   ========================================================================== */
+
+.nx-page-header {
+  padding-block: clamp(3.5rem, 7vw, 6rem) clamp(2.5rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.nx-page-header__eyebrow {
+  display: inline-block;
+  margin: 0 0 var(--nx-space-4);
+  padding: 0.3rem 0.75rem;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-accent);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-page-header__title {
+  max-width: 20ch;
+  margin: 0 auto var(--nx-space-5);
+  font-family: var(--nx-font-display);
+  font-size: clamp(2.1rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: -0.03em;
+  color: var(--nx-text);
+}
+
+.nx-page-header__text {
+  max-width: 62ch;
+  margin: 0 auto;
+  font-size: var(--nx-text-md);
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+.nx-page-header__extra {
+  margin-top: var(--nx-space-8);
+}
+
+@media (max-width: 640px) {
+  .nx-page-header__title {
+    max-width: none;
+  }
+}

@@ -1,0 +1,112 @@
+/* ==========================================================================
+   NexERP — PublicLayout
+   --------------------------------------------------------------------------
+   The marketing shell. A flex column so the footer is pushed to the bottom of
+   the viewport on short pages instead of floating mid-screen.
+
+   The mesh is `position: fixed` here rather than in global.css: it belongs
+   behind the marketing chrome only. The vendor app draws its own backdrop
+   inside AppLayout, and stacking two meshes would double the blur cost.
+   ========================================================================== */
+
+.nx-public {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Brand palette — the hero's colour carried across the marketing shell
+   --------------------------------------------------------------------------
+   The hero commits to its own crimson / royal-blue / slate identity. Remapping
+   the shared accent / info / border / glow tokens here means the header, the
+   page sections, the footer and the animated mesh all resolve to that same
+   palette instead of the default pale-blue tokens. `html` is prefixed purely
+   to out-specify the `:root` defaults regardless of stylesheet order.
+   ========================================================================== */
+html .nx-public {
+  /* Raw triplets first, so the palette holds even on a marketing page whose
+     chunk does not include the hero stylesheet. */
+  --nx-crimson-rgb: 255, 35, 25;
+  --nx-slate-rgb: 65, 65, 65;
+  --nx-blue-rgb: 0, 105, 255;
+
+  /* Royal blue is the primary interactive colour (hero CTA + glows). */
+  --nx-accent: rgb(var(--nx-blue-rgb));
+  --nx-accent-rgb: var(--nx-blue-rgb);
+  --nx-accent-strong: #2b7bff;
+  --nx-accent-strong-rgb: 43, 123, 255;
+  --nx-info: #2b7bff;
+  --nx-info-rgb: 43, 123, 255;
+
+  /* Crimson is the highlight/secondary, mirroring the hero's pulse dot. */
+  --nx-indigo: rgb(var(--nx-crimson-rgb));
+  --nx-indigo-rgb: var(--nx-crimson-rgb);
+
+  /* Borders, glass and glows pick up the blue tint. */
+  --nx-border: rgba(var(--nx-blue-rgb), 0.2);
+  --nx-border-strong: rgba(var(--nx-blue-rgb), 0.4);
+  --nx-border-accent: rgba(var(--nx-blue-rgb), 0.55);
+  --nx-glass-border: rgba(var(--nx-blue-rgb), 0.18);
+  --nx-glow: 0 10px 25px -5px rgba(var(--nx-blue-rgb), 0.28);
+  --nx-glow-strong: 0 14px 34px -8px rgba(var(--nx-blue-rgb), 0.42);
+  --nx-glow-accent: 0 0 0 1px rgba(var(--nx-blue-rgb), 0.45),
+    0 12px 30px -10px rgba(var(--nx-blue-rgb), 0.5);
+
+  /* Gradients: buttons and the headline share the hero's crimson -> blue ramp. */
+  --nx-gradient-brand: linear-gradient(
+    135deg,
+    rgb(var(--nx-crimson-rgb)) 0%,
+    #ff7b00 50%,
+    rgb(var(--nx-blue-rgb)) 100%
+  );
+  --nx-gradient-brand-bg-size: 200% 200%;
+  --nx-gradient-accent: linear-gradient(
+    135deg,
+    rgb(var(--nx-blue-rgb)) 0%,
+    #1d4ed8 100%
+  );
+  --nx-gradient-indigo: linear-gradient(
+    135deg,
+    rgb(var(--nx-crimson-rgb)) 0%,
+    #ff7b00 50%,
+    rgb(var(--nx-blue-rgb)) 100%
+  );
+  --nx-gradient-pill: linear-gradient(
+    90deg,
+    rgba(var(--nx-blue-rgb), 0.22),
+    rgba(var(--nx-crimson-rgb), 0.12)
+  );
+}
+
+.nx-public__mesh {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nx-z-base);
+  pointer-events: none;
+}
+
+/* Content sits above the mesh; the header and footer set their own z-index. */
+.nx-public__main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+}
+
+/* Centres content and enforces the reading measure. Pages opt out by adding
+   `.nx-public__main--wide`. */
+.nx-public__main > * {
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 var(--nx-space-6);
+}
+
+/* Tighter gutters on a phone so the reading measure is not eaten by padding. */
+@media (max-width: 640px) {
+  .nx-public__main > * {
+    padding: 0 var(--nx-space-4);
+  }
+}

@@ -1,0 +1,217 @@
+/* ==========================================================================
+   NexERP — HelpPage
+   --------------------------------------------------------------------------
+   Three surfaces: the topic rail, the FAQ accordion, and the shortcut table.
+   The accordion uses a bare <details>/<summary> so it works with the keyboard
+   and with a screen reader before a single line of CSS is read — this sheet
+   only removes the marker, adds the divider rhythm and rotates the chevron.
+
+   `scroll-margin-top` on each group keeps the anchor jumps clear of the sticky
+   shell header.
+   ========================================================================== */
+
+/* ---- toolbar ------------------------------------------------------------- */
+.nx-help__search {
+  flex: 1 1 18rem;
+  min-width: 14rem;
+  max-width: 30rem;
+}
+
+/* ---- columns ------------------------------------------------------------- */
+.nx-help__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+  min-width: 0;
+}
+
+.nx-help__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+  min-width: 0;
+}
+
+.nx-help__card-title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+  margin-bottom: var(--nx-space-4);
+}
+
+/* ---- topic rail ---------------------------------------------------------- */
+.nx-help__topics {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.nx-help__topic {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-help__topic:hover {
+  background: var(--nx-overlay);
+  border-color: var(--nx-border-soft);
+}
+
+.nx-help__topic-count {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- contact ------------------------------------------------------------- */
+.nx-help__contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+.nx-help__contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+}
+
+.nx-help__contact-item svg {
+  flex: none;
+  color: var(--nx-accent);
+}
+
+.nx-help__contact-note {
+  margin-top: var(--nx-space-4);
+  padding-top: var(--nx-space-3);
+  border-top: 1px solid var(--nx-border-soft);
+  font-size: var(--nx-text-xs);
+  line-height: 1.6;
+  color: var(--nx-text-muted);
+}
+
+/* ---- FAQ ----------------------------------------------------------------- */
+.nx-help__group {
+  scroll-margin-top: calc(var(--nx-space-6) * 2);
+}
+
+.nx-help__group + .nx-help__group {
+  margin-top: var(--nx-space-6);
+}
+
+.nx-help__group-title {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+  margin-bottom: var(--nx-space-2);
+}
+
+.nx-help__item {
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-help__item:last-child {
+  border-bottom: 0;
+}
+
+.nx-help__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4) 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+}
+
+.nx-help__summary::-webkit-details-marker {
+  display: none;
+}
+
+.nx-help__summary:hover {
+  color: var(--nx-accent);
+}
+
+.nx-help__chevron {
+  flex: none;
+  color: var(--nx-text-dim);
+  transition: transform var(--nx-durations-fast, 0.15s) ease;
+}
+
+.nx-help__item[open] .nx-help__chevron {
+  transform: rotate(180deg);
+}
+
+.nx-help__a {
+  max-width: 70ch;
+  padding-bottom: var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  line-height: 1.65;
+  color: var(--nx-text-muted);
+}
+
+/* ---- shortcuts ----------------------------------------------------------- */
+.nx-help__shortcuts {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nx-help__shortcuts th {
+  padding-bottom: var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+  text-align: left;
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-help__shortcuts td {
+  padding: var(--nx-space-3) 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  border-bottom: 1px solid var(--nx-border-soft);
+  vertical-align: middle;
+}
+
+.nx-help__shortcuts tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.nx-help__shortcuts th:first-child,
+.nx-help__shortcuts td:first-child {
+  width: 40%;
+}
+
+.nx-help__keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-1);
+}
+
+.nx-help__or {
+  margin: 0 var(--nx-space-1);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- focus --------------------------------------------------------------- */
+.nx-help :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

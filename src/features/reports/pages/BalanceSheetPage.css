@@ -1,0 +1,103 @@
+/* ==========================================================================
+   NexERP — BalanceSheetPage
+   --------------------------------------------------------------------------
+   Two surfaces: the section cards' mini tables (account / current / previous
+   with a totals row) and the reconciliation strip beneath the page header.
+
+   The strip leans on shared .nx-alert variants; this file adds the stacked
+   head + sentence and keeps figures tabular so both sides of the equation
+   line up when read across. No verdict is ever colour-only — the words
+   "balances" / "does not balance" carry it, colour merely corroborates.
+   ========================================================================== */
+
+.nx-bs__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-bs__empty {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- section table ------------------------------------------------------- */
+.nx-bs__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--nx-text-sm);
+}
+
+.nx-bs__table th,
+.nx-bs__table td {
+  padding: var(--nx-space-2) 0;
+  text-align: left;
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-bs__table thead th {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-bs__table thead th.nx-bs__col,
+.nx-bs__table td.nx-bs__col {
+  text-align: right;
+}
+
+.nx-bs__rowhead {
+  font-weight: 500;
+  color: var(--nx-text);
+}
+
+.nx-bs__col {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+  white-space: nowrap;
+}
+
+.nx-bs__col--prev {
+  color: var(--nx-text-dim);
+}
+
+.nx-bs__table tfoot th,
+.nx-bs__table tfoot td {
+  padding-top: var(--nx-space-3);
+  font-weight: 700;
+  color: var(--nx-text-strong);
+  border-bottom: 0;
+}
+
+.nx-bs__col--total {
+  color: var(--nx-text-strong);
+}
+
+/* ---- reconciliation strip ------------------------------------------------ */
+.nx-bs__recon {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  min-width: 0;
+}
+
+.nx-bs__recon-head {
+  font-size: var(--nx-text-sm);
+  font-weight: 700;
+}
+
+.nx-bs__recon-text {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--nx-leading);
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS
+   -------------------------------------------------------------------------- */
+.nx-bs :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,121 @@
+/* ==========================================================================
+   NexERP — Badge styles
+   Tinted glass pill with a coloured text and a soft outer glow. Each tone
+   overrides three custom properties (--badge-rgb, --badge-text) so a single
+   rule block covers every variant.
+   ========================================================================== */
+
+.nx-badge {
+  --badge-rgb: var(--nx-accent-strong-rgb);
+  --badge-text: var(--nx-accent);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+  max-width: 100%;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--badge-text);
+  /* Tinted glass: a low-alpha wash of the tone over the surface. */
+  background: rgba(var(--badge-rgb), 0.12);
+  border: 1px solid rgba(var(--badge-rgb), 0.28);
+  border-radius: var(--nx-radius-pill);
+  white-space: nowrap;
+  /* The soft glow that keeps status readable against the dark canvas. */
+  box-shadow: 0 0 12px -4px rgba(var(--badge-rgb), 0.5);
+  transition: var(--nx-transition);
+}
+
+.nx-badge__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --------------------------------------------------------------------------
+   SIZES
+   -------------------------------------------------------------------------- */
+.nx-badge--xs {
+  height: 18px;
+  padding: 0 var(--nx-space-2);
+  font-size: 10px;
+}
+
+.nx-badge--sm {
+  height: 22px;
+  padding: 0 var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+}
+
+.nx-badge--md {
+  height: 26px;
+  padding: 0 var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+}
+
+.nx-badge--upper {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   TONES
+   -------------------------------------------------------------------------- */
+.nx-badge--success { --badge-rgb: var(--nx-success-rgb); --badge-text: var(--nx-success); }
+.nx-badge--warning { --badge-rgb: var(--nx-warning-rgb); --badge-text: var(--nx-warning); }
+.nx-badge--danger  { --badge-rgb: var(--nx-danger-rgb);  --badge-text: var(--nx-danger); }
+.nx-badge--info    { --badge-rgb: var(--nx-info-rgb);    --badge-text: var(--nx-info); }
+.nx-badge--accent  { --badge-rgb: var(--nx-accent-strong-rgb); --badge-text: var(--nx-accent); }
+.nx-badge--violet  { --badge-rgb: 167, 139, 250; --badge-text: var(--nx-violet); }
+.nx-badge--neutral { --badge-rgb: 100, 116, 139; --badge-text: var(--nx-text-muted); }
+
+/* --------------------------------------------------------------------------
+   SOLID
+   Used where a badge must survive a busy background (e.g. a coloured chart
+   segment or a kanban column header).
+   -------------------------------------------------------------------------- */
+.nx-badge--solid {
+  color: #06121d;
+  background: var(--badge-text);
+  border-color: transparent;
+  box-shadow: 0 4px 12px -4px rgba(var(--badge-rgb), 0.7);
+}
+
+.nx-badge--neutral.nx-badge--solid {
+  color: var(--nx-text);
+  background: var(--nx-surface-3);
+}
+
+/* --------------------------------------------------------------------------
+   DOT + PULSE
+   -------------------------------------------------------------------------- */
+.nx-badge__dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.nx-badge--pulse .nx-badge__dot {
+  animation: nx-pulse-glow 2s var(--nx-ease) infinite;
+}
+
+.nx-badge__icon {
+  display: inline-flex;
+  font-size: 1.05em;
+}
+
+/* --------------------------------------------------------------------------
+   INTERACTIVE
+   A badge that acts as a filter chip should acknowledge the pointer.
+   -------------------------------------------------------------------------- */
+button.nx-badge {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.nx-badge:hover {
+  background: rgba(var(--badge-rgb), 0.2);
+  border-color: rgba(var(--badge-rgb), 0.45);
+  box-shadow: 0 0 18px -4px rgba(var(--badge-rgb), 0.7);
+}

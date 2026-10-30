@@ -1,0 +1,221 @@
+/* ==========================================================================
+   NexERP — FeaturesPage
+   --------------------------------------------------------------------------
+   Eight alternating two-column bands.
+
+   The mirroring is done with `data-mirrored` plus an order swap rather than by
+   duplicating the rules, so a single block covers both alignments. The visual
+   panel is a miniature product UI drawn by the ModuleVisual component, not a
+   screenshot, so nothing here goes stale when the product changes.
+   ========================================================================== */
+
+.nx-features__band {
+  padding-block: var(--nx-space-12);
+  /* Alternating rows get a hairline top border rather than a different
+     background — a stripe would fight the fixed mesh behind the page. */
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-features__band:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.nx-features__band-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.nx-features__band[data-mirrored] .nx-features__copy {
+  order: 2;
+}
+
+.nx-features__band[data-mirrored] .nx-features__panel-wrap {
+  order: 1;
+}
+
+/* ---- copy ---------------------------------------------------------------- */
+.nx-features__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--nx-space-5);
+  font-size: 1.35rem;
+  color: var(--nx-accent);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+}
+
+.nx-features__title {
+  margin: 0 0 var(--nx-space-3);
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--nx-text);
+}
+
+.nx-features__blurb {
+  max-width: 46ch;
+  margin: 0 0 var(--nx-space-6);
+  font-size: var(--nx-text-md);
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+.nx-features__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-features__list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-base);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+.nx-features__check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.12);
+  border: 1px solid rgba(var(--nx-success-rgb), 0.3);
+  border-radius: 50%;
+}
+
+/* ---- decorative panel ----------------------------------------------------
+   The panel itself is drawn by the ModuleVisual component; here we only
+   constrain the grid column it sits in. */
+.nx-features__panel-wrap {
+  min-width: 0;
+}
+
+/* ---- closing ------------------------------------------------------------- */
+.nx-features__closing {
+  padding-block: var(--nx-section-pad);
+}
+
+.nx-features__closing-inner {
+  text-align: center;
+}
+
+.nx-features__closing-title {
+  margin: 0 0 var(--nx-space-3);
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  font-weight: 700;
+  color: var(--nx-text);
+}
+
+.nx-features__closing-text {
+  max-width: 54ch;
+  margin: 0 auto var(--nx-space-8);
+  font-size: var(--nx-text-md);
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+.nx-features__closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-4);
+}
+
+/* ==========================================================================
+   Responsive: keep side-by-side on tablets, stack on phones
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .nx-features__band {
+    padding-block: clamp(var(--nx-space-10), 9vw, var(--nx-space-12));
+  }
+
+  .nx-features__band:first-child {
+    padding-top: clamp(var(--nx-space-6), 8vw, var(--nx-space-10));
+  }
+
+  .nx-features__band-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(1.5rem, 5vw, 3rem);
+    align-items: center;
+  }
+
+  .nx-features__blurb {
+    max-width: 100%;
+  }
+
+  .nx-features__panel-wrap {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .nx-features__band {
+    padding-block: clamp(var(--nx-space-9), 12vw, var(--nx-space-11));
+  }
+
+  .nx-features__band:first-child {
+    padding-top: clamp(var(--nx-space-5), 10vw, var(--nx-space-9));
+  }
+
+  .nx-features__band-inner {
+    grid-template-columns: 1fr;
+    gap: clamp(var(--nx-space-6), 10vw, var(--nx-space-8));
+  }
+
+  .nx-features__band[data-mirrored] .nx-features__copy,
+  .nx-features__band[data-mirrored] .nx-features__panel-wrap {
+    order: initial;
+  }
+
+  .nx-features__panel-wrap {
+    max-width: 100%;
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-features__band {
+    padding-block: clamp(var(--nx-space-8), 14vw, var(--nx-space-10));
+  }
+
+  .nx-features__band:first-child {
+    padding-top: clamp(var(--nx-space-4), 12vw, var(--nx-space-8));
+  }
+
+  .nx-features__band-inner {
+    gap: clamp(var(--nx-space-5), 12vw, var(--nx-space-7));
+  }
+
+  .nx-features__icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--nx-space-4);
+  }
+
+  .nx-features__title {
+    margin-bottom: var(--nx-space-2);
+  }
+
+  .nx-features__blurb {
+    margin-bottom: var(--nx-space-5);
+  }
+}

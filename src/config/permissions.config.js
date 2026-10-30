@@ -1,0 +1,370 @@
+/**
+ * NexERP — RBAC permission matrix
+ * ---------------------------------------------------------------------------
+ * Permissions are `resource:action` strings. The backend is the source of
+ * truth (it enforces the same matrix and rejects anything not listed here),
+ * but the frontend uses this map purely to decide what to *render*, so the
+ * UI never shows a control the user cannot use.
+ *
+ * The Spring Boot side is expected to expose the identical matrix via
+ * `GET /auth/permissions`, which the app merges over these defaults.
+ */
+
+/* ---------------------------------------------------------------------------
+ * ROLES
+ * ------------------------------------------------------------------------- */
+export const ROLES = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  VENDOR_OWNER: 'VENDOR_OWNER',
+  VENDOR_ADMIN: 'VENDOR_ADMIN',
+  ACCOUNTANT: 'ACCOUNTANT',
+  SALES_MANAGER: 'SALES_MANAGER',
+  SALES_REP: 'SALES_REP',
+  WAREHOUSE_MANAGER: 'WAREHOUSE_MANAGER',
+  HR_MANAGER: 'HR_MANAGER',
+  SUPPORT_AGENT: 'SUPPORT_AGENT',
+  AUDITOR: 'AUDITOR',
+  EMPLOYEE: 'EMPLOYEE',
+};
+
+/* ---------------------------------------------------------------------------
+ * PERMISSION CONSTANTS
+ * Grouped so a component can `import { PERMISSIONS }` and reference a single
+ * canonical string instead of a hand-typed literal.
+ * ------------------------------------------------------------------------- */
+export const PERMISSIONS = {
+  // Vendors / tenants
+  VENDOR_VIEW: 'vendors:read',
+  VENDOR_CREATE: 'vendors:create',
+  VENDOR_UPDATE: 'vendors:update',
+  VENDOR_SUSPEND: 'vendors:suspend',
+  VENDOR_ACTIVATE: 'vendors:activate',
+
+  // Customers
+  CUSTOMER_VIEW: 'customers:read',
+  CUSTOMER_CREATE: 'customers:create',
+  CUSTOMER_UPDATE: 'customers:update',
+  CUSTOMER_DELETE: 'customers:delete',
+  CUSTOMER_VIEW_FINANCIALS: 'customers:read_financials',
+
+  // Products & inventory
+  PRODUCT_VIEW: 'products:read',
+  PRODUCT_CREATE: 'products:create',
+  PRODUCT_UPDATE: 'products:update',
+  PRODUCT_DELETE: 'products:delete',
+  INVENTORY_VIEW: 'inventory:read',
+  INVENTORY_ADJUST: 'inventory:adjust',
+  INVENTORY_TRANSFER: 'inventory:transfer',
+  WAREHOUSE_MANAGE: 'warehouses:manage',
+
+  // Sales
+  LEAD_VIEW: 'sales:read_leads',
+  LEAD_CREATE: 'sales:create_leads',
+  LEAD_UPDATE: 'sales:update_leads',
+  LEAD_MOVE: 'sales:move_leads',
+  QUOTE_VIEW: 'sales:read_quotes',
+  QUOTE_MANAGE: 'sales:manage_quotes',
+  ORDER_VIEW: 'sales:read_orders',
+  ORDER_MANAGE: 'sales:manage_orders',
+
+  // Accounting
+  INVOICE_VIEW: 'accounting:read_invoices',
+  INVOICE_CREATE: 'accounting:create_invoices',
+  INVOICE_UPDATE: 'accounting:update_invoices',
+  INVOICE_SEND: 'accounting:send_invoices',
+  INVOICE_RECORD_PAYMENT: 'accounting:record_payments',
+  EXPENSE_VIEW: 'accounting:read_expenses',
+  EXPENSE_CREATE: 'accounting:create_expenses',
+  EXPENSE_APPROVE: 'accounting:approve_expenses',
+  AR_VIEW: 'accounting:read_receivables',
+  AP_VIEW: 'accounting:read_payables',
+  LEDGER_VIEW: 'accounting:read_ledger',
+
+  // HR
+  EMPLOYEE_VIEW: 'hr:read_employees',
+  EMPLOYEE_MANAGE: 'hr:manage_employees',
+  ATTENDANCE_VIEW: 'hr:read_attendance',
+  ATTENDANCE_MANAGE: 'hr:manage_attendance',
+  LEAVE_VIEW: 'hr:read_leaves',
+  LEAVE_REQUEST: 'hr:request_leaves',
+  LEAVE_APPROVE: 'hr:approve_leaves',
+
+  // Projects
+  PROJECT_VIEW: 'projects:read',
+  PROJECT_CREATE: 'projects:create',
+  PROJECT_UPDATE: 'projects:update',
+  TASK_MANAGE: 'projects:manage_tasks',
+
+  // Support
+  TICKET_VIEW: 'support:read',
+  TICKET_CREATE: 'support:create',
+  TICKET_REPLY: 'support:reply',
+  TICKET_ASSIGN: 'support:assign',
+  TICKET_CLOSE: 'support:close',
+
+  // Reports & platform
+  REPORT_VIEW: 'reports:read',
+  REPORT_EXPORT: 'reports:export',
+  AUDIT_VIEW: 'audit:read',
+  SETTINGS_MANAGE: 'settings:manage',
+  USER_MANAGE: 'users:manage',
+};
+
+/* ---------------------------------------------------------------------------
+ * ROLE → PERMISSION MAP
+ * ------------------------------------------------------------------------- */
+export const ROLE_PERMISSIONS = {
+  [ROLES.SUPER_ADMIN]: Object.values(PERMISSIONS),
+
+  [ROLES.VENDOR_OWNER]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.VENDOR_UPDATE,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_CREATE,
+    PERMISSIONS.CUSTOMER_UPDATE,
+    PERMISSIONS.CUSTOMER_DELETE,
+    PERMISSIONS.CUSTOMER_VIEW_FINANCIALS,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+    PERMISSIONS.PRODUCT_DELETE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_TRANSFER,
+    PERMISSIONS.WAREHOUSE_MANAGE,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.LEAD_CREATE,
+    PERMISSIONS.LEAD_UPDATE,
+    PERMISSIONS.LEAD_MOVE,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.QUOTE_MANAGE,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.ORDER_MANAGE,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.INVOICE_CREATE,
+    PERMISSIONS.INVOICE_UPDATE,
+    PERMISSIONS.INVOICE_SEND,
+    PERMISSIONS.INVOICE_RECORD_PAYMENT,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.EXPENSE_CREATE,
+    PERMISSIONS.EXPENSE_APPROVE,
+    PERMISSIONS.AR_VIEW,
+    PERMISSIONS.AP_VIEW,
+    PERMISSIONS.LEDGER_VIEW,
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.EMPLOYEE_MANAGE,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.ATTENDANCE_MANAGE,
+    PERMISSIONS.LEAVE_VIEW,
+    PERMISSIONS.LEAVE_REQUEST,
+    PERMISSIONS.LEAVE_APPROVE,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.PROJECT_CREATE,
+    PERMISSIONS.PROJECT_UPDATE,
+    PERMISSIONS.TASK_MANAGE,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.TICKET_CREATE,
+    PERMISSIONS.TICKET_REPLY,
+    PERMISSIONS.TICKET_ASSIGN,
+    PERMISSIONS.TICKET_CLOSE,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.SETTINGS_MANAGE,
+    PERMISSIONS.USER_MANAGE,
+  ],
+
+  [ROLES.VENDOR_ADMIN]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_CREATE,
+    PERMISSIONS.CUSTOMER_UPDATE,
+    PERMISSIONS.CUSTOMER_VIEW_FINANCIALS,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_TRANSFER,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.LEAD_CREATE,
+    PERMISSIONS.LEAD_UPDATE,
+    PERMISSIONS.LEAD_MOVE,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.QUOTE_MANAGE,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.INVOICE_CREATE,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.EXPENSE_CREATE,
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.LEAVE_VIEW,
+    PERMISSIONS.LEAVE_REQUEST,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TASK_MANAGE,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.TICKET_CREATE,
+    PERMISSIONS.TICKET_REPLY,
+    PERMISSIONS.REPORT_VIEW,
+  ],
+
+  [ROLES.ACCOUNTANT]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW_FINANCIALS,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.INVOICE_CREATE,
+    PERMISSIONS.INVOICE_UPDATE,
+    PERMISSIONS.INVOICE_SEND,
+    PERMISSIONS.INVOICE_RECORD_PAYMENT,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.EXPENSE_CREATE,
+    PERMISSIONS.EXPENSE_APPROVE,
+    PERMISSIONS.AR_VIEW,
+    PERMISSIONS.AP_VIEW,
+    PERMISSIONS.LEDGER_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+  ],
+
+  [ROLES.SALES_MANAGER]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_CREATE,
+    PERMISSIONS.CUSTOMER_UPDATE,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.LEAD_CREATE,
+    PERMISSIONS.LEAD_UPDATE,
+    PERMISSIONS.LEAD_MOVE,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.QUOTE_MANAGE,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.ORDER_MANAGE,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.INVOICE_CREATE,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.EXPENSE_CREATE,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TASK_MANAGE,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+  ],
+
+  [ROLES.SALES_REP]: [
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_CREATE,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.LEAD_CREATE,
+    PERMISSIONS.LEAD_UPDATE,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.QUOTE_MANAGE,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.TICKET_CREATE,
+  ],
+
+  [ROLES.WAREHOUSE_MANAGER]: [
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_TRANSFER,
+    PERMISSIONS.WAREHOUSE_MANAGE,
+  ],
+
+  [ROLES.HR_MANAGER]: [
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.EMPLOYEE_MANAGE,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.ATTENDANCE_MANAGE,
+    PERMISSIONS.LEAVE_VIEW,
+    PERMISSIONS.LEAVE_APPROVE,
+    PERMISSIONS.REPORT_VIEW,
+  ],
+
+  [ROLES.SUPPORT_AGENT]: [
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.TICKET_CREATE,
+    PERMISSIONS.TICKET_REPLY,
+    PERMISSIONS.TICKET_ASSIGN,
+  ],
+
+  /* Read-only across the board. */
+  [ROLES.AUDITOR]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW_FINANCIALS,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.AR_VIEW,
+    PERMISSIONS.AP_VIEW,
+    PERMISSIONS.LEDGER_VIEW,
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+    PERMISSIONS.AUDIT_VIEW,
+  ],
+
+  /* Baseline for a regular staff member. */
+  [ROLES.EMPLOYEE]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.TICKET_VIEW,
+    PERMISSIONS.TICKET_CREATE,
+    PERMISSIONS.TICKET_REPLY,
+    PERMISSIONS.LEAVE_REQUEST,
+    PERMISSIONS.LEAVE_VIEW,
+    PERMISSIONS.PROJECT_VIEW,
+  ],
+};
+
+/* ---------------------------------------------------------------------------
+ * PLATFORM vs TENANT BOUNDARIES
+ * `isPlatformRole` routes a user to the SuperAdmin shell instead of the
+ * Vendor shell in AppRoutes.
+ * ------------------------------------------------------------------------- */
+export const PLATFORM_ROLES = [ROLES.SUPER_ADMIN];
+
+/** Resolves the permission list for a role, or an empty array if unknown. */
+export function getPermissionsForRole(role) {
+  return ROLE_PERMISSIONS[role] ?? [];
+}
+
+/** Flat lookup used by usePermissions(). */
+export function roleHasPermission(role, permission) {
+  const list = ROLE_PERMISSIONS[role];
+  return Array.isArray(list) ? list.includes(permission) : false;
+}
+
+/** Human labels used in the role-management UI. */
+export const ROLE_LABELS = {
+  [ROLES.SUPER_ADMIN]: 'Platform Administrator',
+  [ROLES.VENDOR_OWNER]: 'Vendor Owner',
+  [ROLES.VENDOR_ADMIN]: 'Vendor Administrator',
+  [ROLES.ACCOUNTANT]: 'Accountant',
+  [ROLES.SALES_MANAGER]: 'Sales Manager',
+  [ROLES.SALES_REP]: 'Sales Representative',
+  [ROLES.WAREHOUSE_MANAGER]: 'Warehouse Manager',
+  [ROLES.HR_MANAGER]: 'HR Manager',
+  [ROLES.SUPPORT_AGENT]: 'Support Agent',
+  [ROLES.AUDITOR]: 'Auditor',
+  [ROLES.EMPLOYEE]: 'Employee',
+};

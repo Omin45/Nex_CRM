@@ -1,0 +1,90 @@
+/* ==========================================================================
+   NexERP — AnimatedLogo
+   --------------------------------------------------------------------------
+   The per-letter gradient wave.
+
+   Each glyph is its own element with the brand gradient clipped into it
+   (background-clip: text + transparent fill) and a background-size wide
+   enough (300%) that the gradient is visibly *travelling*. The wave effect is
+   the animation-delay: every letter runs the same keyframes, offset by
+   index * 0.15s, so a crest of pale blue passes left-to-right across the
+   wordmark.
+
+   Offsets are nth-child rules rather than inline `style` attributes, so the
+   JSX carries no inline styles. Delays are negative so the wordmark is already
+   mid-wave on first paint instead of assembling from the left.
+   ========================================================================== */
+
+.nx-anim-logo {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--nx-font-display);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.nx-anim-logo--sm {
+  font-size: var(--nx-text-lg);
+}
+
+.nx-anim-logo--lg {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  letter-spacing: -0.04em;
+}
+
+/* One glyph. The gradient is painted into the text itself. */
+.nx-anim-logo__char {
+  display: inline-block;
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-logo-wave 8s var(--nx-ease) infinite;
+  will-change: background-position;
+}
+
+/* The wave: background-position travels the full width of the 300% gradient
+   and returns, so the colour never snaps back at the loop boundary. */
+@keyframes nx-logo-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* --- THE WAVE OFFSETS ----------------------------------------------------
+   Literally index * 0.15s, as specified: the crest of pale blue enters at the
+   first letter and reaches the last one 0.9s later, so the wordmark visibly
+   assembles left-to-right and then loops. Declared as nth-child rules rather
+   than inline `style` attributes so the JSX carries no inline styles.
+   Covered for the first eight glyphs, which is longer than any wordmark in
+   the product; anything beyond that shares the index-7 offset. */
+.nx-anim-logo__char:nth-child(1) { animation-delay: 0s; }
+.nx-anim-logo__char:nth-child(2) { animation-delay: 0.15s; }
+.nx-anim-logo__char:nth-child(3) { animation-delay: 0.3s; }
+.nx-anim-logo__char:nth-child(4) { animation-delay: 0.45s; }
+.nx-anim-logo__char:nth-child(5) { animation-delay: 0.6s; }
+.nx-anim-logo__char:nth-child(6) { animation-delay: 0.75s; }
+.nx-anim-logo__char:nth-child(7) { animation-delay: 0.9s; }
+.nx-anim-logo__char:nth-child(n + 8) { animation-delay: 1.05s; }
+
+/* Without background-clip support the glyphs would be invisible, so fall back
+   to flat accent-coloured text. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .nx-anim-logo__char {
+    color: var(--nx-accent);
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}

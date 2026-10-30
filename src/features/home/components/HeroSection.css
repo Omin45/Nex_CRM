@@ -1,0 +1,242 @@
+/**
+ * NexERP — HeroSection Stylesheet
+ * Custom Brand Palette: Crimson (255, 35, 25), Slate (65, 65, 65), Royal Blue (0, 105, 255)
+ */
+
+:root {
+  --nx-bg-rich: #06080e;
+  --nx-surface-glass: rgba(15, 20, 32, 0.75);
+  --nx-surface-opaque: #0b101b;
+  --nx-border-custom: rgba(0, 105, 255, 0.18);
+  --nx-border-soft: rgba(255, 255, 255, 0.08);
+  
+  /* Brand Custom Palette variables */
+  --nx-crimson-rgb: 255, 35, 25;
+  --nx-slate-rgb: 65, 65, 65;
+  --nx-blue-rgb: 0, 105, 255;
+
+  --nx-gradient-brand: linear-gradient(135deg, rgb(var(--nx-crimson-rgb)) 0%, #ff7b00 50%, rgb(var(--nx-blue-rgb)) 100%);
+  --nx-gradient-brand-bg-size: 200% 200%;
+}
+
+html[data-theme='light'] .nx-hero {
+  --nx-surface-opaque: #ffffff;
+}
+
+.nx-hero {
+  position: relative;
+  isolation: isolate;
+  /* A hero must own the first screen: fill the viewport and centre its stack
+     vertically, while still letting taller viewports breathe. `svh` avoids the
+     mobile "jump" the URL bar causes with `vh`. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: clamp(7rem, 16vh, 12rem) var(--nx-section-pad, 5rem);
+  text-align: center;
+  background-color: var(--nx-bg-rich);
+  overflow: hidden;
+}
+
+/* Comet Cascade Background Container Layer */
+.nx-hero__comet-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.nx-home__container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ---- badge --------------------------------------------------------------- */
+.nx-hero__badge-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.nx-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  background: rgba(var(--nx-blue-rgb), 0.08);
+  border: 1px solid rgba(var(--nx-blue-rgb), 0.25);
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px rgba(var(--nx-blue-rgb), 0.1);
+}
+
+.nx-hero__badge-dot {
+  width: 7px;
+  height: 7px;
+  background: rgb(var(--nx-crimson-rgb));
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(var(--nx-crimson-rgb), 0.7);
+  animation: nx-hero-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes nx-hero-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(var(--nx-crimson-rgb), 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(var(--nx-crimson-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--nx-crimson-rgb), 0); }
+}
+
+/* ---- headline (CRM Typography: Space Grotesk / Inter Tech Stack) -------- */
+.nx-hero__heading {
+  max-width: 36ch;
+  margin: 0 auto 1.5rem;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(2.25rem, 4.6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+}
+
+.nx-hero__word {
+  display: inline-block;
+  margin-right: 0.25em;
+}
+
+.nx-hero__word.is-gradient {
+  background-image: var(--nx-gradient-brand);
+  background-size: var(--nx-gradient-brand-bg-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nx-hero-word-shift 6s ease infinite;
+}
+
+@keyframes nx-hero-word-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ---- sub-headline -------------------------------------------------------- */
+.nx-hero__sub {
+  max-width: 60ch;
+  margin: 0 auto 2.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.6;
+  color: #94a3b8;
+}
+
+/* ---- calls to action ----------------------------------------------------- */
+.nx-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3.5rem;
+}
+
+.nx-hero__cta-primary {
+  background: linear-gradient(135deg, rgb(var(--nx-blue-rgb)), #1d4ed8) !important;
+  border: 1px solid rgba(var(--nx-blue-rgb), 0.5) !important;
+  box-shadow: 0 4px 20px rgba(var(--nx-blue-rgb), 0.35) !important;
+  transition: all 0.2s ease;
+}
+
+.nx-hero__cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(var(--nx-blue-rgb), 0.5) !important;
+}
+
+.nx-hero__cta-secondary {
+  color: #f8fafc !important;
+  border-color: rgba(65, 65, 65, 0.6) !important;
+  background: rgba(65, 65, 65, 0.15) !important;
+}
+
+.nx-hero__cta-secondary:hover {
+  background: rgba(65, 65, 65, 0.3) !important;
+  border-color: rgba(var(--nx-blue-rgb), 0.4) !important;
+}
+
+.nx-hero__play {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: rgb(var(--nx-blue-rgb));
+  background: rgba(0, 105, 255, 0.15);
+  border: 1px solid rgba(0, 105, 255, 0.3);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* ---- trust row ----------------------------------------------------------- */
+.nx-hero__trust {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.nx-hero__trust-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-hero__trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.nx-hero__trust-icon {
+  display: inline-flex;
+  font-size: 1rem;
+  color: rgb(var(--nx-blue-rgb));
+}
+
+/* ---- mockup container float animation ------------------------------------- */
+.nx-hero__mockup {
+  position: relative;
+  max-width: 1040px;
+  margin-inline: auto;
+  animation: nx-hero-float 7s ease-in-out infinite alternate;
+}
+
+/* The dashboard sits above the 3D scene that HeroScene renders behind it. */
+.nx-hero__mockup > .nx-mockup {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes nx-hero-float {
+  from { transform: translate3d(0, -6px, 0); }
+  to { transform: translate3d(0, 6px, 0); }
+}
+
+@media (max-width: 640px) {
+  .nx-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nx-hero__mockup {
+    animation: none;
+  }
+}

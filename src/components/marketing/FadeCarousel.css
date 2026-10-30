@@ -1,0 +1,232 @@
+/* ==========================================================================
+   NexERP — FadeCarousel
+   --------------------------------------------------------------------------
+   Crossfade, not slide. Every slide is absolutely positioned in the same
+   grid cell and stacked; only the active one has opacity 1 and full scale.
+   That is why the viewport needs an explicit height — with no height the
+   stacked slides would size to zero.
+
+   The small scale/translate on the outgoing slide gives the transition depth
+   without the content appearing to travel horizontally.
+   ========================================================================== */
+
+.nx-carousel {
+  position: relative;
+}
+
+/* The viewport carries the height so stacked slides do not collapse. Height
+   is a min-height so a taller slide is not clipped. */
+.nx-carousel__viewport {
+  position: relative;
+  display: grid;
+  min-height: 21rem;
+}
+
+.nx-carousel__slide {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-5);
+  padding: var(--nx-space-8);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  background: var(--nx-glass-bg);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  box-shadow: var(--nx-inset-hairline);
+
+  /* The crossfade itself. */
+  opacity: 0;
+  transform: scale(0.985) translateY(10px);
+  transition:
+    opacity 0.6s var(--nx-ease),
+    transform 0.6s var(--nx-ease);
+  pointer-events: none;
+}
+
+.nx-carousel__slide.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.nx-carousel__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--nx-radius);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  color: var(--nx-accent);
+  font-size: var(--nx-text-xl);
+}
+
+.nx-carousel__body {
+  min-width: 0;
+}
+
+.nx-carousel__eyebrow {
+  margin: 0 0 var(--nx-space-1);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-accent);
+}
+
+.nx-carousel__title {
+  margin: 0 0 var(--nx-space-2);
+  font-size: var(--nx-text-xl);
+  color: var(--nx-text-strong);
+}
+
+.nx-carousel__text {
+  margin: 0;
+  max-width: 56ch;
+  line-height: var(--nx-leading-relaxed);
+  color: var(--nx-text-muted);
+}
+
+/* Optional per-slide figures. */
+.nx-carousel__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-6);
+  margin: var(--nx-space-5) 0 0;
+}
+
+.nx-carousel__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+}
+
+.nx-carousel__stat-label {
+  font-size: var(--nx-text-xs);
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+.nx-carousel__stat-value {
+  margin: 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 700;
+  color: var(--nx-text-strong);
+}
+
+/* --- CONTROLS ------------------------------------------------------------ */
+
+.nx-carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-4);
+  margin-top: var(--nx-space-5);
+}
+
+.nx-carousel__arrow {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+  background: var(--nx-overlay);
+  color: var(--nx-text-muted);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-carousel__arrow:hover {
+  color: var(--nx-accent);
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-glow);
+  transform: translateY(-2px);
+}
+
+.nx-carousel__dots {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The dot is the track; the inner bar is the thin progress fill. */
+.nx-carousel__dot {
+  position: relative;
+  display: block;
+  width: 2.25rem;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-border-soft);
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--nx-transition);
+}
+
+.nx-carousel__dot:hover {
+  background: var(--nx-border-strong);
+}
+
+.nx-carousel__dot.is-active {
+  background: var(--nx-border-soft);
+  width: 3.25rem;
+}
+
+.nx-carousel__progress {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: var(--nx-gradient-accent);
+  /* The fill sweeps across exactly once per autoplay interval. The duration is
+     a token so it stays in step with the `interval` prop without an inline
+     style; change both together. */
+  animation-name: nx-carousel-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-duration: var(--nx-carousel-interval, 5s);
+}
+
+/* Pausing the carousel pauses its progress bar too — the dot must not
+   suggest time is passing when the slide is not going to change. */
+.nx-carousel__progress[data-paused] {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: the bar sits full so the control still reads as a slider. */
+.nx-carousel__progress[data-static] {
+  animation: none;
+  transform: scaleX(1);
+}
+
+@keyframes nx-carousel-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --- RESPONSIVE ---------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .nx-carousel__viewport {
+    min-height: 24rem;
+  }
+
+  .nx-carousel__slide {
+    flex-direction: column;
+    padding: var(--nx-space-5);
+    gap: var(--nx-space-3);
+  }
+}

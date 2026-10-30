@@ -1,0 +1,246 @@
+/* ==========================================================================
+   NexERP — form & alert utilities
+   --------------------------------------------------------------------------
+   Small compositions that appear on more than one form surface, so they live in
+   the global layer rather than inside one feature's stylesheet.
+
+   This file used to be the bottom half of layouts/AuthLayout.css. That was a
+   bug waiting to happen: the class names (`.nx-alert`, `.nx-strength`,
+   `.nx-check`) are generic, but the file was only loaded when the old auth
+   layout was mounted, so any other form using `.nx-alert` shipped unstyled —
+   and `.nx-strength` genuinely collided with the register form's strength
+   meter.
+
+   The control-level styles (.nx-field and friends) are NOT here. They belong to
+   ui/Input/Input.css, which is imported by the component that renders them.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CHECKBOX / RADIO LABEL
+   -------------------------------------------------------------------------- */
+.nx-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  cursor: pointer;
+}
+
+.nx-check input[type='checkbox'],
+.nx-check input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  /* Uses the OS accent so the control matches the platform, tinted to the
+     brand hue. */
+  accent-color: var(--nx-accent);
+}
+
+.nx-check a {
+  color: var(--nx-accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nx-check a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   INLINE LINK
+   -------------------------------------------------------------------------- */
+.nx-form__link {
+  color: var(--nx-accent);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-form__link:hover {
+  color: var(--nx-accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nx-form__link:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: 2px;
+  border-radius: var(--nx-radius-xs);
+}
+
+/* --------------------------------------------------------------------------
+   ROWS, FOOTERS AND DIVIDERS
+   -------------------------------------------------------------------------- */
+.nx-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-form__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  margin-top: var(--nx-space-5);
+  padding-top: var(--nx-space-5);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-form__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  margin: var(--nx-space-5) 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+/* The two hairlines that make the divider read as "either / or". */
+.nx-form__divider::before,
+.nx-form__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--nx-border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   INLINE ALERT
+   A banner for a message that belongs to the form as a whole: bad credentials,
+   an expired reset link, a server error.
+   -------------------------------------------------------------------------- */
+.nx-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  border: 1px solid;
+  border-radius: var(--nx-radius-sm);
+  animation: nx-alert-in var(--nx-dur) var(--nx-ease) both;
+}
+
+@keyframes nx-alert-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Each variant is the same recipe with a different hue, so they are declared
+   once via a shared custom property rather than four near-identical blocks. */
+.nx-alert--error {
+  --nx-alert-rgb: var(--nx-danger-rgb);
+  --nx-alert-hue: var(--nx-danger);
+}
+.nx-alert--success {
+  --nx-alert-rgb: var(--nx-success-rgb);
+  --nx-alert-hue: var(--nx-success);
+}
+.nx-alert--info {
+  --nx-alert-rgb: var(--nx-info-rgb);
+  --nx-alert-hue: var(--nx-info);
+}
+.nx-alert--warning {
+  --nx-alert-rgb: var(--nx-warning-rgb);
+  --nx-alert-hue: var(--nx-warning);
+}
+
+.nx-alert[class*='nx-alert--'] {
+  color: var(--nx-alert-hue);
+  background: rgba(var(--nx-alert-rgb), 0.08);
+  border-color: rgba(var(--nx-alert-rgb), 0.28);
+}
+
+.nx-alert__icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   CENTRED STATUS BLOCK
+   Used by the email-verification and password-reset outcomes.
+   -------------------------------------------------------------------------- */
+.nx-verify {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-3);
+  margin-top: var(--nx-space-6);
+  text-align: center;
+  animation: nx-verify-in var(--nx-dur-slow) var(--nx-ease-spring) both;
+}
+
+@keyframes nx-verify-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nx-verify__icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.1);
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+  box-shadow: 0 0 28px -10px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.nx-verify__icon.is-success {
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.1);
+  border-color: rgba(var(--nx-success-rgb), 0.3);
+  box-shadow: 0 0 28px -10px var(--nx-success);
+}
+
+.nx-verify__icon.is-danger {
+  color: var(--nx-danger);
+  background: rgba(var(--nx-danger-rgb), 0.1);
+  border-color: rgba(var(--nx-danger-rgb), 0.3);
+  box-shadow: 0 0 28px -10px var(--nx-danger);
+}
+
+/* Spins the glyph only, not the ring around it. */
+.nx-spin {
+  animation: nx-spin 0.9s linear infinite;
+}
+
+@keyframes nx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nx-alert,
+  .nx-verify,
+  .nx-spin {
+    animation: none;
+  }
+}

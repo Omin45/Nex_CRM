@@ -1,0 +1,89 @@
+/* ==========================================================================
+   NexERP — Veil Rays background
+   --------------------------------------------------------------------------
+   Soft light rays fanning down from the top edge, over a translucent veil.
+   The palette falls back to the shared accent/indigo tokens when the hero's
+   brand variables are not loaded, so the effect works on any marketing band.
+   ========================================================================== */
+
+.veil-rays {
+  --vr-a: var(--nx-accent-rgb, 125, 211, 252);
+  --vr-b: var(--nx-indigo-rgb, 129, 140, 248);
+
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* The veil: a vertical wash that fades the rays out before they reach the copy. */
+.veil-rays__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--vr-a), 0.12) 0%,
+    rgba(var(--vr-a), 0.04) 40%,
+    transparent 78%
+  );
+}
+
+/* One ray: a leaning shaft of light with a soft top anchor. */
+.veil-rays__ray {
+  position: absolute;
+  top: -20%;
+  width: clamp(60px, 8vw, 130px);
+  height: 140%;
+  transform-origin: top center;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--vr-a), 0.28) 0%,
+    rgba(var(--vr-b), 0.1) 55%,
+    transparent 100%
+  );
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  animation: vr-sway 14s var(--nx-ease, ease-in-out) infinite alternate;
+}
+
+.veil-rays__ray--1 { left: 4%;  animation-duration: 12s; }
+.veil-rays__ray--2 { left: 22%; animation-duration: 17s; animation-delay: -3s; }
+.veil-rays__ray--3 { left: 44%; animation-duration: 14s; animation-delay: -6s; }
+.veil-rays__ray--4 { left: 68%; animation-duration: 19s; animation-delay: -2s; }
+.veil-rays__ray--5 { left: 86%; animation-duration: 15s; animation-delay: -8s; }
+
+@keyframes vr-sway {
+  from {
+    transform: rotate(-6deg) translateX(-18px);
+    opacity: 0.5;
+  }
+  to {
+    transform: rotate(6deg) translateX(18px);
+    opacity: 0.9;
+  }
+}
+
+/* A warm halo pinned to the top centre, the source the rays read as coming from. */
+.veil-rays__glow {
+  position: absolute;
+  top: -35%;
+  left: 50%;
+  width: min(70vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--vr-a), 0.28),
+    transparent 62%
+  );
+  filter: blur(30px);
+  animation: vr-halo 10s ease-in-out infinite alternate;
+}
+
+@keyframes vr-halo {
+  from { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  to   { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+}

@@ -1,0 +1,227 @@
+/* ==========================================================================
+   NexERP — AdminVendorDetailPage
+   --------------------------------------------------------------------------
+   Three things carry meaning on this page and are therefore styled here
+   rather than left to chance: the fact list, the seats gauge, and the
+   five-step onboarding strip.
+
+   The strip writes no widths anywhere. Each step is a discrete segment and
+   `data-step` on the card decides, through attribute selectors, which
+   segments are done and which one is current — so the visual always agrees
+   with the aria-valuenow the strip reports, whatever number the API sends.
+   ========================================================================== */
+
+/* ---- identity facts ------------------------------------------------------- */
+.nx-vend-d__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--nx-space-4);
+  margin: 0;
+}
+
+.nx-vend-d__fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-vend-d__fact dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-vend-d__fact dd {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+}
+
+.nx-vend-d__empty {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- modules -------------------------------------------------------------- */
+.nx-vend-d__modules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- subscription --------------------------------------------------------- */
+.nx-vend-d__plan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-vend-d__mrr {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-vend-d__mrr-unit {
+  font-size: var(--nx-text-xs);
+  font-weight: 400;
+  color: var(--nx-text-dim);
+}
+
+.nx-vend-d__seats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+}
+
+.nx-vend-d__seats-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* Native <progress>: width comes from the value attribute, never from CSS
+   written by hand. */
+.nx-vend-d__bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-vend-d__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-vend-d__bar::-webkit-progress-value {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-vend-d__bar::-moz-progress-bar {
+  background: var(--nx-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-vend-d__bar[data-tone='warning']::-webkit-progress-value {
+  background: var(--nx-warning);
+}
+
+.nx-vend-d__bar[data-tone='warning']::-moz-progress-bar {
+  background: var(--nx-warning);
+}
+
+/* ---- onboarding strip ----------------------------------------------------- */
+.nx-vend-d__strip {
+  display: flex;
+  gap: var(--nx-space-2);
+}
+
+.nx-vend-d__step {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  min-width: 0;
+}
+
+.nx-vend-d__seg {
+  height: 6px;
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-vend-d__step-name {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The current step: accent segment plus weight on the label, so the reader
+   can find it without relying on hue alone. */
+.nx-vend-d__onboard[data-step='1'] .nx-vend-d__step:nth-child(1) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='2'] .nx-vend-d__step:nth-child(2) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='3'] .nx-vend-d__step:nth-child(3) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='4'] .nx-vend-d__step:nth-child(4) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='5'] .nx-vend-d__step:nth-child(5) .nx-vend-d__seg {
+  background: var(--nx-accent);
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(var(--nx-accent-rgb), 0.18);
+}
+
+.nx-vend-d__onboard[data-step='1'] .nx-vend-d__step:nth-child(1) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='2'] .nx-vend-d__step:nth-child(2) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='3'] .nx-vend-d__step:nth-child(3) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='4'] .nx-vend-d__step:nth-child(4) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='5'] .nx-vend-d__step:nth-child(5) .nx-vend-d__step-name {
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+/* Everything before the current step is done. */
+.nx-vend-d__onboard[data-step='2'] .nx-vend-d__step:nth-child(-n+1) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='3'] .nx-vend-d__step:nth-child(-n+2) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='4'] .nx-vend-d__step:nth-child(-n+3) .nx-vend-d__seg,
+.nx-vend-d__onboard[data-step='5'] .nx-vend-d__step:nth-child(-n+4) .nx-vend-d__seg {
+  background: var(--nx-success);
+  border-color: transparent;
+}
+
+.nx-vend-d__onboard[data-step='2'] .nx-vend-d__step:nth-child(-n+1) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='3'] .nx-vend-d__step:nth-child(-n+2) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='4'] .nx-vend-d__step:nth-child(-n+3) .nx-vend-d__step-name,
+.nx-vend-d__onboard[data-step='5'] .nx-vend-d__step:nth-child(-n+4) .nx-vend-d__step-name {
+  color: var(--nx-text-muted);
+}
+
+.nx-vend-d__progress-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+}
+
+.nx-vend-d__progress-pct {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-accent);
+}
+
+.nx-vend-d__progress-owner {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-vend-d__onboard :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

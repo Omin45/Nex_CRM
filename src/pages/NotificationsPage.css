@@ -1,0 +1,136 @@
+/* ==========================================================================
+   NexERP — NotificationsPage
+   --------------------------------------------------------------------------
+   The unread treatment and the notification row itself. An unread row is
+   tinted, bar-marked and (in the Status column) labelled "New" — three signals,
+   so "unread" survives greyscale printing and colour blindness alike.
+   ========================================================================== */
+
+/* ---- row ----------------------------------------------------------------- */
+.nx-notif__cell {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-notif__glyph {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  font-size: var(--nx-text-sm);
+  line-height: 1;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-notif__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  min-width: 0;
+}
+
+.nx-notif__row-title {
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+}
+
+.nx-notif__row-body {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 46ch;
+}
+
+.nx-notif__state {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-notif__none {
+  color: var(--nx-text-faint);
+}
+
+/* ---- received ------------------------------------------------------------ */
+.nx-notif__time {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--nx-space-1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-notif__time-date {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-notif__time-ago {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- unread -------------------------------------------------------------- */
+.nx-notif__row--unread {
+  background: rgba(var(--nx-accent-rgb), 0.05);
+}
+
+.nx-notif__row--unread .nx-table__cell:first-child {
+  box-shadow: inset var(--nx-space-1) 0 0 0 var(--nx-accent);
+}
+
+.nx-notif__row--unread .nx-notif__row-title {
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-notif__row--unread .nx-notif__glyph {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: transparent;
+}
+
+/* ---- error --------------------------------------------------------------- */
+.nx-notif__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-notif__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-notif__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus --------------------------------------------------------------- */
+.nx-notif :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .nx-notif__row-body {
+    max-width: 24ch;
+  }
+}

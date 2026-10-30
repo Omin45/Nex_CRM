@@ -1,0 +1,185 @@
+/* ==========================================================================
+   NexERP — QuoteListPage
+   --------------------------------------------------------------------------
+   The quote identity cell, the valid-until treatment that carries meaning
+   beyond its value, the icon-only "open" control in the last column, and the
+   read-only detail dialog it raises.
+
+   Colour is never the only signal here. A lapsed validity window says
+   "expired" in words next to the date — the same reason the invoice page
+   writes "overdue" beside its due date — and the open button carries an
+   aria-label because its arrow glyph is the entire visual affordance.
+   ========================================================================== */
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-quote-list__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-quote-list__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-quote-list__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-quote-list__number {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-quote-list__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-quote-list__customer {
+  display: block;
+  max-width: 16rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- valid until ---------------------------------------------------------- */
+.nx-quote-list__date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-quote-list__date[data-expired] {
+  color: var(--nx-danger);
+  font-weight: 500;
+}
+
+.nx-quote-list__expired-flag {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-danger);
+}
+
+/* ---- numbers -------------------------------------------------------------- */
+.nx-quote-list__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-quote-list__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+/* ---- row action ----------------------------------------------------------- */
+.nx-quote-list__open {
+  display: inline-grid;
+  place-items: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-quote-list__open:hover {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-strong);
+}
+
+.nx-quote-list__open:focus-visible,
+.nx-quote-list__filters .nx-segmented__item:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- status filter --------------------------------------------------------
+   Seven segments overflow the toolbar's inline-flex pill at narrow widths, so
+   this page's copy of the control is allowed to wrap. Scoped to the block so
+   no other list screen inherits it. */
+.nx-quote-list__filters .nx-segmented {
+  flex-wrap: wrap;
+}
+
+/* ---- detail dialog -------------------------------------------------------- */
+.nx-quote-list__detail {
+  display: grid;
+  gap: var(--nx-space-3);
+  margin: 0;
+}
+
+.nx-quote-list__detail-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-4);
+}
+
+.nx-quote-list__detail-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-quote-list__detail-value {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+  text-align: right;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-quote-list__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-quote-list__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-quote-list__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}

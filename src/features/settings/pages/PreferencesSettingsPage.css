@@ -1,0 +1,262 @@
+/* ==========================================================================
+   NexERP — PreferencesSettingsPage
+   --------------------------------------------------------------------------
+   Three form cards of native controls. All the styling work here is the
+   custom radio and checkbox marks: the real inputs stay in the DOM (fully
+   focusable, keyboard-operable) and are only made transparent, while the
+   mark beside them carries the checked state. Everything else — banner,
+   action row, focus ring, phone stacking — follows CompanySettingsPage.
+   ========================================================================== */
+
+.nx-prefs__form {
+  width: 100%;
+}
+
+/* The banner mirrors the card rhythm instead of floating above it. */
+.nx-prefs__note {
+  margin: 0;
+}
+
+.nx-prefs__form :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- fieldset / legend ---------------------------------------------------- */
+.nx-prefs__fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.nx-prefs__legend {
+  display: block;
+  padding: 0;
+  margin: 0 0 var(--nx-space-5);
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-prefs__legend-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: var(--nx-space-2);
+  vertical-align: middle;
+  color: var(--nx-accent);
+  background: var(--nx-overlay-strong);
+  border-radius: var(--nx-radius-sm);
+}
+
+/* ---- groups --------------------------------------------------------------- */
+.nx-prefs__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+}
+
+.nx-prefs__group + .nx-prefs__group {
+  margin-top: var(--nx-space-6);
+}
+
+.nx-prefs__group-title {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-prefs__group-hint {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-prefs__error {
+  margin: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-danger);
+}
+
+.nx-prefs__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--nx-space-3);
+}
+
+.nx-prefs__toggles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+/* ---- option / toggle cards ------------------------------------------------ */
+.nx-prefs__option,
+.nx-prefs__toggle {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--nx-dur-fast) var(--nx-ease),
+    background-color var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-prefs__option:hover,
+.nx-prefs__toggle:hover {
+  border-color: var(--nx-border-strong);
+}
+
+.nx-prefs__option:has(input:checked),
+.nx-prefs__toggle:has(input:checked) {
+  background: rgba(var(--nx-accent-rgb), 0.06);
+  border-color: var(--nx-border-accent);
+}
+
+.nx-prefs__option-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nx-prefs__option-title {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-prefs__option-hint {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+/* ---- native inputs, made transparent -------------------------------------- */
+.nx-prefs__radio {
+  position: absolute;
+  top: var(--nx-space-3);
+  left: var(--nx-space-3);
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.nx-prefs__check {
+  position: absolute;
+  top: var(--nx-space-3);
+  left: var(--nx-space-3);
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.nx-prefs__radio-mark {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  background: transparent;
+  border: 1.5px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-pill);
+  transition: border-color var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-prefs__option:hover .nx-prefs__radio-mark,
+.nx-prefs__radio:focus-visible + .nx-prefs__radio-mark {
+  border-color: var(--nx-accent);
+}
+
+/* The input itself is transparent, so the ring belongs to its mark. */
+.nx-prefs__radio:focus-visible + .nx-prefs__radio-mark {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-prefs__radio:checked + .nx-prefs__radio-mark {
+  border-color: var(--nx-accent);
+}
+
+/* The dot is drawn, not an image, so it inherits the mark's geometry. */
+.nx-prefs__radio:checked + .nx-prefs__radio-mark::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--nx-accent);
+  border-radius: inherit;
+}
+
+.nx-prefs__check-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  color: transparent;
+  background: transparent;
+  border: 1.5px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-xs);
+  transition:
+    background-color var(--nx-dur-fast) var(--nx-ease),
+    border-color var(--nx-dur-fast) var(--nx-ease);
+}
+
+.nx-prefs__toggle:hover .nx-prefs__check-mark,
+.nx-prefs__check:focus-visible + .nx-prefs__check-mark {
+  border-color: var(--nx-accent);
+}
+
+/* Same reason as the radio: the visible ring rides on the mark. */
+.nx-prefs__check:focus-visible + .nx-prefs__check-mark {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-prefs__check:checked + .nx-prefs__check-mark {
+  color: var(--nx-text-inverse);
+  background: var(--nx-accent);
+  border-color: var(--nx-accent);
+}
+
+/* ---- action row ------------------------------------------------------------ */
+.nx-prefs__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nx-space-3);
+}
+
+@media (max-width: 640px) {
+  .nx-prefs__actions {
+    justify-content: stretch;
+  }
+
+  /* Full-width stacked actions on a phone; scoped to this page's row so no
+     other button in the app inherits it. */
+  .nx-prefs__actions > * {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-prefs__option,
+  .nx-prefs__toggle,
+  .nx-prefs__radio-mark,
+  .nx-prefs__check-mark {
+    transition: none;
+  }
+}

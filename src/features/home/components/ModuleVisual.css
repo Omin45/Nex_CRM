@@ -1,0 +1,662 @@
+/* ==========================================================================
+   NexERP — ModuleVisual
+   --------------------------------------------------------------------------
+   The miniature product UI shown beside each module on the Features page.
+   A glass "app window": a chrome bar, then a body the module-specific JSX
+   fills with boards, ledgers, charts and lists built from tokens alone.
+
+   Bar heights, fill widths and chart values are set with nth-child rules
+   rather than inline styles, so the whole component stays markup + CSS.
+   ========================================================================== */
+
+.nx-modvis {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-lg), var(--nx-glass-highlight);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+}
+
+/* A different corner tint per module, so scrolling reads as variety. */
+.nx-modvis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 82% 8%,
+    var(--nx-modvis-tint, transparent),
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+.nx-modvis[data-module='sales'] {
+  --nx-modvis-tint: rgba(56, 189, 248, 0.22);
+}
+.nx-modvis[data-module='inventory'] {
+  --nx-modvis-tint: rgba(34, 211, 238, 0.2);
+}
+.nx-modvis[data-module='accounting'] {
+  --nx-modvis-tint: rgba(129, 140, 248, 0.22);
+}
+.nx-modvis[data-module='hr'] {
+  --nx-modvis-tint: rgba(167, 139, 250, 0.2);
+}
+.nx-modvis[data-module='projects'] {
+  --nx-modvis-tint: rgba(125, 211, 252, 0.2);
+}
+.nx-modvis[data-module='support'] {
+  --nx-modvis-tint: rgba(52, 211, 153, 0.18);
+}
+.nx-modvis[data-module='reports'] {
+  --nx-modvis-tint: rgba(56, 189, 248, 0.22);
+}
+.nx-modvis[data-module='documents'] {
+  --nx-modvis-tint: rgba(148, 163, 184, 0.18);
+}
+
+/* Keep the chrome and body above the tint overlay. */
+.nx-modvis__chrome,
+.nx-modvis__body {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- window chrome ------------------------------------------------------- */
+.nx-modvis__chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border-bottom: 1px solid var(--nx-border-soft);
+  background: var(--nx-overlay);
+}
+
+.nx-modvis__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.nx-modvis__dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--nx-border-strong);
+}
+
+.nx-modvis__dots i:nth-child(1) {
+  background: #ff5f57;
+}
+.nx-modvis__dots i:nth-child(2) {
+  background: #febc2e;
+}
+.nx-modvis__dots i:nth-child(3) {
+  background: #28c840;
+}
+
+.nx-modvis__chrome-title {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--nx-text-muted);
+}
+
+.nx-modvis__chrome-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 2px 9px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.12);
+  border: 1px solid rgba(var(--nx-success-rgb), 0.28);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modvis__chrome-pill::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: nx-modvis-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes nx-modvis-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- body ---------------------------------------------------------------- */
+.nx-modvis__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  min-height: 0;
+  padding: var(--nx-space-4);
+}
+
+/* ---- shared track + fill ------------------------------------------------- */
+.nx-modvis__track {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  background: var(--nx-overlay-strong);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modvis__fill {
+  display: block;
+  height: 100%;
+  width: var(--nx-fill, 60%);
+  border-radius: inherit;
+  background: var(--nx-gradient-accent);
+}
+
+/* ---- KPI row (sales) ----------------------------------------------------- */
+.nx-modvis__kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nx-space-2);
+}
+
+.nx-modvis__kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-modvis__kpi b {
+  font-size: var(--nx-text-md);
+  font-weight: 700;
+  color: var(--nx-text);
+}
+
+.nx-modvis__kpi span {
+  font-size: 0.6rem;
+  color: var(--nx-text-muted);
+}
+
+/* ---- pipeline board (sales) --------------------------------------------- */
+.nx-modvis__board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--nx-space-2);
+  flex: 1;
+  min-height: 0;
+}
+
+.nx-modvis__col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.nx-modvis__col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-modvis__count {
+  padding: 0 6px;
+  font-size: 0.55rem;
+  color: var(--nx-text);
+  background: var(--nx-overlay-strong);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modvis__deal {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-left: 2px solid var(--nx-accent);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-modvis__deal-name {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-modvis__deal-amount {
+  font-size: 0.6rem;
+  color: var(--nx-text-muted);
+}
+
+/* ---- stock list (inventory) --------------------------------------------- */
+.nx-modvis__stock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+.nx-modvis__stock-row {
+  display: grid;
+  grid-template-columns: minmax(0, 6.5rem) 1fr auto;
+  gap: var(--nx-space-2);
+  align-items: center;
+}
+
+.nx-modvis__stock-name {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text);
+}
+
+.nx-modvis__stock-qty {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-text-muted);
+}
+
+.nx-modvis__stock-row:nth-child(1) .nx-modvis__fill {
+  --nx-fill: 82%;
+}
+.nx-modvis__stock-row:nth-child(2) .nx-modvis__fill {
+  --nx-fill: 46%;
+}
+.nx-modvis__stock-row:nth-child(3) .nx-modvis__fill {
+  --nx-fill: 62%;
+}
+.nx-modvis__stock-row:nth-child(4) .nx-modvis__fill {
+  --nx-fill: 34%;
+}
+
+.nx-modvis__notice {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-top: auto;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-warning);
+  background: rgba(var(--nx-warning-rgb), 0.08);
+  border: 1px solid rgba(var(--nx-warning-rgb), 0.28);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-modvis__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---- ledger (accounting) ------------------------------------------------- */
+.nx-modvis__entries {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.nx-modvis__entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  background: var(--nx-overlay);
+}
+
+.nx-modvis__entry:first-child {
+  border-radius: var(--nx-radius-sm) var(--nx-radius-sm) 0 0;
+}
+.nx-modvis__entry:last-child {
+  border-radius: 0 0 var(--nx-radius-sm) var(--nx-radius-sm);
+}
+
+.nx-modvis__entry-label {
+  overflow: hidden;
+  color: var(--nx-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-modvis__entry-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-modvis__entry-amount[data-tone='in'] {
+  color: var(--nx-success);
+}
+.nx-modvis__entry-amount[data-tone='out'] {
+  color: var(--nx-danger);
+}
+
+.nx-modvis__seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 3px 10px;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.12);
+  border: 1px solid rgba(var(--nx-success-rgb), 0.3);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* ---- people + attendance (hr) ------------------------------------------- */
+.nx-modvis__people {
+  display: flex;
+  gap: var(--nx-space-2);
+}
+
+.nx-modvis__avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--nx-text);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+}
+
+.nx-modvis__heat {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: auto;
+}
+
+.nx-modvis__heat i {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--nx-accent);
+  opacity: 0.12;
+}
+
+.nx-modvis__heat i:nth-child(3n) {
+  opacity: 0.32;
+}
+.nx-modvis__heat i:nth-child(5n) {
+  opacity: 0.52;
+}
+.nx-modvis__heat i:nth-child(7n) {
+  opacity: 0.78;
+}
+
+.nx-modvis__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-4);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+/* ---- kanban (projects) --------------------------------------------------- */
+.nx-modvis__lanes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nx-space-2);
+  flex: 1;
+  min-height: 0;
+}
+
+.nx-modvis__lane {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.nx-modvis__lane-head {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-modvis__task {
+  display: block;
+  padding: 6px 8px;
+  font-size: 0.66rem;
+  color: var(--nx-text);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-modvis__task-bar {
+  display: block;
+  height: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+  background: var(--nx-overlay-strong);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modvis__task-bar i {
+  display: block;
+  height: 100%;
+  width: 60%;
+  border-radius: inherit;
+  background: var(--nx-gradient-accent);
+}
+
+.nx-modvis__lane:nth-child(1) .nx-modvis__task-bar i {
+  width: 35%;
+}
+.nx-modvis__lane:nth-child(2) .nx-modvis__task-bar i {
+  width: 72%;
+}
+.nx-modvis__lane:nth-child(3) .nx-modvis__task-bar i {
+  width: 100%;
+}
+
+.nx-modvis__progress {
+  margin-top: auto;
+}
+
+.nx-modvis__progress .nx-modvis__fill {
+  --nx-fill: 68%;
+}
+
+.nx-modvis__progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+/* ---- tickets (support) --------------------------------------------------- */
+.nx-modvis__tickets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+.nx-modvis__ticket {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px var(--nx-space-2);
+  align-items: center;
+}
+
+.nx-modvis__ticket .nx-modvis__track {
+  grid-column: 1 / -1;
+}
+
+.nx-modvis__ticket-label {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-modvis__pill {
+  padding: 2px 9px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-modvis__pill[data-tone='ok'] {
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.14);
+}
+.nx-modvis__pill[data-tone='warn'] {
+  color: var(--nx-warning);
+  background: rgba(var(--nx-warning-rgb), 0.14);
+}
+.nx-modvis__pill[data-tone='info'] {
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-rgb), 0.16);
+}
+
+/* ---- chart (reports) ----------------------------------------------------- */
+.nx-modvis__chart {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: 5px;
+  min-height: 0;
+  padding-top: var(--nx-space-2);
+}
+
+.nx-modvis__chart i {
+  flex: 1;
+  height: var(--nx-h, 40%);
+  border-radius: 3px 3px 0 0;
+  background: var(--nx-gradient-accent);
+  opacity: 0.85;
+}
+
+.nx-modvis__chart i:nth-child(1) { --nx-h: 42%; }
+.nx-modvis__chart i:nth-child(2) { --nx-h: 58%; }
+.nx-modvis__chart i:nth-child(3) { --nx-h: 36%; }
+.nx-modvis__chart i:nth-child(4) { --nx-h: 70%; }
+.nx-modvis__chart i:nth-child(5) { --nx-h: 52%; }
+.nx-modvis__chart i:nth-child(6) { --nx-h: 84%; }
+.nx-modvis__chart i:nth-child(7) { --nx-h: 64%; }
+.nx-modvis__chart i:nth-child(8) { --nx-h: 92%; }
+.nx-modvis__chart i:nth-child(9) { --nx-h: 74%; }
+.nx-modvis__chart i:nth-child(10) { --nx-h: 60%; }
+.nx-modvis__chart i:nth-child(11) { --nx-h: 88%; }
+.nx-modvis__chart i:nth-child(12) { --nx-h: 78%; }
+
+.nx-modvis__legend {
+  display: flex;
+  gap: var(--nx-space-4);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-modvis__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nx-modvis__swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--nx-accent);
+}
+
+.nx-modvis__swatch--alt {
+  background: var(--nx-indigo);
+}
+
+/* ---- files (documents) --------------------------------------------------- */
+.nx-modvis__search {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-modvis__files {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--nx-space-1);
+}
+
+.nx-modvis__file {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: 6px 8px;
+  background: var(--nx-overlay);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-modvis__file-badge {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 22px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--nx-text);
+  background: var(--nx-gradient-pill);
+  border-radius: 4px;
+}
+
+.nx-modvis__file-name {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-modvis__file-size {
+  margin-left: auto;
+  font-size: 0.6rem;
+  color: var(--nx-text-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-modvis__chrome-pill::before {
+    animation: none;
+  }
+}

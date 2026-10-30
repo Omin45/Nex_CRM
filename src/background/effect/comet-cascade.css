@@ -1,0 +1,92 @@
+.comet-cascade-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Diagonal shooting star / comet trails */
+.comet-stream {
+  position: absolute;
+  width: 2px;
+  height: 140px;
+  background: linear-gradient(180deg, rgba(0, 105, 255, 0.8), rgba(255, 35, 25, 0.2), transparent);
+  transform: rotate(45deg);
+  opacity: 0.4;
+  animation: comet-fall 6s linear infinite;
+}
+
+.comet-1 {
+  top: -20%;
+  left: 20%;
+  animation-duration: 5s;
+  animation-delay: 0s;
+}
+
+.comet-2 {
+  top: -30%;
+  left: 60%;
+  animation-duration: 7s;
+  animation-delay: 2s;
+  background: linear-gradient(180deg, rgba(255, 35, 25, 0.8), rgba(0, 105, 255, 0.2), transparent);
+}
+
+.comet-3 {
+  top: -10%;
+  left: 85%;
+  animation-duration: 4.5s;
+  animation-delay: 1s;
+}
+
+@keyframes comet-fall {
+  0% {
+    transform: translateY(-100px) translateX(-100px) rotate(45deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(110vh) translateX(110vh) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* Ambient color glow blobs matching your brand palette */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.22;
+  animation: glow-pulse 8s ease-in-out infinite alternate;
+}
+
+.glow-crimson {
+  width: 350px;
+  height: 350px;
+  top: 10%;
+  left: 15%;
+  background: rgb(255, 35, 25);
+}
+
+.glow-blue {
+  width: 450px;
+  height: 450px;
+  top: 25%;
+  right: 10%;
+  background: rgb(0, 105, 255);
+  animation-delay: 4s;
+}
+
+@keyframes glow-pulse {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.18;
+  }
+  100% {
+    transform: scale(1.15) translate(20px, -20px);
+    opacity: 0.28;
+  }
+}

@@ -1,0 +1,73 @@
+/* ==========================================================================
+   NexERP — ProfitLossPage
+   --------------------------------------------------------------------------
+   Three treatments carry meaning here: the group marker ("Income" /
+   "Expenses" / "Result") appearing only where the group changes; emphasis
+   rows (gross and net profit) tinted + bold but never direction-coloured,
+   since "up" is not automatically good on a P&L; and tabular numerals
+   aligning current / previous / change down each column. The period control
+   and chart chrome come from shared layers.
+   ========================================================================== */
+
+/* ---- statement cells ----------------------------------------------------- */
+.nx-pl__line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  min-width: 0;
+}
+
+.nx-pl__group {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-pl__name {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+}
+
+.nx-pl__num {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-pl__num--strong {
+  color: var(--nx-text);
+  font-weight: 500;
+}
+
+/* ---- emphasis rows -------------------------------------------------------
+   Scoped to this page's own row class, so no other feature's table is
+   affected even though the table primitive is shared. */
+.nx-pl__row--emphasis {
+  background: rgba(var(--nx-accent-strong-rgb), 0.06);
+}
+
+.nx-pl__row--emphasis .nx-pl__name {
+  font-weight: 700;
+  color: var(--nx-text-strong);
+}
+
+.nx-pl__row--emphasis .nx-pl__num--strong {
+  font-weight: 700;
+  color: var(--nx-text-strong);
+}
+
+/* A hairline above each subtotal keeps it visually welded to its group. */
+.nx-pl__row--emphasis .nx-table__cell {
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS
+   -------------------------------------------------------------------------- */
+.nx-pl :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

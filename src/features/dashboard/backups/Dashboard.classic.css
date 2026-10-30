@@ -1,0 +1,621 @@
+/* ==========================================================================
+   NexERP — Executive dashboard
+   KPI tiles, the pipeline strip, the attention list and the quick-action
+   rail. Everything here is specific to the dashboard composition; the
+   primitives it leans on (Card, Badge, Button) style themselves.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   METRIC TILE
+   -------------------------------------------------------------------------- */
+.nx-metric {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  /* Room for the sparkline, which bleeds off the right edge. */
+  min-height: 132px;
+  padding: var(--nx-space-5) var(--nx-space-5) var(--nx-space-4);
+  text-align: left;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.nx-metric.is-linked {
+  color: inherit;
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+/* Ambient breathing glow: each KPI tile cycles a soft accent shadow on a
+   7s loop, staggered by position so the row reads as a slow wave rather than
+   five cards blinking in unison. Hover pauses the loop (an animation always
+   beats a declared box-shadow) and pins the strongest shadow instead. */
+.grid--metrics > .nx-metric {
+  animation: nx-metric-breathe 7s var(--nx-ease) infinite;
+}
+
+.grid--metrics > .nx-metric:nth-child(2) { animation-delay: -1.4s; }
+.grid--metrics > .nx-metric:nth-child(3) { animation-delay: -2.8s; }
+.grid--metrics > .nx-metric:nth-child(4) { animation-delay: -4.2s; }
+.grid--metrics > .nx-metric:nth-child(5) { animation-delay: -5.6s; }
+
+/* A light band that travels the top edge of each tile — the same sweep the
+   header pill uses, slowed down and clipped to the card by overflow: hidden.
+   Its final keyframe parks it off the right edge, so the loop has no visible
+   seam and reduced motion (which snaps to the end) shows nothing at all. */
+.nx-metric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 38%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--nx-accent-strong-rgb), 0.85),
+    transparent
+  );
+  animation: nx-metric-sweep 6.5s linear infinite;
+  pointer-events: none;
+}
+
+.grid--metrics > .nx-metric:nth-child(2)::before { animation-delay: -1.6s; }
+.grid--metrics > .nx-metric:nth-child(3)::before { animation-delay: -3.2s; }
+.grid--metrics > .nx-metric:nth-child(4)::before { animation-delay: -4.8s; }
+.grid--metrics > .nx-metric:nth-child(5)::before { animation-delay: -6.4s; }
+
+.nx-metric.is-linked:hover {
+  transform: translateY(-4px);
+  border-color: var(--nx-border-accent);
+  /* Stop the breathe loop so the hover shadow below is what the eye sees. */
+  animation: none;
+  box-shadow: var(--nx-glow-strong), var(--nx-shadow-lg);
+}
+
+/* The sheen follows the cursor; --mx/--my are set by a pointermove listener
+   on the element itself (see MetricCard's parent grid). */
+.nx-metric.is-linked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(var(--nx-accent-strong-rgb), 0.12),
+    transparent 70%
+  );
+  transition: opacity var(--nx-dur) var(--nx-ease);
+  pointer-events: none;
+}
+
+.nx-metric.is-linked:hover::after {
+  opacity: 1;
+}
+
+/* Tinted rail along the leading edge, per the card edge-accent treatment. */
+.nx-metric__edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 46%;
+  background: var(--nx-accent);
+  box-shadow: 0 0 14px -2px currentColor;
+  color: var(--nx-accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.nx-metric__edge.is-success { background: var(--nx-success); color: var(--nx-success); }
+.nx-metric__edge.is-warning { background: var(--nx-warning); color: var(--nx-warning); }
+.nx-metric__edge.is-danger  { background: var(--nx-danger);  color: var(--nx-danger); }
+.nx-metric__edge.is-violet  { background: var(--nx-violet);  color: var(--nx-violet); }
+
+.nx-metric__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+}
+
+.nx-metric__label {
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-dim);
+}
+
+.nx-metric__icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.1);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-metric__value {
+  position: relative;
+  z-index: 1;
+  font-size: var(--nx-text-2xl);
+  font-weight: 700;
+  line-height: var(--nx-leading-tight);
+  letter-spacing: var(--nx-tracking-tight);
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-metric__foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.nx-metric__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-metric__delta.is-up {
+  color: var(--nx-success);
+}
+
+.nx-metric__delta.is-down {
+  color: var(--nx-danger);
+}
+
+.nx-metric__delta.is-flat {
+  color: var(--nx-text-dim);
+}
+
+.nx-metric__hint {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+/* The sparkline occupies the lower-right quadrant and is masked so it fades
+   out rather than stopping at a hard edge. */
+.nx-metric__spark {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: 58%;
+  height: 56px;
+  opacity: 0.85;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%);
+  mask-image: linear-gradient(90deg, transparent, #000 45%);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   PIPELINE STRIP
+   A horizontal band of stage totals with a proportional bar underneath, so
+   the shape of the funnel is readable without opening the Kanban.
+   -------------------------------------------------------------------------- */
+.nx-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-pipeline__stages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+.nx-pipeline__stage {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-1) 0;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: var(--nx-radius-xs);
+  transition: var(--nx-transition);
+}
+
+.nx-pipeline__stage:hover {
+  background: var(--nx-overlay);
+}
+
+.nx-pipeline__stage-name {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-pipeline__bar {
+  position: relative;
+  height: 7px;
+  background: var(--nx-surface-2);
+  border-radius: var(--nx-radius-pill);
+  overflow: hidden;
+}
+
+.nx-pipeline__bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--nx-gradient-accent);
+  transition: width var(--nx-dur-slow) var(--nx-ease);
+}
+
+.nx-pipeline__bar-fill.is-success { background: linear-gradient(90deg, #059669, #34d399); }
+.nx-pipeline__bar-fill.is-danger  { background: linear-gradient(90deg, #be123c, #fb7185); }
+.nx-pipeline__bar-fill.is-warning { background: linear-gradient(90deg, #b45309, #fbbf24); }
+
+.nx-pipeline__stage-value {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nx-pipeline__stage-count {
+  color: var(--nx-text-faint);
+  font-weight: 500;
+}
+
+.nx-pipeline__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding-top: var(--nx-space-3);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   ATTENTION LIST
+   The "needs you today" panel: overdue invoices, low stock, expiring leaves.
+   -------------------------------------------------------------------------- */
+.nx-attention {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+}
+
+.nx-attention__item {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  background: var(--nx-overlay);
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-attention__item:hover {
+  border-color: var(--nx-border);
+  background: var(--nx-overlay-strong);
+  transform: translateX(3px);
+}
+
+.nx-attention__count {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  color: var(--nx-danger);
+  background: rgba(var(--nx-danger-rgb), 0.12);
+  border: 1px solid rgba(var(--nx-danger-rgb), 0.3);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-attention__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  font-size: var(--nx-text-sm);
+  border-radius: var(--nx-radius-xs);
+}
+
+.nx-attention__icon.is-danger {
+  color: var(--nx-danger);
+  background: rgba(var(--nx-danger-rgb), 0.12);
+}
+
+.nx-attention__icon.is-warning {
+  color: var(--nx-warning);
+  background: rgba(var(--nx-warning-rgb), 0.12);
+}
+
+.nx-attention__icon.is-info {
+  color: var(--nx-info);
+  background: rgba(var(--nx-info-rgb), 0.12);
+}
+
+.nx-attention__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-attention__title {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-attention__meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-attention__value {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   QUICK ACTIONS
+   A tiled launcher. Tiles lift and glow on hover, per the interaction spec.
+   -------------------------------------------------------------------------- */
+.nx-quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--nx-space-2);
+}
+
+.nx-quick__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-3);
+  text-align: left;
+  text-decoration: none;
+  color: var(--nx-text-muted);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+.nx-quick__tile:hover {
+  color: var(--nx-text-strong);
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-glow);
+  transform: translateY(-3px);
+}
+
+.nx-quick__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.12);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+  transition: var(--nx-transition);
+}
+
+.nx-quick__tile:hover .nx-quick__icon {
+  background: rgba(var(--nx-accent-strong-rgb), 0.22);
+  box-shadow: 0 0 14px -3px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.nx-quick__label {
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   TOP CUSTOMERS / RANKED LIST
+   -------------------------------------------------------------------------- */
+.nx-rank {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+}
+
+.nx-rank__row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--nx-space-3);
+}
+
+.nx-rank__position {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  text-align: right;
+}
+
+.nx-rank__name {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-rank__bar {
+  height: 4px;
+  margin-top: 4px;
+  background: var(--nx-surface-2);
+  border-radius: var(--nx-radius-pill);
+  overflow: hidden;
+}
+
+.nx-rank__bar-fill {
+  height: 100%;
+  background: var(--nx-gradient-accent);
+  border-radius: inherit;
+}
+
+.nx-rank__value {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-pipeline__stage {
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+  }
+
+  .nx-metric__value {
+    font-size: var(--nx-text-xl);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   STAGE + ENTRANCE CHOREOGRAPHY
+   The dashboard root owns a stacking context so DashBackdrop can sit at
+   z-index -1 — above this root's background, below every word on the page.
+
+   On entry the screen cascades rather than pops: the header rises first,
+   then the KPI row, then each lower panel 70ms behind the last. Every step
+   uses nx-rise with a `backwards` fill, so the delay holds the from-state;
+   the resting state is still the visible one, and the card settle shadows
+   below run underneath the same beat — one sequence, not two fades. The
+   fill is dropped entirely under reduced motion (see the block at the
+   bottom of this file), because the global duration collapse would
+   otherwise leave the delayed panels invisible until their delay elapsed.
+   -------------------------------------------------------------------------- */
+.nx-dash {
+  position: relative;
+  z-index: 0;
+}
+
+.nx-dash .page__header {
+  animation: nx-rise 0.5s var(--nx-ease) backwards;
+}
+
+.nx-dash .page__body > * {
+  animation: nx-rise 0.5s var(--nx-ease) backwards;
+}
+
+.nx-dash .page__body > :nth-child(1) { animation-delay: 0.1s; }
+.nx-dash .page__body > :nth-child(2) { animation-delay: 0.17s; }
+.nx-dash .page__body > :nth-child(3) { animation-delay: 0.24s; }
+.nx-dash .page__body > :nth-child(4) { animation-delay: 0.31s; }
+.nx-dash .page__body > :nth-child(5) { animation-delay: 0.38s; }
+
+/* --------------------------------------------------------------------------
+   PANEL SHADOWS (scoped by the nx-dash marker on the dashboard root)
+   Every dashboard panel settles in with a one-shot accent shadow, then holds
+   its resting depth and lifts into a glow on hover. The entrance keyframe
+   deliberately has no fill mode: with `both`, the finished animation would
+   keep overriding the hover box-shadow, and the card would never light up.
+   -------------------------------------------------------------------------- */
+.nx-dash .nx-card {
+  box-shadow: var(--nx-shadow);
+  transition:
+    box-shadow var(--nx-dur) var(--nx-ease),
+    transform var(--nx-dur) var(--nx-ease);
+  animation: nx-panel-settle 0.8s var(--nx-ease);
+}
+
+.nx-dash .nx-card:nth-child(even) {
+  animation-delay: 0.12s;
+}
+
+.nx-dash .nx-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--nx-glow), var(--nx-shadow-lg);
+}
+
+/* --------------------------------------------------------------------------
+   KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes nx-metric-breathe {
+  0%,
+  100% {
+    box-shadow:
+      var(--nx-shadow),
+      0 0 22px -16px rgba(var(--nx-accent-rgb), 0.6);
+  }
+  50% {
+    box-shadow:
+      var(--nx-shadow-lg),
+      0 0 30px -10px rgba(var(--nx-accent-rgb), 0.55);
+  }
+}
+
+@keyframes nx-metric-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(360%);
+  }
+}
+
+@keyframes nx-panel-settle {
+  from {
+    box-shadow:
+      0 26px 44px -30px rgba(var(--nx-accent-rgb), 0.55),
+      var(--nx-shadow);
+  }
+  to {
+    box-shadow: var(--nx-shadow);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   REDUCED MOTION
+   global.css already collapses every duration, but the entrance steps above
+   carry `backwards` fills and delays: a 0.01ms animation that still waits
+   out its delay would leave panels invisible for the best part of half a
+   second. Dropping the whole animation — as global.css does for its own
+   animated selectors — lands every step straight on its resting, visible
+   state. The global list needs no new selector for this: the backdrop and
+   the settle/breathe loops below already hold valid frames on their own,
+   and only the delayed, filled entrance steps needed a local override.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nx-dash .page__header,
+  .nx-dash .page__body > * {
+    animation: none;
+  }
+}

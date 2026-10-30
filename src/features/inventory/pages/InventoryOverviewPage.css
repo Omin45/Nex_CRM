@@ -1,0 +1,279 @@
+/* ==========================================================================
+   NexERP — InventoryOverviewPage
+   --------------------------------------------------------------------------
+   The two widgets the page adds beyond shared components: the reordering list
+   and the two warehouse/movement lists.
+
+   Layout: two asymmetric splits. The first pairs a chart with the action list
+   (wide chart, narrow list) because you read the chart for shape and the list
+   for specifics. The second pairs two equal halves because warehouses and
+   movements are read side by side, not in sequence.
+   ========================================================================== */
+
+.nx-inv__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--nx-space-4);
+  align-items: start;
+}
+
+.nx-inv__split--even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nx-inv__chart-pad {
+  padding: var(--nx-space-5);
+}
+
+/* ---- reordering list ------------------------------------------------------ */
+.nx-inv__attention,
+.nx-inv__warehouses,
+.nx-inv__movements {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-inv__attention-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-left: 2px solid var(--nx-warning);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-inv__attention-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-inv__attention-name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-inv__attention-sku {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-inv__attention-side {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--nx-space-3);
+}
+
+/* "on hand / reorder level" — the two numbers that decide whether to reorder. */
+.nx-inv__attention-qty {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+}
+
+.nx-inv__attention-row:has([data-tone='danger']) {
+  border-left-color: var(--nx-danger);
+}
+
+/* ---- warehouses ----------------------------------------------------------- */
+.nx-inv__warehouse {
+  padding: var(--nx-space-3);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-inv__warehouse-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  margin-bottom: var(--nx-space-2);
+}
+
+.nx-inv__warehouse-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  min-width: 0;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text);
+}
+
+.nx-inv__warehouse-pct {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+}
+
+.nx-inv__warehouse-meta {
+  margin: var(--nx-space-2) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* Native <progress>, restyled. Width comes from the `value` attribute. */
+.nx-inv__bar {
+  display: block;
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-inv__bar::-webkit-progress-bar {
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-inv__bar::-webkit-progress-value {
+  background: var(--nx-success);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-inv__bar::-moz-progress-bar {
+  background: var(--nx-success);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-inv__bar[data-tone='warning']::-webkit-progress-value {
+  background: var(--nx-warning);
+}
+
+.nx-inv__bar[data-tone='warning']::-moz-progress-bar {
+  background: var(--nx-warning);
+}
+
+.nx-inv__bar[data-tone='danger']::-webkit-progress-value {
+  background: var(--nx-danger);
+}
+
+.nx-inv__bar[data-tone='danger']::-moz-progress-bar {
+  background: var(--nx-danger);
+}
+
+/* ---- movements ------------------------------------------------------------ */
+.nx-inv__movement {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) 0;
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-inv__movement:last-child {
+  border-bottom: 0;
+}
+
+/* The signed quantity, coloured by direction. Sign + colour together: colour
+   alone fails anyone who cannot distinguish red from green. */
+.nx-inv__movement-qty {
+  flex: none;
+  min-width: 46px;
+  padding: 3px 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-inv__movement-qty[data-dir='in'] {
+  color: var(--nx-success);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.nx-inv__movement-qty[data-dir='out'] {
+  color: var(--nx-warning);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.nx-inv__movement-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-inv__movement-name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-inv__movement-meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-inv__movement-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.nx-inv__movement-time {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-faint);
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-inv__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-inv__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-inv__error-text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  max-width: 60ch;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 980px) {
+  .nx-inv__split,
+  .nx-inv__split--even {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,651 @@
+/* ==========================================================================
+   NexERP — DataTable styles
+   Sections:
+     1. Wrapper + scroll region + sticky header
+     2. Header cells and the sort control
+     3. Body cells and the glowing hover row
+     4. Checkbox control
+     5. Toolbar, bulk-action bar, empty/error slots
+     6. Pagination
+     7. Refetch progress line + responsive rules
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. WRAPPER
+   -------------------------------------------------------------------------- */
+.nx-table-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--nx-overlay), var(--nx-surface);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-inset-hairline), var(--nx-shadow-sm);
+  overflow: hidden;
+}
+
+.nx-table__scroll {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  /* Local scrollbar styling so the table does not use the OS default. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+}
+
+.nx-table__scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.nx-table__scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--nx-accent-strong-rgb), 0.24);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-table__scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Vertical scroll region with a capped height, so the pagination below stays
+   on screen. Applied by the page, not by default. */
+.nx-table__scroll--capped {
+  max-height: 62vh;
+}
+
+.nx-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--nx-text-sm);
+}
+
+/* --------------------------------------------------------------------------
+   2. HEADER
+   -------------------------------------------------------------------------- */
+.nx-table thead th {
+  position: relative;
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--nx-text-dim);
+  background: var(--nx-surface-2);
+  border-bottom: 1px solid var(--nx-border-soft);
+  /* Each header cell gets a 1px separator without an extra DOM node. */
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.03);
+  user-select: none;
+}
+
+/* The last header cell must not draw a trailing separator. */
+.nx-table thead th:last-child {
+  box-shadow: none;
+}
+
+/* Sticky header: the top offset is provided by the page (--nx-sticky-top). */
+.nx-table__scroll--sticky .nx-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Accent underline that lights up on the actively sorted column. */
+.nx-th.is-sorted {
+  color: var(--nx-accent);
+}
+
+.nx-th.is-sorted::after {
+  content: '';
+  position: absolute;
+  left: var(--nx-space-3);
+  right: var(--nx-space-3);
+  bottom: -1px;
+  height: 2px;
+  background: var(--nx-gradient-accent);
+  border-radius: var(--nx-radius-pill);
+  box-shadow: 0 0 10px rgba(var(--nx-accent-strong-rgb), 0.7);
+}
+
+.nx-th__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  width: 100%;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-th--sortable .nx-th__button:hover {
+  color: var(--nx-text);
+}
+
+.nx-th__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sort arrow: dimmed at rest, full accent when active. */
+.nx-th__arrow {
+  flex-shrink: 0;
+  color: var(--nx-text-faint);
+  transition: color var(--nx-dur) var(--nx-ease), transform var(--nx-dur) var(--nx-ease);
+}
+
+.nx-th--sortable:hover .nx-th__arrow {
+  color: var(--nx-text-muted);
+}
+
+.nx-th.is-sorted .nx-th__arrow {
+  color: var(--nx-accent);
+}
+
+/* Flip the arrow glyph for a descending sort. */
+.nx-th__arrow--up {
+  transform: rotate(180deg);
+}
+
+/* Alignment modifiers, applied to both th and td. */
+.nx-th--right, .nx-table__cell--right { text-align: right; }
+.nx-th--center, .nx-table__cell--center { text-align: center; }
+
+/* --------------------------------------------------------------------------
+   3. BODY
+   -------------------------------------------------------------------------- */
+.nx-table__row {
+  transition: background var(--nx-dur) var(--nx-ease), box-shadow var(--nx-dur) var(--nx-ease);
+}
+
+.nx-table__row:not(:last-child) .nx-table__cell {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+.nx-table__cell {
+  padding: var(--nx-space-3) var(--nx-space-4);
+  color: var(--nx-text);
+  vertical-align: middle;
+}
+
+/* Dense mode for wide financial tables. */
+.nx-table--dense .nx-table__cell {
+  padding: var(--nx-space-2) var(--nx-space-3);
+}
+
+.nx-table--dense .nx-table thead th {
+  padding: var(--nx-space-2) var(--nx-space-3);
+}
+
+/* Optional zebra striping. */
+.nx-table--zebra .nx-table__row:nth-child(even) {
+  background: rgba(148, 163, 184, 0.02);
+}
+
+/* GLOWING HOVER ROW — the signature treatment.
+   A left accent bar slides in while a soft ambient glow blooms behind the row. */
+.nx-table__row.is-clickable {
+  cursor: pointer;
+}
+
+.nx-table__row.is-clickable:hover {
+  background: rgba(var(--nx-accent-strong-rgb), 0.05);
+  box-shadow:
+    inset 2px 0 0 var(--nx-accent),
+    inset 0 0 22px -6px rgba(var(--nx-accent-strong-rgb), 0.22);
+}
+
+.nx-table__row.is-clickable:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: -2px;
+}
+
+/* Selected row: a persistent tint plus the accent rail. */
+.nx-table__row.is-selected {
+  background: rgba(var(--nx-accent-strong-rgb), 0.08);
+  box-shadow: inset 2px 0 0 var(--nx-accent);
+}
+
+/* Refetch dimming — the previous data stays readable while loading. */
+.nx-table__row.is-dimmed {
+  opacity: 0.5;
+}
+
+.nx-table__row--skeleton .nx-table__cell {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.04);
+}
+
+.nx-table__cell--select {
+  width: 44px;
+  padding-right: 0;
+}
+
+/* Tabular figures keep money columns aligned across rows. */
+.nx-table__cell .mono,
+.nx-table__cell .numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-table tfoot td {
+  padding: var(--nx-space-3) var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  background: var(--nx-surface-2);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   4. CHECKBOX
+   Visually hidden native input driving a styled box, so the control stays
+   keyboard- and screen-reader-correct.
+   -------------------------------------------------------------------------- */
+.nx-checkbox,
+.nx-th__checkbox {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.nx-checkbox input,
+.nx-th__checkbox input {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.nx-checkbox__box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border);
+  border-radius: 4px;
+  transition: var(--nx-transition);
+}
+
+.nx-checkbox__box::after {
+  content: '';
+  width: 8px;
+  height: 4px;
+  margin-top: -2px;
+  border-left: 2px solid var(--nx-text-inverse);
+  border-bottom: 2px solid var(--nx-text-inverse);
+  transform: rotate(-45deg) scale(0);
+  transition: transform var(--nx-dur-fast) var(--nx-ease-spring);
+}
+
+.nx-checkbox input:checked + .nx-checkbox__box,
+.nx-th__checkbox input:checked + .nx-checkbox__box {
+  background: var(--nx-gradient-accent);
+  border-color: transparent;
+  box-shadow: 0 0 10px -2px rgba(var(--nx-accent-strong-rgb), 0.7);
+}
+
+.nx-checkbox input:checked + .nx-checkbox__box::after,
+.nx-th__checkbox input:checked + .nx-checkbox__box::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+/* Indeterminate (some rows selected) shows a dash. */
+.nx-checkbox input:indeterminate + .nx-checkbox__box::after {
+  width: 8px;
+  height: 0;
+  margin-top: 0;
+  border-left: 0;
+  border-bottom: 2px solid var(--nx-text-inverse);
+  transform: none;
+}
+
+.nx-checkbox input:focus-visible + .nx-checkbox__box,
+.nx-th__checkbox input:focus-visible + .nx-checkbox__box {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-checkbox:hover .nx-checkbox__box {
+  border-color: var(--nx-border-accent);
+}
+
+/* --------------------------------------------------------------------------
+   5. TOOLBAR / BULK / SLOTS
+   -------------------------------------------------------------------------- */
+.nx-table__toolbar {
+  padding: var(--nx-space-3) var(--nx-space-4);
+  background: rgba(var(--nx-accent-strong-rgb), 0.02);
+  border-bottom: 1px solid var(--nx-border-soft);
+}
+
+.nx-table__bulk {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-2) var(--nx-space-4);
+  background: var(--nx-gradient-pill);
+  border-bottom: 1px solid var(--nx-border);
+  animation: nx-rise 0.2s var(--nx-ease);
+}
+
+.nx-table__bulk-count {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+}
+
+.nx-table__bulk-count strong {
+  color: var(--nx-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-table__bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  flex-wrap: wrap;
+}
+
+.nx-table__message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-8);
+  text-align: center;
+}
+
+/* Refetch progress line pinned to the top of the scroll region. */
+.nx-table__progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(var(--nx-accent-strong-rgb), 0.12);
+  z-index: 3;
+}
+
+.nx-table__progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--nx-gradient-accent);
+  transform: translateX(-100%);
+  animation: nx-skeleton 1.1s var(--nx-ease) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   6. PAGINATION
+   -------------------------------------------------------------------------- */
+.nx-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  background: rgba(var(--nx-accent-strong-rgb), 0.02);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-pagination__summary {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-pagination__summary strong {
+  color: var(--nx-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+}
+
+.nx-pagination__size {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  margin-right: var(--nx-space-2);
+}
+
+.nx-pagination__size-label {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-pagination__select {
+  height: 30px;
+  padding: 0 var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-xs);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-pagination__select:hover {
+  border-color: var(--nx-border-strong);
+}
+
+.nx-pagination__select option {
+  background: var(--nx-surface-2);
+  color: var(--nx-text);
+}
+
+.nx-pagination__divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 var(--nx-space-2);
+  background: var(--nx-border-soft);
+}
+
+.nx-pagination__btn,
+.nx-pagination__page {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-xs);
+  font-variant-numeric: tabular-nums;
+  transition: var(--nx-transition);
+}
+
+.nx-pagination__btn:hover:not(:disabled),
+.nx-pagination__page:hover {
+  color: var(--nx-text-strong);
+  background: var(--nx-overlay-strong);
+  border-color: var(--nx-border-soft);
+}
+
+.nx-pagination__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.nx-pagination__page.is-active {
+  color: var(--nx-text-inverse);
+  background-image: var(--nx-gradient-accent);
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 4px 12px -5px rgba(var(--nx-accent-strong-rgb), 0.8);
+}
+
+.nx-pagination__ellipsis {
+  padding: 0 var(--nx-space-1);
+  color: var(--nx-text-faint);
+  font-size: var(--nx-text-xs);
+}
+
+/* --------------------------------------------------------------------------
+   7. RESPONSIVE
+   Tablet portrait keeps the aligned grid — the scroll region absorbs the
+   overflow. On phones (<=700px) each row reflows into a self-contained card:
+   the header hides, every cell prints its column name from data-label, and
+   the first column reads as the card title.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .nx-table__cell,
+  .nx-table thead th {
+    padding-left: var(--nx-space-3);
+    padding-right: var(--nx-space-3);
+  }
+
+  .nx-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nx-pagination__controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  /* The outer card chrome moves to the rows, so drop it here. */
+  .nx-table-wrap {
+    overflow: visible;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .nx-table__scroll {
+    overflow: visible;
+  }
+
+  .nx-table,
+  .nx-table tbody,
+  .nx-table__row,
+  .nx-table__cell {
+    display: block;
+    width: 100%;
+  }
+
+  .nx-table thead {
+    display: none;
+  }
+
+  /* Each row becomes a card. */
+  .nx-table__row {
+    position: relative;
+    margin-bottom: var(--nx-space-3);
+    padding: var(--nx-space-3) var(--nx-space-4);
+    background: var(--nx-overlay), var(--nx-surface);
+    border: 1px solid var(--nx-border-soft);
+    border-radius: var(--nx-radius);
+    box-shadow: var(--nx-inset-hairline), var(--nx-shadow-sm);
+    overflow: hidden;
+    transition: var(--nx-transition);
+  }
+
+  .nx-table__row:not(:last-child) .nx-table__cell {
+    border-bottom: none;
+  }
+
+  /* Desktop hover rails read as noise on a stacked card; use a lift instead. */
+  .nx-table__row.is-clickable:hover {
+    background: var(--nx-overlay), var(--nx-surface);
+    border-color: var(--nx-border-accent);
+    box-shadow: var(--nx-glow), var(--nx-shadow);
+    transform: translateY(-2px);
+  }
+
+  .nx-table__row.is-selected {
+    background: var(--nx-gradient-pill);
+    border-color: var(--nx-border-accent);
+    box-shadow: inset 3px 0 0 var(--nx-accent);
+  }
+
+  .nx-table__cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--nx-space-4);
+    padding: var(--nx-space-2) 0;
+    text-align: left;
+  }
+
+  /* The column name, printed from the header. */
+  .nx-table__cell[data-label]:not([data-label=''])::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    max-width: 46%;
+    font-size: var(--nx-text-xs);
+    font-weight: 600;
+    letter-spacing: var(--nx-tracking-wide);
+    text-transform: uppercase;
+    color: var(--nx-text-dim);
+  }
+
+  /* First column is the card title: no label, a divider under it. */
+  .nx-table__cell[data-primary] {
+    padding-top: 0;
+    padding-bottom: var(--nx-space-2);
+    margin-bottom: var(--nx-space-2);
+    border-bottom: 1px solid var(--nx-border-soft) !important;
+  }
+
+  .nx-table__cell[data-primary]::before {
+    display: none;
+  }
+
+  /* Selection checkbox pins to the card's top-right corner. */
+  .nx-table__row:has(.nx-table__cell--select) {
+    padding-right: var(--nx-space-8);
+  }
+
+  .nx-table__cell--select {
+    position: absolute;
+    top: var(--nx-space-3);
+    right: var(--nx-space-4);
+    width: auto;
+    padding: 0;
+  }
+
+  /* Right-aligned money/date cells read left in a label/value row. */
+  .nx-table__cell--right,
+  .nx-table__cell--center {
+    text-align: left;
+  }
+
+  /* Push status pills and inline controls to the value column. */
+  .nx-table__cell > .nx-badge,
+  .nx-table__cell > .nx-table__cell-inline {
+    margin-left: auto;
+  }
+
+  .nx-table tfoot td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--nx-space-3);
+  }
+}
+
+/* Trim the range summary on the narrowest screens to save a line. */
+@media (max-width: 480px) {
+  .nx-pagination__summary {
+    display: none;
+  }
+}

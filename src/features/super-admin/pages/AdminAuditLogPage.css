@@ -1,0 +1,97 @@
+/* ==========================================================================
+   NexERP — AdminAuditLogPage
+   --------------------------------------------------------------------------
+   The event, who performed it, in which tenant, how severe and from where.
+   The "When" and "Origin" cells both keep their absolutism (a precise
+   timestamp, an IP and the client) while the relative time sits beneath —
+   because "3 min ago" is useless in a compliance review.
+   ========================================================================== */
+
+/* ---- event cell ----------------------------------------------------------- */
+.nx-audit__event {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 280px;
+}
+
+.nx-audit__category {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-accent);
+}
+
+.nx-audit__action {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- actor / tenant / origin cells ---------------------------------------- */
+.nx-audit__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 240px;
+}
+
+.nx-audit__name {
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-audit__meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- when ----------------------------------------------------------------- */
+.nx-audit__when {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- page-level error ----------------------------------------------------- */
+.nx-audit__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-audit__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-audit__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+.nx-audit__event:focus-visible,
+.nx-audit__ident:focus-visible,
+.nx-audit__when:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}

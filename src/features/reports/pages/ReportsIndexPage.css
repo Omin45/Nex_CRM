@@ -1,0 +1,148 @@
+/* ==========================================================================
+   NexERP — ReportsIndexPage
+   --------------------------------------------------------------------------
+   The hub's only custom surface is the report tile: an icon, the report name
+   and the question it answers. The disabled variant has to read as inert —
+   no hover lift, a "not allowed" affordance, dashed edge — while aria-disabled
+   on the button does the announcing for assistive technology.
+
+   Everything else (.nx-segmented, .nx-alert, .page__*) comes from the shared
+   layers, so this file only carries tile layout and the export row rhythm.
+   ========================================================================== */
+
+.nx-rpx__tile {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-4);
+  /* Tiles are links/buttons, not content blocks: kill UA text chrome. */
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+}
+
+/* ---- icon medallion ------------------------------------------------------ */
+.nx-rpx__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  font-size: var(--nx-text-md);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.1);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  transition: var(--nx-transition);
+}
+
+/* ---- copy ---------------------------------------------------------------- */
+.nx-rpx__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  min-width: 0;
+}
+
+.nx-rpx__name {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-base);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-rpx__question {
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+/* ---- trailing affordance ------------------------------------------------- */
+.nx-rpx__chevron {
+  align-self: center;
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--nx-text-dim);
+  transition: var(--nx-transition);
+}
+
+.nx-rpx__tile:hover .nx-rpx__chevron {
+  color: var(--nx-accent);
+  transform: translateX(2px);
+}
+
+.nx-rpx__badge {
+  align-self: center;
+  margin-inline-start: auto;
+}
+
+/* ---- coming-soon variant -------------------------------------------------
+   A real <button> with aria-disabled (not the disabled attribute) so it stays
+   in the tab order and announces its state, but never pretends to navigate. */
+.nx-rpx__tile--soon {
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.nx-rpx__tile--soon .nx-rpx__icon {
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border-color: var(--nx-border-soft);
+}
+
+.nx-rpx__tile--soon .nx-rpx__name {
+  color: var(--nx-text-muted);
+}
+
+/* ---- export row ---------------------------------------------------------- */
+.nx-rpx__export {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-rpx__export-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-rpx__export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+}
+
+/* The result log swaps between empty / loading-by-button / alert states, so
+   it keeps a stable minimum height and never jumps the layout. */
+.nx-rpx__export-log {
+  min-height: 132px;
+}
+
+.nx-rpx__export-log .nx-alert {
+  align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   FOCUS
+   -------------------------------------------------------------------------- */
+.nx-rpx :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-rpx__export-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nx-rpx__export-actions {
+    width: 100%;
+  }
+}

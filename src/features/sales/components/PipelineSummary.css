@@ -1,0 +1,44 @@
+/* ==========================================================================
+   NexERP — PipelineSummary
+   --------------------------------------------------------------------------
+   Three aggregate tiles above the Kanban board. A four-column grid on desktop
+   that folds to two then one, reusing the project's spacing and radius tokens
+   so the tiles sit in the same visual family as every other Card on the app.
+   ========================================================================== */
+
+.nx-pipeline-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nx-space-4);
+}
+
+.nx-pipeline-summary__label {
+  margin: 0;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-pipeline-summary__value {
+  margin: var(--nx-space-2) 0 0;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--nx-text);
+}
+
+.nx-pipeline-summary__hint {
+  margin: var(--nx-space-1) 0 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+@media (max-width: 720px) {
+  .nx-pipeline-summary {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,124 @@
+/* ==========================================================================
+   NexERP — EmployeeListPage
+   --------------------------------------------------------------------------
+   The directory: an identity cell that reads name + employee number, a status
+   badge that pairs colour with a word, and a two-column modal form.
+
+   Salary is right-aligned and tabular so a column of numbers can be scanned
+   as a column, and the empty state keeps the same copy rhythm as every other
+   list — filtered versus brand new are different situations and say so.
+   ========================================================================== */
+
+.nx-emp :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- identity cell -------------------------------------------------------- */
+.nx-emp__cell {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  min-width: 0;
+}
+
+.nx-emp__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-emp__ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-emp__name {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-emp__meta {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+/* ---- plain text cells ----------------------------------------------------- */
+.nx-emp__text {
+  display: block;
+  max-width: 12rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-emp__date {
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-emp__salary {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+  white-space: nowrap;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-emp__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-emp__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-emp__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- modal form ----------------------------------------------------------- */
+.nx-emp__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-emp__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+}
+
+/* Stack the paired fields once the dialog gets too narrow to hold both. */
+@media (max-width: 560px) {
+  .nx-emp__form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

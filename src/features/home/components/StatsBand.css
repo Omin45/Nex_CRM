@@ -1,0 +1,115 @@
+/* ==========================================================================
+   NexERP — StatsBand
+   --------------------------------------------------------------------------
+   The thin glass strip under the hero.
+
+   Glassmorphism note: this is the glass recipe at full strength — 70% surface,
+   a 3% white overlay, 14px blur — with the accent hairline and an inset
+   top highlight. Separators between items are a 1px --nx-border-soft rule, not
+   a box-shadow, so the dividers stay exactly one pixel at any zoom.
+   ========================================================================== */
+
+.nx-stats {
+  padding-block: var(--nx-space-10) var(--nx-section-pad);
+}
+
+.nx-stats__strip {
+  padding: var(--nx-space-6) var(--nx-space-4);
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow), var(--nx-glass-highlight);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+}
+
+.nx-stats__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Dividers live on the items so they can collapse cleanly on small screens. */
+.nx-stats__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-2);
+  padding-inline: var(--nx-space-4);
+  text-align: center;
+  border-left: 1px solid var(--nx-border-soft);
+}
+
+.nx-stats__item:first-child {
+  border-left: 0;
+}
+
+.nx-stats__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  color: var(--nx-accent);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-stats__value {
+  font-family: var(--nx-font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--nx-text);
+  /* Reserve the digit width so the strip does not reflow while counting. */
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-stats__suffix {
+  color: var(--nx-accent);
+}
+
+.nx-stats__label {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ==========================================================================
+   Responsive: 4 -> 2 -> 1, with the dividers re-drawn as a grid each time.
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .nx-stats__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--nx-space-6) 0;
+  }
+
+  /* Two columns: the 3rd item starts a new row, so it needs a top rule instead
+     of a left one. */
+  .nx-stats__item:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .nx-stats__item:nth-child(n + 3) {
+    padding-top: var(--nx-space-6);
+    border-top: 1px solid var(--nx-border-soft);
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-stats__strip {
+    padding: var(--nx-space-5) var(--nx-space-3);
+  }
+
+  .nx-stats__item {
+    padding-inline: var(--nx-space-2);
+  }
+
+  .nx-stats__label {
+    font-size: var(--nx-text-xs);
+  }
+}

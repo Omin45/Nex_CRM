@@ -1,0 +1,357 @@
+/* ==========================================================================
+   NexERP — Feedback component styles
+   Shared by LoadingState, EmptyState, ForbiddenState and NotificationToast,
+   which are single-file components in this folder.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   LOADING STATE
+   -------------------------------------------------------------------------- */
+.nx-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-10) var(--nx-space-4);
+  text-align: center;
+}
+
+.nx-loading--inline {
+  flex-direction: row;
+  padding: var(--nx-space-3);
+}
+
+.nx-loading--overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--nx-z-sticky);
+  background: rgba(9, 13, 22, 0.55);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  border-radius: inherit;
+}
+
+/* Orbital spinner: an accent ring with a glowing leading cap. */
+.nx-spinner {
+  position: relative;
+  width: var(--nx-spinner-size, 38px);
+  height: var(--nx-spinner-size, 38px);
+  border-radius: 50%;
+  border: 2px solid rgba(var(--nx-accent-strong-rgb), 0.16);
+  border-top-color: var(--nx-accent);
+  border-right-color: rgba(var(--nx-accent-strong-rgb), 0.6);
+  animation: nx-spin 0.75s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(var(--nx-accent-strong-rgb), 0.45));
+}
+
+.nx-spinner--sm { --nx-spinner-size: 20px; border-width: 2px; }
+.nx-spinner--lg { --nx-spinner-size: 54px; border-width: 3px; }
+
+.nx-loading__text {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-loading__title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+/* Skeleton placeholders inherit the global .skeleton sweep. */
+.nx-skeleton-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  width: 100%;
+}
+
+.nx-progress {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: var(--nx-surface-2);
+  border-radius: var(--nx-radius-pill);
+  border: 1px solid var(--nx-border-soft);
+}
+
+.nx-progress__bar {
+  height: 100%;
+  background: var(--nx-gradient-accent);
+  border-radius: inherit;
+  box-shadow: 0 0 12px -2px rgba(var(--nx-accent-strong-rgb), 0.8);
+  transition: width 0.35s var(--nx-ease);
+}
+
+/* Indeterminate variant — the bar sweeps without a known target. */
+.nx-progress--indeterminate .nx-progress__bar {
+  width: 35%;
+  animation: nx-skeleton 1.2s var(--nx-ease) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   EMPTY STATE
+   -------------------------------------------------------------------------- */
+.nx-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-12) var(--nx-space-6);
+  text-align: center;
+  animation: nx-rise var(--nx-dur-slow) var(--nx-ease);
+}
+
+/* Orbital icon holder: a soft accent ring with the glyph floating inside. */
+.nx-empty__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--nx-space-1);
+  font-size: var(--nx-text-2xl);
+  color: var(--nx-accent);
+  background: rgba(var(--nx-accent-strong-rgb), 0.08);
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+  animation: nx-float 4s var(--nx-ease) infinite;
+}
+
+/* Concentric glow ring behind the icon. */
+.nx-empty__icon::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border: 1px solid var(--nx-border);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: nx-pulse-glow 2.6s var(--nx-ease) infinite;
+}
+
+.nx-empty__title {
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-empty__description {
+  max-width: 46ch;
+  font-size: var(--nx-text-base);
+  color: var(--nx-text-muted);
+}
+
+.nx-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+  margin-top: var(--nx-space-2);
+}
+
+/* Compact form for dropdowns and side panels, where the full-height treatment
+   would blow out a 340px-wide surface. */
+.nx-empty--inline {
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-8) var(--nx-space-5);
+  animation: none;
+}
+
+.nx-empty--inline .nx-empty__icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0;
+  font-size: var(--nx-text-lg);
+  animation: none;
+}
+
+.nx-empty--inline .nx-empty__icon::before {
+  animation: none;
+}
+
+.nx-empty--inline .nx-empty__title {
+  font-size: var(--nx-text-sm);
+}
+
+.nx-empty--inline .nx-empty__description {
+  font-size: var(--nx-text-xs);
+}
+
+/* --------------------------------------------------------------------------
+   FORBIDDEN STATE
+   -------------------------------------------------------------------------- */
+.nx-forbidden {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-12) var(--nx-space-6);
+  text-align: center;
+}
+
+.nx-forbidden__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  font-size: var(--nx-text-xl);
+  color: var(--nx-warning);
+  background: rgba(var(--nx-warning-rgb), 0.1);
+  border: 1px solid rgba(var(--nx-warning-rgb), 0.3);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: 0 0 24px -8px rgba(var(--nx-warning-rgb), 0.6);
+}
+
+/* Lists the permissions the user actually holds, to make the boundary clear. */
+.nx-forbidden__permissions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nx-space-1);
+  margin-top: var(--nx-space-2);
+}
+
+/* --------------------------------------------------------------------------
+   ERROR BOUNDARY
+   -------------------------------------------------------------------------- */
+.nx-error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-12) var(--nx-space-6);
+  text-align: center;
+}
+
+.nx-error-boundary__code {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-danger);
+  background: rgba(var(--nx-danger-rgb), 0.1);
+  border: 1px solid rgba(var(--nx-danger-rgb), 0.28);
+  border-radius: var(--nx-radius-pill);
+  padding: var(--nx-space-1) var(--nx-space-3);
+}
+
+/* The collapsed stack trace. */
+.nx-error-boundary__details {
+  width: 100%;
+  max-width: 720px;
+  text-align: left;
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  padding: var(--nx-space-3);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+}
+
+/* --------------------------------------------------------------------------
+   TOASTS
+   -------------------------------------------------------------------------- */
+.nx-toast-region {
+  position: fixed;
+  top: calc(var(--nx-navbar-h) + var(--nx-space-3));
+  right: var(--nx-space-5);
+  z-index: var(--nx-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  width: min(380px, calc(100vw - var(--nx-space-8)));
+  /* The region must not swallow clicks meant for the page beneath it. */
+  pointer-events: none;
+}
+
+.nx-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  background: var(--nx-glass-bg);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(160%);
+  border: 1px solid var(--nx-border);
+  border-left: 3px solid var(--toast-accent, var(--nx-accent));
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-glass-highlight), var(--nx-shadow-lg);
+  pointer-events: auto;
+  animation: nx-toast-in var(--nx-dur) var(--nx-ease-spring);
+  transition:
+    opacity var(--nx-dur) var(--nx-ease),
+    transform var(--nx-dur) var(--nx-ease);
+}
+
+/* Exit state before the item is removed from the DOM. */
+.nx-toast.is-leaving {
+  opacity: 0;
+  transform: translateX(24px) scale(0.97);
+}
+
+.nx-toast--success { --toast-accent: var(--nx-success); --toast-icon: var(--nx-success); }
+.nx-toast--error   { --toast-accent: var(--nx-danger);  --toast-icon: var(--nx-danger); }
+.nx-toast--warning { --toast-accent: var(--nx-warning); --toast-icon: var(--nx-warning); }
+.nx-toast--info    { --toast-accent: var(--nx-info);    --toast-icon: var(--nx-info); }
+
+.nx-toast__icon {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: var(--nx-text-sm);
+  color: var(--toast-icon);
+  background: color-mix(in srgb, var(--toast-icon) 14%, transparent);
+  border-radius: 50%;
+}
+
+.nx-toast__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-toast__title {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text-strong);
+}
+
+.nx-toast__message {
+  margin-top: 2px;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — toasts become a bottom sheet on phones, above the safe area.
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .nx-toast-region {
+    top: auto;
+    right: var(--nx-space-3);
+    left: var(--nx-space-3);
+    bottom: calc(var(--nx-space-3) + env(safe-area-inset-bottom, 0px));
+    width: auto;
+  }
+
+  .nx-toast {
+    animation-name: nx-rise;
+  }
+
+  .nx-empty,
+  .nx-forbidden,
+  .nx-error-boundary {
+    padding: var(--nx-space-8) var(--nx-space-4);
+  }
+}

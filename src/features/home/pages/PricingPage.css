@@ -1,0 +1,311 @@
+/* ==========================================================================
+   NexERP — PricingPage
+   --------------------------------------------------------------------------
+   Three plan cards, with a highlighted middle card.
+
+   Glassmorphism note: cards are glass surfaces. The highlighted card adds the
+   --nx-glow-strong shadow and the accent border rather than a different
+   background, so all three remain the same material.
+
+   The billing switch: a role="switch" button with two labels and a sliding
+   thumb. The thumb is positioned with a CSS transform driven by the
+   [aria-checked] state, so the sliding animation is pure CSS and needs no
+   inline style or measured geometry.
+   ========================================================================== */
+
+.nx-pricing__toggle-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.nx-pricing__toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  cursor: pointer;
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-pill);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+}
+
+.nx-pricing__toggle:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: 3px;
+}
+
+.nx-pricing__toggle-option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-2);
+  min-width: 116px;
+  padding: 0.5rem 1rem;
+  font-size: var(--nx-text-sm);
+  font-weight: 500;
+  color: var(--nx-text-muted);
+  border-radius: var(--nx-radius-pill);
+  transition: color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-pricing__toggle-option[data-selected] {
+  color: var(--nx-text);
+}
+
+.nx-pricing__saving {
+  padding: 0.1rem 0.4rem;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.14);
+  border-radius: var(--nx-radius-pill);
+}
+
+/* The sliding thumb. aria-checked drives the transform, so the slide is a CSS
+   transition with no JavaScript measurement. */
+.nx-pricing__toggle-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: var(--nx-gradient-pill);
+  border: 1px solid var(--nx-border-accent);
+  border-radius: var(--nx-radius-pill);
+  transition: transform var(--nx-dur) var(--nx-ease-spring);
+}
+
+.nx-pricing__toggle[aria-checked='true'] .nx-pricing__toggle-thumb {
+  transform: translateX(100%);
+}
+
+/* ---- grid ---------------------------------------------------------------- */
+.nx-pricing {
+  padding-block: var(--nx-space-8) var(--nx-section-pad);
+}
+
+.nx-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nx-space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-pricing__cell {
+  display: flex;
+}
+
+.nx-pricing__card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--nx-space-8) var(--nx-space-6);
+  background: var(--nx-glass-bg);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow), var(--nx-glass-highlight);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  transition: transform var(--nx-dur) var(--nx-ease), box-shadow var(--nx-dur) var(--nx-ease),
+    border-color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-pricing__card:hover {
+  transform: translateY(-3px);
+}
+
+.nx-pricing__card[data-highlighted] {
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-glow-strong), var(--nx-glass-highlight);
+}
+
+.nx-pricing__flag {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  padding: 0.2rem 0.7rem;
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-radius: var(--nx-radius-pill);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* ---- card content -------------------------------------------------------- */
+.nx-pricing__name {
+  margin: 0 0 var(--nx-space-2);
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-xl);
+  font-weight: 700;
+  color: var(--nx-text);
+}
+
+.nx-pricing__tagline {
+  min-height: 3em;
+  margin: 0 0 var(--nx-space-6);
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+.nx-pricing__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 0 0 var(--nx-space-6);
+  font-family: var(--nx-font-display);
+}
+
+.nx-pricing__currency {
+  font-size: var(--nx-text-xl);
+  color: var(--nx-text-muted);
+}
+
+.nx-pricing__amount {
+  font-size: clamp(2.25rem, 4vw, 2.875rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--nx-text);
+  /* Tabular figures stop the card jittering when the price changes. */
+  font-variant-numeric: tabular-nums;
+}
+
+.nx-pricing__cadence {
+  margin-left: var(--nx-space-2);
+  font-family: var(--nx-font-sans);
+  font-size: var(--nx-text-sm);
+  font-weight: 400;
+  color: var(--nx-text-dim);
+}
+
+.nx-pricing__features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  margin: var(--nx-space-6) 0 0;
+  padding: var(--nx-space-5) 0 0;
+  border-top: 1px solid var(--nx-border-soft);
+  list-style: none;
+}
+
+.nx-pricing__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+.nx-pricing__check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  margin-top: 1px;
+  color: var(--nx-success);
+  background: rgba(var(--nx-success-rgb), 0.12);
+  border: 1px solid rgba(var(--nx-success-rgb), 0.3);
+  border-radius: 50%;
+}
+
+/* ---- footnotes ----------------------------------------------------------- */
+.nx-pricing__excluded {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-3) var(--nx-space-6);
+  margin-top: var(--nx-space-8);
+}
+
+.nx-pricing__excluded-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+}
+
+.nx-pricing__excluded-item svg {
+  color: var(--nx-success);
+}
+
+.nx-pricing__footnote {
+  max-width: 62ch;
+  margin: var(--nx-space-8) auto 0;
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading-relaxed);
+  text-align: center;
+  color: var(--nx-text-muted);
+}
+
+.nx-pricing__footnote a {
+  color: var(--nx-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nx-pricing__footnote a:hover {
+  color: var(--nx-accent-strong);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+  .nx-pricing__grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+    margin-inline: auto;
+  }
+
+  .nx-pricing__tagline {
+    min-height: 0;
+  }
+
+  /* The highlighted card should lead on a stacked layout. */
+  .nx-pricing__cell[data-order] {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-pricing__toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-pricing__toggle-thumb {
+    display: none;
+  }
+
+  .nx-pricing__toggle-option {
+    min-width: 0;
+    border-radius: var(--nx-radius-pill);
+  }
+
+  /* With the thumb gone, the selected option needs its own background. */
+  .nx-pricing__toggle-option[data-selected] {
+    background: var(--nx-gradient-pill);
+    border: 1px solid var(--nx-border-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-pricing__card,
+  .nx-pricing__toggle-thumb {
+    transition: none;
+  }
+}

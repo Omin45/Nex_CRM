@@ -1,0 +1,183 @@
+/* ==========================================================================
+   NexERP — WarehouseListPage
+   --------------------------------------------------------------------------
+   The card grid that stands in for a table on a four-row directory, plus the
+   create-warehouse modal form.
+
+   Cards borrow the shared .card-hover lift; everything here is layout and
+   typography — the mono code chip, the icon rows, and a stats footer that only
+   appears on records the backend has already enriched.
+   ========================================================================== */
+
+.nx-warehouses :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+/* ---- card grid ------------------------------------------------------------ */
+.nx-warehouses__grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-warehouses__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4);
+  background: var(--nx-overlay), var(--nx-surface);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-inset-hairline);
+}
+
+.nx-warehouses__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+}
+
+.nx-warehouses__name {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+}
+
+.nx-warehouses__badges {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--nx-space-2);
+}
+
+.nx-warehouses__code {
+  align-self: flex-start;
+  padding: 2px var(--nx-space-2);
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wide);
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-xs);
+}
+
+/* ---- fact rows ------------------------------------------------------------ */
+.nx-warehouses__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nx-warehouses__row {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  min-width: 0;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-warehouses__row-icon {
+  flex: none;
+  color: var(--nx-text-dim);
+}
+
+.nx-warehouses__row-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- enriched footer ------------------------------------------------------ */
+.nx-warehouses__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+  margin-top: auto;
+  padding-top: var(--nx-space-3);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-warehouses__value {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+}
+
+/* ---- skeleton ------------------------------------------------------------- */
+.nx-warehouses__card--skel {
+  gap: var(--nx-space-3);
+}
+
+.nx-warehouses__card--skel .skeleton {
+  display: block;
+  width: 100%;
+  height: 12px;
+}
+
+.nx-warehouses__card--skel .skeleton--title {
+  width: 55%;
+  height: 16px;
+}
+
+.nx-warehouses__card--skel .skeleton:nth-child(3) {
+  width: 78%;
+}
+
+.nx-warehouses__card--skel .skeleton:nth-child(4) {
+  width: 62%;
+}
+
+/* ---- error ---------------------------------------------------------------- */
+.nx-warehouses__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+}
+
+.nx-warehouses__error-title {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 600;
+  color: var(--nx-danger);
+}
+
+.nx-warehouses__error-text {
+  max-width: 60ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* ---- create form ---------------------------------------------------------- */
+.nx-warehouses__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-warehouses__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-3);
+}
+
+@media (max-width: 640px) {
+  .nx-warehouses__form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

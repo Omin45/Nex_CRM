@@ -1,0 +1,286 @@
+/* ==========================================================================
+   NexERP — ProjectDetailPage
+   --------------------------------------------------------------------------
+   A detail page that reads top-down: identity card, milestone strip, task
+   table. The strip is a horizontal flex that scrolls on narrow screens rather
+   than wrapping into a ragged pile.
+
+   All colour comes from tokens; the overdue state is also spelled out in
+   words in the markup, so the red is reinforcement, not the message.
+   ========================================================================== */
+
+.nx-proj-detail :focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-proj-detail__back {
+  margin-left: calc(var(--nx-space-3) * -1);
+  margin-bottom: var(--nx-space-1);
+}
+
+/* ---- summary card --------------------------------------------------------- */
+.nx-proj-detail__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-5);
+}
+
+.nx-proj-detail__summary-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nx-space-4);
+}
+
+.nx-proj-detail__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--nx-accent);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius);
+}
+
+.nx-proj-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+}
+
+/* Progress sits at the far right of the head row on wide screens. */
+.nx-proj-detail__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  flex: 1 1 220px;
+  min-width: 200px;
+  max-width: 340px;
+  margin-left: auto;
+}
+
+.nx-proj-detail__progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+}
+
+.nx-proj-detail__progress-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-proj-detail__progress-value {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+}
+
+.nx-proj-detail__progress-bar {
+  display: block;
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  background: var(--nx-overlay);
+  border: 0;
+  border-radius: var(--nx-radius-pill);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nx-proj-detail__progress-bar::-webkit-progress-bar {
+  background: var(--nx-overlay);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-proj-detail__progress-bar::-webkit-progress-value {
+  background: var(--nx-gradient-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-proj-detail__progress-bar::-moz-progress-bar {
+  background: var(--nx-gradient-accent);
+  border-radius: var(--nx-radius-pill);
+}
+
+.nx-proj-detail__progress-meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-proj-detail__description {
+  max-width: 78ch;
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading);
+  color: var(--nx-text-muted);
+}
+
+/* ---- fact grid ------------------------------------------------------------ */
+.nx-proj-detail__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--nx-space-4);
+  padding-top: var(--nx-space-4);
+  margin: 0;
+  border-top: 1px solid var(--nx-border-soft);
+}
+
+.nx-proj-detail__facts dt {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-text-muted);
+}
+
+.nx-proj-detail__facts dd {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: var(--nx-space-1);
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-base);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text);
+}
+
+.nx-proj-detail__fact-due[data-late] {
+  color: var(--nx-danger);
+}
+
+/* ---- section titles ------------------------------------------------------- */
+.nx-proj-detail__section-title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+}
+
+.nx-proj-detail__section-meta {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}
+
+.nx-proj-detail__section-empty {
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+}
+
+/* ---- milestones ----------------------------------------------------------- */
+.nx-proj-detail__milestones {
+  display: flex;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-1) var(--nx-space-1) var(--nx-space-3);
+  margin: 0;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.nx-proj-detail__milestone {
+  display: flex;
+  flex: 1 1 200px;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  min-width: 190px;
+  padding: var(--nx-space-3) var(--nx-space-4);
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border-soft);
+  border-left: 3px solid var(--nx-accent);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-proj-detail__milestone-name {
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-proj-detail__milestone-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nx-space-2);
+}
+
+.nx-proj-detail__milestone-date {
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-dim);
+}
+
+/* ---- task cells ----------------------------------------------------------- */
+.nx-proj-detail__task {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.nx-proj-detail__task-title {
+  overflow: hidden;
+  font-family: var(--nx-font-display);
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-proj-detail__task-meta {
+  overflow: hidden;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-proj-detail__assignee {
+  display: block;
+  max-width: 12rem;
+  overflow: hidden;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-proj-detail__due {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--nx-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
+
+.nx-proj-detail__due[data-late] {
+  color: var(--nx-danger);
+  font-weight: 500;
+}
+
+.nx-proj-detail__late-flag {
+  font-size: var(--nx-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nx-tracking-wider);
+  text-transform: uppercase;
+  color: var(--nx-danger);
+}
+
+.nx-proj-detail__hours {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--nx-text-muted);
+  white-space: nowrap;
+}
