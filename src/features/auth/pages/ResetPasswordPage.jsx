@@ -17,7 +17,7 @@ import Input from '@/components/ui/Input/Input';
 import PasswordStrength from '../components/PasswordStrength';
 import { useResetPasswordMutation } from '../api/authApi';
 import { useNotify } from '@/hooks/useNotification';
-import { validateForm, email, password, confirmPassword, required } from '@/utils/validators';
+import { validateForm, email as emailRule, password, confirmPassword, required } from '@/utils/validators';
 import { appRoutes } from '@/config/navigation.config';
 import './ForgotPasswordPage.css';
 import { serverMessage } from '@/utils/errorMessage';
@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
     event.preventDefault();
 
     const { valid, errors: nextErrors } = validateForm(values, {
-      email: [required, email],
+      email: [required, emailRule],
       code: [required],
       password: [required, password],
       confirmPassword: [required, confirmPassword(() => values.password)],
