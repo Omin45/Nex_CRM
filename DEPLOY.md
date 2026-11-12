@@ -1,22 +1,27 @@
 # Deploying ArkCRM to Render
 
-Two repositories, three Render resources: a Spring Boot web service, a MySQL
-database, and a static site for the Vite frontend. Both repositories carry a
-`render.yaml`, so Render builds each one from the blueprint in the file.
+Two repositories, three Render resources: a Spring Boot web service, a
+Postgres database, and a static site for the Vite frontend. Both
+repositories carry a `render.yaml`, so Render builds each one from the
+blueprint in the file.
 
-The order matters. The frontend needs the backend's address, and the backend
-needs the frontend's address, so deploy the **backend first** and fill the
-frontend's URL in afterwards.
+**The order matters.** The frontend needs the backend's address, and the
+backend needs the frontend's address, so deploy the **backend first** and
+fill the frontend's URL in afterwards.
 
 ---
 
-## Before you start
+## What is deployed
 
 | | |
 |---|---|
-| Backend repo | `Omin45/Nex_CRM-Backend` (private) |
-| Frontend repo | `Omin45/Nex_CRM` (public) |
-| Database | Render Postgres (free tier expires after 30 days) |
+| Frontend | `https://nexcrm-frontend-18vr.onrender.com` |
+| Backend | `https://nexcrm-backend-zrbq.onrender.com` |
+| API | `https://nexcrm-backend-zrbq.onrender.com/api/v1` |
+| Database | Render Postgres, `nexcrm-db`, region `virginia` |
+
+The hostnames carry a suffix because Render appends one to a name that is
+already taken. They are written out in the blueprints.
 
 ---
 
@@ -25,11 +30,10 @@ frontend's URL in afterwards.
 Render only sees a repository once its GitHub App is installed on your
 account, and the app is installed **per repository**.
 
-1. Render dashboard → **Account Settings → GitHub → Install Render GitHub App**
+1. Render dashboard -> **Account Settings -> GitHub -> Install Render GitHub App**
 2. Choose **All repositories**, or **Only select repositories** and tick
    **both** `Nex_CRM` and `Nex_CRM-Backend`.
-3. Back on the account page, the two repositories should both show a green
-   "connected" tick.
+3. Back on the account page, both repositories should show a connected tick.
 
 > The backend repository is private. If you only tick the public frontend,
 > Render will not list the backend and you cannot deploy it.
@@ -38,35 +42,57 @@ account, and the app is installed **per repository**.
 
 ## Step 1 - the backend and its database
 
-Render dashboard → **New → Blueprint** → pick `Omin45/Nex_CRM-Backend` →
+Render dashboard -> **New -> Blueprint** -> pick `Omin45/Nex_CRM-Backend` ->
 **Apply**.
 
-The blueprint creates two resources:
+The blueprint creates `nexcrm-backend` (the web service) and `nexcrm-db`
+(the database), and wires the database into the service. It also generates
+`JWT_SECRET` for you.
 
-- `nexcrm-backend` - the Spring Boot web service
-- `nexcrm-db` - the Postgres database
+**Two things to get right in the blueprint**, both of which cost an
+afternoon to find:
 
-Render wires the database into the service by itself: `DB_URL`,
-`DB_USERNAME` and `DB_PASSWORD` all come from the database. It also
-generates `JWT_SECRET` fresh - that key signs the access tokens, so do
-not copy it anywhere or the sessions break.
+```yaml
+    # Render's default for a new web service is a paid plan, and it asks
+    # for payment details before it will build. The free plan does not.
+    plan: free
 
-Render will ask for one value you have to supply:
+    # The same region as the database. Render only hands out an internal
+    # connection string for a database in the same region; across regions
+    # it is empty, and the application then waits forever for a database
+    # it cannot reach.
+    region: virginia
+```
 
-| Variable | What to put |
-|---|---|
-| `CORS_ALLOWED_ORIGINS` | `https://nexcrm-frontend.onrender.com` |
+And the database has to be in that region too:
 
-If the frontend does not exist yet, put that address in anyway - it is the
-name the blueprint gives the site - and correct it in step 3 if the name
-comes out different.
+```yaml
+databases:
+  - name: nexcrm-db
+    plan: free
+    region: virginia
+```
 
-**The build takes a few minutes.** It runs `mvn -B clean package -DskipTests`
-and starts `java -jar target/Backend-0.0.1-SNAPSHOT.jar`.
+### The JDBC URL
 
-> The `mvnw` wrapper in this repository is missing its properties file and
-> cannot run. The blueprint deliberately uses the system `mvn` that Render
-> installs.
+The application assembles the URL from its parts rather than taking a
+connection string whole:
+
+```yaml
+    url: jdbc:${DB_SCHEME:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nexcrm}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+```
+
+> **A JDBC URL that carries `user:password` in front of the host is not
+> read correctly by the Postgres driver.** It takes the whole authority as
+> the hostname and fails to resolve it, which looks like an application
+> that hangs rather than a connection error. The user and the password
+> belong in their own settings, and then the host is read cleanly.
+
+`DB_SCHEME` is a variable so the same build speaks to the local MySQL and
+to the hosted Postgres. The local settings live in `.env.properties`, which
+is not committed.
 
 ### What happens to the database
 
@@ -74,42 +100,38 @@ and starts `java -jar target/Backend-0.0.1-SNAPSHOT.jar`.
 `DataSeeder` fills it with the demo business, its people and its ledger. So
 a fresh database is not empty - it arrives ready to sign in to.
 
-Render hosts Postgres, not MySQL, so the deployed database is Postgres. The
-application speaks both: the JDBC URL decides which driver answers, so the
-same build runs against MySQL on a laptop and Postgres on the host.
-
 ---
 
 ## Step 2 - the frontend
 
-Render dashboard → **New → Blueprint** → pick `Omin45/Nex_CRM` → set two
-variables → **Apply**.
+Render dashboard -> **New -> Blueprint** -> pick `Omin45/Nex_CRM` -> **Apply**.
 
-| Variable | Value |
-|---|---|
-| `VITE_API_BASE_URL` | `https://nexcrm-backend.onrender.com/api/v1` |
-| `VITE_SOCKET_URL` | `wss://nexcrm-backend.onrender.com/ws` |
+```yaml
+    envVars:
+      - key: VITE_USE_MOCKS
+        value: "false"
+      - key: VITE_API_BASE_URL
+        value: https://nexcrm-backend-zrbq.onrender.com/api/v1
+      - key: VITE_SOCKET_URL
+        value: wss://nexcrm-backend-zrbq.onrender.com/ws
+```
 
-`VITE_USE_MOCKS=false` is already in the blueprint. It has to be false:
-left unset it defaults to true, and the site would serve in-browser fixtures
-and never call the API at all.
-
-> `VITE_` variables are baked into the bundle at **build** time. Editing one
-> in Render triggers a rebuild, which takes a couple of minutes. That is
-> Render doing you a favour - it redeploys the site for you.
+`VITE_USE_MOCKS` must be "false". Left unset it defaults to true, and the
+site would serve in-browser fixtures and never call the API at all.
 
 The blueprint also rewrites every path to `index.html`. Without it, a
-refresh on `/vendor/VND-0001/dashboard` is a 404, because the router lives in
-the browser and the server has no such file.
+refresh on `/vendor/VND-0001/dashboard` is a 404, because the router lives
+in the browser.
 
 ---
 
 ## Step 3 - point the backend's CORS at the frontend
 
-Copy the frontend's URL from the Render dashboard (it is on the static
-site's page) and set it on the backend service:
+Set `CORS_ALLOWED_ORIGINS` on the backend to the frontend's URL:
 
-`CORS_ALLOWED_ORIGINS` = `https://nexcrm-frontend.onrender.com`
+```
+https://nexcrm-frontend-18vr.onrender.com
+```
 
 Save. The backend redeploys.
 
@@ -126,8 +148,7 @@ everything else working.
 3. The dashboard loads, with figures from the database - not empty states.
 
 If the page loads but every panel says it cannot load the data, the frontend
-is pointing at the wrong backend: check `VITE_API_BASE_URL` and wait for the
-rebuild.
+is pointing at the wrong backend: check `VITE_API_BASE_URL`.
 
 If the browser console shows a CORS error, the backend's
 `CORS_ALLOWED_ORIGINS` does not match the frontend's origin exactly.
@@ -167,7 +188,7 @@ people. A paid instance does not sleep.
 **The free database expires after 30 days.** When it goes, the service loses
 its data and the schema is rebuilt from scratch on the next boot - so the
 app looks fine and every record is gone. For anything longer-lived, point
-`DB_URL` at a database that stays.
+`DB_HOST` and friends at a database that stays.
 
 ---
 
