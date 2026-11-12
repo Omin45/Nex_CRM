@@ -1,5 +1,5 @@
 /**
- * NexERP — LoadingState
+ * ArkCRM — LoadingState
  * ---------------------------------------------------------------------------
  * Every async surface in the app renders one of these four modes:
  *

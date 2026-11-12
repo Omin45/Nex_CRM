@@ -1,5 +1,5 @@
 /**
- * NexERP — OrderListPage
+ * ArkCRM — OrderListPage
  * ---------------------------------------------------------------------------
  * The sales-order register: server-driven search, sort and pagination over
  * /sales/orders, plus a summary of the orders currently on screen.
@@ -29,15 +29,21 @@ import Badge from '@/components/ui/Badge/Badge';
 import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
 import Modal from '@/components/ui/Modal/Modal';
+import RecordFormModal from '@/components/ui/RecordFormModal/RecordFormModal';
 import MetricCard from '@/features/dashboard/components/MetricCard';
-import { useGetOrdersQuery } from '../api/salesApi';
+import { useCreateOrderMutation, useGetOrdersQuery } from '../api/salesApi';
+import { useGetCustomersQuery } from '@/features/customers/api/customersApi';
+import { useGetWarehousesQuery } from '@/features/inventory/api/inventoryApi';
 import { useNotify } from '@/hooks/useNotification';
 import { useTenant } from '@/hooks/useTenant';
 import useDataTable from '@/hooks/useDataTable';
+import useCreateDialog from '@/hooks/useCreateDialog';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, isOverdue } from '@/utils/date';
 import './OrderListPage.css';
 
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
+import { serverMessage } from '@/utils/errorMessage';
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
   { id: 'CONFIRMED', label: 'Confirmed' },
@@ -70,6 +76,43 @@ function isLate(order) {
   return isOverdue(order.deliveryDate);
 }
 
+const ORDER_STATUSES = ['CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+
+const EMPTY_ORDER = {
+  customerId: '',
+  total: '',
+  items: '1',
+  deliveryDate: '',
+  warehouse: '',
+  status: 'CONFIRMED',
+};
+
+function validateOrder(form) {
+  const errors = {};
+  if (!form.customerId) errors.customerId = 'Choose the customer the order is for.';
+  const total = Number(form.total);
+  if (form.total === '' || !Number.isFinite(total) || total <= 0) {
+    errors.total = 'Enter a total greater than zero.';
+  }
+  if (Number(form.items) < 1) errors.items = 'An order needs at least one line.';
+  if (!form.deliveryDate) errors.deliveryDate = 'Pick the delivery date.';
+  return errors;
+}
+
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'number', label: 'Order' },
+  { key: 'customer', label: 'Customer' },
+  { key: 'orderDate', label: 'Ordered', value: (row) => formatDate(row.orderDate) },
+  { key: 'deliveryDate', label: 'Delivery', value: (row) => formatDate(row.deliveryDate) },
+  { key: 'total', label: 'Total' },
+  { key: 'status', label: 'Status' },
+  { key: 'fulfilment', label: 'Fulfilment' },
+  { key: 'items', label: 'Items' },
+  { key: 'warehouse', label: 'Warehouse' },
+  { key: 'owner', label: 'Owner' },
+];
+
 export default function OrderListPage() {
   const notify = useNotify();
   const { currency } = useTenant();
@@ -80,6 +123,102 @@ export default function OrderListPage() {
      search is more useful than one that races it. */
   const [status, setStatus] = useState('all');
   const [selected, setSelected] = useState(null);
+  const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
+  const { data: customerData } = useGetCustomersQuery({ page: 1, pageSize: 100 });
+  const { data: warehouseData } = useGetWarehousesQuery({ page: 1, pageSize: 100 });
+
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: 'Select a customer' },
+      ...(customerData?.items ?? []).map((customer) => ({
+        value: customer.id,
+        label: customer.name,
+      })),
+    ],
+    [customerData],
+  );
+
+  const warehouseOptions = useMemo(
+    () => [
+      { value: '', label: 'Select a warehouse' },
+      ...(warehouseData?.items ?? []).map((warehouse) => ({
+        value: warehouse.name,
+        label: warehouse.name,
+      })),
+    ],
+    [warehouseData],
+  );
+
+  const orderFields = useMemo(
+    () => [
+      {
+        name: 'customerId',
+        label: 'Customer',
+        type: 'select',
+        required: true,
+        options: customerOptions,
+      },
+      {
+        name: 'total',
+        label: 'Order total',
+        type: 'number',
+        inputMode: 'decimal',
+        min: '0',
+        step: '0.01',
+        required: true,
+        placeholder: '0.00',
+        half: true,
+      },
+      {
+        name: 'items',
+        label: 'Line items',
+        type: 'number',
+        min: '1',
+        step: '1',
+        required: true,
+        placeholder: '1',
+        half: true,
+      },
+      {
+        name: 'deliveryDate',
+        label: 'Delivery date',
+        type: 'date',
+        required: true,
+        half: true,
+      },
+      {
+        name: 'warehouse',
+        label: 'Warehouse',
+        type: 'select',
+        half: true,
+        options: warehouseOptions,
+      },
+      {
+        name: 'status',
+        label: 'Status',
+        type: 'select',
+        half: true,
+        options: ORDER_STATUSES.map((status) => ({ value: status, label: status })),
+      },
+    ],
+    [customerOptions, warehouseOptions],
+  );
+
+  const dialog = useCreateDialog({
+    initialValues: EMPTY_ORDER,
+    validate: validateOrder,
+    onSubmit: async (form) => {
+      await createOrder({
+        customerId: form.customerId,
+        total: Number(form.total),
+        items: Number(form.items),
+        deliveryDate: form.deliveryDate,
+        warehouse: form.warehouse,
+        status: form.status,
+      }).unwrap();
+      
+    },
+  });
 
   const columns = useMemo(
     () => [
@@ -294,7 +433,7 @@ export default function OrderListPage() {
           <div className="nx-order-list__error">
             <h1 className="nx-order-list__error-title">Could not load orders</h1>
             <p className="nx-order-list__error-text">
-              {error?.data?.message ?? 'The sales-order register is unavailable right now.'}
+              {serverMessage(error, 'The sales-order register is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>
@@ -325,10 +464,13 @@ export default function OrderListPage() {
           >
             Refresh
           </Button>
-          <Button variant="outline" size="sm" leftIcon={<FiDownload size={15} />}>
-            Export
-          </Button>
-          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />}>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="orders"
+            title="Orders"
+          />
+          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />} onClick={() => dialog.show()}>
             New order
           </Button>
         </div>
@@ -419,6 +561,20 @@ export default function OrderListPage() {
           ))}
         </dl>
       </Modal>
+
+      <RecordFormModal
+        open={dialog.open}
+        onClose={dialog.hide}
+        title="New order"
+        subtitle="Raise an order against a customer and a warehouse."
+        submitLabel="Create order"
+        isSaving={isCreating}
+        fields={orderFields}
+        form={dialog.form}
+        errors={dialog.errors}
+        onChange={dialog.handleChange}
+        onSubmit={dialog.submit}
+      />
     </div>
   );
 }

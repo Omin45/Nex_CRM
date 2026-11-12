@@ -1,5 +1,5 @@
 /**
- * NexERP — PieChartCard
+ * ArkCRM — PieChartCard
  * ---------------------------------------------------------------------------
  * Donut / pie wrapper for expense mix, invoice status distribution and
  * pipeline composition.

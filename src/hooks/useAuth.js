@@ -1,5 +1,5 @@
 /**
- * NexERP — useAuth
+ * ArkCRM — useAuth
  * ---------------------------------------------------------------------------
  * Single accessor for the signed-in user, the active tenant and the token
  * pair. Screens should never touch `state.auth` directly — this hook is the
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectUser, selectTenant, selectAuthStatus, selectAuthError,
   selectIsAuthenticated, selectUserRole, selectVendorId, selectIsBootstrapping,
-  logout as logoutAction, updateUser, clearAuthError,
+  logout as logoutAction, updateUser, clearAuthError, setTenant,
 } from '@/features/auth/slices/authSlice';
 import { useLogoutMutation } from '@/features/auth/api/authApi';
 import { PLATFORM_ROLES } from '@/config/permissions.config';
@@ -50,6 +50,12 @@ export function useAuth() {
     [dispatch],
   );
 
+  /** Points the session at a different workspace - after a join. */
+  const setActiveTenant = useCallback(
+    (next) => dispatch(setTenant(next)),
+    [dispatch],
+  );
+
   return useMemo(
     () => ({
       user,
@@ -65,8 +71,9 @@ export function useAuth() {
       logout,
       clearError,
       updateProfile,
+      setActiveTenant,
     }),
-    [user, tenant, status, error, role, vendorId, isAuthenticated, isBootstrapping, logout, clearError, updateProfile],
+    [user, tenant, status, error, role, vendorId, isAuthenticated, isBootstrapping, logout, clearError, updateProfile, setActiveTenant],
   );
 }
 

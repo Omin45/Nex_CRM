@@ -1,5 +1,5 @@
 /**
- * NexERP — PageHeader
+ * ArkCRM — PageHeader
  * ---------------------------------------------------------------------------
  * The shared opening block for the inner marketing pages (features, pricing,
  * about, contact) so they all start with the same rhythm instead of each one

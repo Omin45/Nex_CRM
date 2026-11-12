@@ -1,5 +1,5 @@
 /**
- * NexERP — EmployeeListPage
+ * ArkCRM — EmployeeListPage
  * ---------------------------------------------------------------------------
  * The people directory: headcount on screen, status at a glance, and the
  * form that adds someone to the roster.
@@ -30,6 +30,7 @@ import { validateForm, schemas } from '@/utils/validators';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, toDateInputValue } from '@/utils/date';
 import './EmployeeListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -238,10 +239,10 @@ export default function EmployeeListPage() {
         manager: 'Unassigned',
         location: '—',
       }).unwrap();
-      notify.success(`${name} added to the directory`);
+      
       closeModal();
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not save the employee');
+      notify.error(serverMessage(err, 'Could not save the employee'));
     }
   };
 
@@ -257,7 +258,7 @@ export default function EmployeeListPage() {
           <div className="nx-emp__error">
             <h1 className="nx-emp__error-title">Could not load employees</h1>
             <p className="nx-emp__error-text">
-              {error?.data?.message ?? 'The people directory is unavailable right now.'}
+              {serverMessage(error, 'The people directory is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>

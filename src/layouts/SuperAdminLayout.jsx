@@ -1,5 +1,5 @@
 /**
- * NexERP — SuperAdminLayout
+ * ArkCRM — SuperAdminLayout
  * ---------------------------------------------------------------------------
  * Shell for the platform administration surface, mounted under /admin/*.
  *

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — SalesPipelinePage
+   ArkCRM — SalesPipelinePage
    --------------------------------------------------------------------------
    Page-level layout for the pipeline. Almost everything visual lives in the
    child components (PipelineSummary, KanbanBoard); this file only handles the

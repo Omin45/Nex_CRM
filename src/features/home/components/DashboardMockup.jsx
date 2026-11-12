@@ -1,5 +1,5 @@
 /**
- * NexERP — DashboardMockup Component
+ * ArkCRM — DashboardMockup Component
  * ---------------------------------------------------------------------------
  * A self-playing mock of the vendor dashboard: the bars breathe, the top edge
  * sweeps, and the KPI numbers drift in real time so the panel reads as live

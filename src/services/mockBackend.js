@@ -1,5 +1,5 @@
 /**
- * NexERP — Mock backend
+ * ArkCRM — Mock backend
  * ---------------------------------------------------------------------------
  * An RTK Query baseQuery that answers requests from the in-memory fixtures in
  * fixtures.js instead of the network. It exists for one reason: the Spring
@@ -375,7 +375,7 @@ const TOKENS = { accessToken: 'mock.jwt.access', refreshToken: 'mock.jwt.refresh
  * password is stored verbatim only because this is a client-side mock — never
  * a pattern to copy into real code.
  */
-const REGISTERED_STORAGE_KEY = 'nexerp.mock.registeredAccounts';
+const REGISTERED_STORAGE_KEY = 'arkcrm.mock.registeredAccounts';
 
 function loadRegisteredAccounts() {
   try {

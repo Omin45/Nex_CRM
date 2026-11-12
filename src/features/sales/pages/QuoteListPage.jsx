@@ -29,15 +29,20 @@ import Badge from '@/components/ui/Badge/Badge';
 import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
 import Modal from '@/components/ui/Modal/Modal';
+import RecordFormModal from '@/components/ui/RecordFormModal/RecordFormModal';
 import MetricCard from '@/features/dashboard/components/MetricCard';
-import { useGetQuotesQuery } from '../api/salesApi';
+import { useCreateQuoteMutation, useGetQuotesQuery } from '../api/salesApi';
+import { useGetCustomersQuery } from '@/features/customers/api/customersApi';
 import { useNotify } from '@/hooks/useNotification';
 import { useTenant } from '@/hooks/useTenant';
 import useDataTable from '@/hooks/useDataTable';
+import useCreateDialog from '@/hooks/useCreateDialog';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, isOverdue } from '@/utils/date';
 import './QuoteListPage.css';
 
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
+import { serverMessage } from '@/utils/errorMessage';
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
   { id: 'DRAFT', label: 'Draft' },
@@ -71,6 +76,43 @@ function isQuoteExpired(quote) {
   return quote.status === 'EXPIRED' || isOverdue(quote.validUntil);
 }
 
+/** Payment terms a quote can be raised on. */
+const PAYMENT_TERMS = ['Due on receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
+
+const EMPTY_QUOTE = {
+  customerId: '',
+  total: '',
+  items: '1',
+  validUntil: '',
+  paymentTerms: 'Net 30',
+  probability: '10',
+};
+
+function validateQuote(form) {
+  const errors = {};
+  if (!form.customerId) errors.customerId = 'Choose the customer the quote is for.';
+  const total = Number(form.total);
+  if (form.total === '' || !Number.isFinite(total) || total <= 0) {
+    errors.total = 'Enter a total greater than zero.';
+  }
+  if (Number(form.items) < 1) errors.items = 'A quote needs at least one line.';
+  if (!form.validUntil) errors.validUntil = 'Pick the date the quote expires.';
+  return errors;
+}
+
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'number', label: 'Quote' },
+  { key: 'customer', label: 'Customer' },
+  { key: 'issueDate', label: 'Issued', value: (row) => formatDate(row.issueDate) },
+  { key: 'validUntil', label: 'Valid until', value: (row) => formatDate(row.validUntil) },
+  { key: 'total', label: 'Total' },
+  { key: 'status', label: 'Status' },
+  { key: 'items', label: 'Items' },
+  { key: 'probability', label: 'Probability' },
+  { key: 'owner', label: 'Owner' },
+];
+
 export default function QuoteListPage() {
   const notify = useNotify();
   const { currency } = useTenant();
@@ -81,6 +123,95 @@ export default function QuoteListPage() {
      search when the two are independent anyway. */
   const [status, setStatus] = useState('all');
   const [selected, setSelected] = useState(null);
+  const [createQuote, { isLoading: isCreating }] = useCreateQuoteMutation();
+  const { data: customerData } = useGetCustomersQuery({ page: 1, pageSize: 100 });
+
+  /* The quote form needs the customer directory, so it is fetched once here
+     and the picker reads it. */
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: 'Select a customer' },
+      ...(customerData?.items ?? []).map((customer) => ({
+        value: customer.id,
+        label: customer.name,
+      })),
+    ],
+    [customerData],
+  );
+
+  const quoteFields = useMemo(
+    () => [
+      {
+        name: 'customerId',
+        label: 'Customer',
+        type: 'select',
+        required: true,
+        options: customerOptions,
+      },
+      {
+        name: 'total',
+        label: 'Quote total',
+        type: 'number',
+        inputMode: 'decimal',
+        min: '0',
+        step: '0.01',
+        required: true,
+        placeholder: '0.00',
+        half: true,
+      },
+      {
+        name: 'items',
+        label: 'Line items',
+        type: 'number',
+        min: '1',
+        step: '1',
+        required: true,
+        placeholder: '1',
+        half: true,
+      },
+      {
+        name: 'validUntil',
+        label: 'Valid until',
+        type: 'date',
+        required: true,
+        half: true,
+      },
+      {
+        name: 'paymentTerms',
+        label: 'Payment terms',
+        type: 'select',
+        half: true,
+        options: PAYMENT_TERMS.map((terms) => ({ value: terms, label: terms })),
+      },
+      {
+        name: 'probability',
+        label: 'Probability',
+        type: 'number',
+        min: '0',
+        max: '100',
+        step: '1',
+        placeholder: '10',
+        half: true,
+      },
+    ],
+    [customerOptions],
+  );
+
+  const dialog = useCreateDialog({
+    initialValues: EMPTY_QUOTE,
+    validate: validateQuote,
+    onSubmit: async (form) => {
+      await createQuote({
+        customerId: form.customerId,
+        total: Number(form.total),
+        items: Number(form.items),
+        validUntil: form.validUntil,
+        paymentTerms: form.paymentTerms,
+        probability: Number(form.probability),
+      }).unwrap();
+      
+    },
+  });
 
   const columns = useMemo(
     () => [
@@ -277,7 +408,7 @@ export default function QuoteListPage() {
           <div className="nx-quote-list__error">
             <h1 className="nx-quote-list__error-title">Could not load quotes</h1>
             <p className="nx-quote-list__error-text">
-              {error?.data?.message ?? 'The quote register is unavailable right now.'}
+              {serverMessage(error, 'The quote register is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>
@@ -308,10 +439,13 @@ export default function QuoteListPage() {
           >
             Refresh
           </Button>
-          <Button variant="outline" size="sm" leftIcon={<FiDownload size={15} />}>
-            Export
-          </Button>
-          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />}>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="quotes"
+            title="Quotes"
+          />
+          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />} onClick={() => dialog.show()}>
             New quote
           </Button>
         </div>
@@ -402,6 +536,20 @@ export default function QuoteListPage() {
           ))}
         </dl>
       </Modal>
+
+      <RecordFormModal
+        open={dialog.open}
+        onClose={dialog.hide}
+        title="New quote"
+        subtitle="Raise a quotation for a customer. It starts as a draft."
+        submitLabel="Create quote"
+        isSaving={isCreating}
+        fields={quoteFields}
+        form={dialog.form}
+        errors={dialog.errors}
+        onChange={dialog.handleChange}
+        onSubmit={dialog.submit}
+      />
     </div>
   );
 }

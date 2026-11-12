@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — App shell layout styles
+   ArkCRM — App shell layout styles
    Sidebar rail, topbar, breadcrumb trail and footer. These are the only
    fixed-position surfaces in the app, so they are grouped in one file rather
    than scattered across the components that render them.

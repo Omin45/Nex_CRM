@@ -1,5 +1,5 @@
 /**
- * NexERP — SubscriptionsPage
+ * ArkCRM — SubscriptionsPage
  * ---------------------------------------------------------------------------
  * Billing desk view of every tenant's plan: what they pay, how many seats
  * they use, and what is about to renew. One row per tenant, served by
@@ -33,6 +33,7 @@ import { formatCurrency } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './SubscriptionsPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const PLAN_META = {
   STARTER: { label: 'Starter', tone: 'neutral' },
@@ -226,7 +227,7 @@ export default function SubscriptionsPage() {
           <div className="nx-subs__error">
             <h2 className="nx-subs__error-title">Could not load subscriptions</h2>
             <p className="nx-subs__error-text">
-              {error?.data?.message ?? 'The platform subscriptions endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform subscriptions endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

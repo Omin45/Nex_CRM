@@ -1,5 +1,5 @@
 /**
- * NexERP — SessionBootstrap
+ * ArkCRM — SessionBootstrap
  * ---------------------------------------------------------------------------
  * Runs once, at the root, and does the one job that lets the app decide
  * whether to render a public or a signed-in shell: work out whether the

@@ -1,5 +1,5 @@
 /**
- * NexERP — Store
+ * ArkCRM — Store
  * ---------------------------------------------------------------------------
  * Configures the Redux Toolkit store and composes the RTK Query middleware.
  *

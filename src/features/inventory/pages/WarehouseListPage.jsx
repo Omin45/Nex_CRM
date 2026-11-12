@@ -1,5 +1,5 @@
 /**
- * NexERP — WarehouseListPage
+ * ArkCRM — WarehouseListPage
  * ---------------------------------------------------------------------------
  * The warehouse directory. Four locations exist, so this is a card grid
  * rather than a table: at this size column headers, sorting and a pager would
@@ -29,6 +29,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatCurrency } from '@/utils/currency';
 import { validateForm, required, sku } from '@/utils/validators';
 import './WarehouseListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const EMPTY_FORM = { name: '', code: '', city: '', manager: '' };
 
@@ -103,12 +104,12 @@ export default function WarehouseListPage() {
         city: form.city.trim(),
         manager: form.manager.trim(),
       }).unwrap();
-      notify.success(`${name} added`);
+      
       setForm(EMPTY_FORM);
       setErrors({});
       setIsModalOpen(false);
     } catch (err) {
-      setSubmitError(err?.data?.message ?? 'Could not save the warehouse.');
+      setSubmitError(serverMessage(err, 'Could not save the warehouse.'));
     }
   };
 
@@ -119,7 +120,7 @@ export default function WarehouseListPage() {
           <div className="nx-warehouses__error">
             <h1 className="nx-warehouses__error-title">Could not load warehouses</h1>
             <p className="nx-warehouses__error-text">
-              {error?.data?.message ?? 'The warehouse directory is unavailable right now.'}
+              {serverMessage(error, 'The warehouse directory is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

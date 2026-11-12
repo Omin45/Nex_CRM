@@ -1,5 +1,5 @@
 /**
- * NexERP — Auth slice
+ * ArkCRM — Auth slice
  * ---------------------------------------------------------------------------
  * Session state: the signed-in user, the active tenant, and the token pair.
  *
@@ -10,6 +10,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { STORAGE_KEYS } from '@/config/constants';
 import { tokenStorage } from '@/services/api';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Rehydrates the session from localStorage on first load. */
 function loadPersistedSession() {
@@ -102,7 +103,7 @@ const authSlice = createSlice({
             state.error = null;
           } else if (action.type.endsWith('/rejected')) {
             state.status = 'unauthenticated';
-            state.error = action.error?.data?.message ?? 'Unable to sign in. Please try again.';
+            state.error = serverMessage(action.error, 'Unable to sign in. Please try again.');
           }
         },
       )

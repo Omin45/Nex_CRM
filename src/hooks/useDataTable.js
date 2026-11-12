@@ -1,5 +1,5 @@
 /**
- * NexERP — useDataTable
+ * ArkCRM — useDataTable
  * ---------------------------------------------------------------------------
  * The state controller behind <DataTable>. Owns search, sorting, filtering,
  * pagination and column visibility, and returns a single `queryParams` object

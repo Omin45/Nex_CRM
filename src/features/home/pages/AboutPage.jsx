@@ -1,5 +1,5 @@
 /**
- * NexERP — AboutPage
+ * ArkCRM — AboutPage
  * ---------------------------------------------------------------------------
  * The company page: a positioning statement, a short history, the principles
  * the product is built on, and the team.
@@ -61,7 +61,7 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="About"
         title="Built by people who had to close the books by hand"
-        text="NexERP exists because a spreadsheet is a fine place to start and a terrible place to finish. We make the system of record that replaces it."
+        text="ArkCRM exists because a spreadsheet is a fine place to start and a terrible place to finish. We make the system of record that replaces it."
       />
 
       {/* ---- principles ---- */}

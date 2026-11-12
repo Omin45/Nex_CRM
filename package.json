@@ -1,9 +1,9 @@
 {
-  "name": "nexerp",
+  "name": "arkcrm",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "NexERP - multi-vendor ERP platform for vendors, finance, inventory and operations.",
+  "description": "ArkCRM - multi-vendor CRM platform for vendors, finance, inventory and operations.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,5 +1,5 @@
 /**
- * NexERP — ActivityTimeline
+ * ArkCRM — ActivityTimeline
  * ---------------------------------------------------------------------------
  * Vertical feed for audit trails and activity history: the dashboard's
  * "recent activity" panel, a customer's 360 timeline, an order's status

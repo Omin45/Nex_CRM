@@ -1,5 +1,5 @@
 /**
- * NexERP — Footer
+ * ArkCRM — Footer
  * ---------------------------------------------------------------------------
  * Slim shell footer: build, environment and the links that matter on an
  * internal tool. Hidden automatically in print (see utility.css).
@@ -30,7 +30,7 @@ export default function Footer({ showEnvironment = true }) {
   return (
     <footer className="nx-footer no-print">
       <div className="nx-footer__links">
-        <span>© {new Date().getFullYear()} NexERP</span>
+        <span>© {new Date().getFullYear()} ArkCRM</span>
         <span className="nx-footer__version">v{APP_VERSION}</span>
 
         {showEnvironment ? (

@@ -1,5 +1,5 @@
 /**
- * NexERP — HelpPage
+ * ArkCRM — HelpPage
  * ---------------------------------------------------------------------------
  * Self-service support: search-filtered FAQs grouped by topic, the three
  * keyboard shortcuts the shell actually binds, and a human contact card.
@@ -201,8 +201,8 @@ export default function HelpPage() {
               <ul className="nx-help__contact">
                 <li className="nx-help__contact-item">
                   <FiMail size={15} aria-hidden="true" />
-                  <a className="nx-link" href="mailto:support@nexerp.app">
-                    support@nexerp.app
+                  <a className="nx-link" href="mailto:support@arkcrm.app">
+                    support@arkcrm.app
                   </a>
                 </li>
                 <li className="nx-help__contact-item">
@@ -279,7 +279,7 @@ export default function HelpPage() {
               </h2>
               <table className="nx-help__shortcuts">
                 <caption className="sr-only">
-                  Keyboard shortcuts available across the NexERP shell
+                  Keyboard shortcuts available across the ArkCRM shell
                 </caption>
                 <thead>
                   <tr>

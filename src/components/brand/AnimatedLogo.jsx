@@ -1,9 +1,9 @@
 /**
- * NexERP — AnimatedLogo
+ * ArkCRM — AnimatedLogo
  * ---------------------------------------------------------------------------
  * The per-letter animated gradient wordmark.
  *
- * Spec: "split 'NexERP' into individual <span>s. Each letter has a moving
+ * Spec: "split 'ArkCRM' into individual <span>s. Each letter has a moving
  * linear-gradient (pale blue -> indigo -> cyan) with background-clip: text,
  * transparent fill, and an animation-delay of index * 0.15s, so the gradient
  * looks like a wave passing through the letters."
@@ -16,7 +16,7 @@
  *
  * @example
  * <AnimatedLogo size="sm" />
- * <AnimatedLogo size="lg" text="NexERP" />
+ * <AnimatedLogo size="lg" text="ArkCRM" />
  */
 
 import './AnimatedLogo.css';
@@ -25,7 +25,7 @@ const cx = (...classes) => classes.filter(Boolean).join(' ');
 
 export default function AnimatedLogo({
   size = 'sm',
-  text = 'NexERP',
+  text = 'ArkCRM',
   className = '',
   /** Rendered as a heading when true, otherwise a span. */
   as: Tag = 'span',

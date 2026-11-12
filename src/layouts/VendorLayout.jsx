@@ -1,5 +1,5 @@
 /**
- * NexERP — VendorLayout
+ * ArkCRM — VendorLayout
  * ---------------------------------------------------------------------------
  * Shell for the tenant (vendor) workspace, mounted under /vendor/:vendorId/*.
  *

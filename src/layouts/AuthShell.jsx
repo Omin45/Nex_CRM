@@ -1,8 +1,8 @@
 /**
- * NexERP — AuthShell
+ * ArkCRM — AuthShell
  * ---------------------------------------------------------------------------
  * The two-column auth shell. Spec: "The left column (brand panel) is always
- * visible and contains the large per-letter animated 'NexERP' logo, the
+ * visible and contains the large per-letter animated 'ArkCRM' logo, the
  * description, the TypeWriter line, 3 short feature bullets that fade in one
  * after another, and floating blurred orbs in the background. The right column
  * is a glass card with the form."
@@ -49,9 +49,9 @@ export default function AuthShell() {
       </div>
 
       {/* ---- left: brand panel ---- */}
-      <section className="nx-auth__brand" aria-label="About NexERP">
+      <section className="nx-auth__brand" aria-label="About ArkCRM">
         <div className="nx-auth__brand-inner">
-          <Link to="/" className="nx-auth__logo-link" aria-label="NexERP home">
+          <Link to="/" className="nx-auth__logo-link" aria-label="ArkCRM home">
             <AnimatedLogo size="lg" />
           </Link>
 

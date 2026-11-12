@@ -1,5 +1,5 @@
 /**
- * NexERP — Customers API
+ * ArkCRM — Customers API
  * Endpoints: /customers, /customers/:id, /customers/:id/financial-summary,
  * /customers/:id/activity
  */
@@ -51,6 +51,21 @@ export const customersApi = createApi({
       invalidatesTags: (result, error, { id }) => [{ type: 'Customer', id }, { type: 'Customer', id: 'LIST' }],
     }),
 
+    /** Uploads a CSV or Excel file of customers. */
+    importCustomers: builder.mutation({
+      query: (file) => {
+        const body = new FormData();
+        body.append('file', file);
+        return { url: apiRoutes.customers.import, method: 'POST', body };
+      },
+      invalidatesTags: [{ type: 'Customer', id: 'LIST' }],
+    }),
+
+    /** Downloads the whole directory as a CSV. */
+    exportCustomers: builder.query({
+      query: () => ({ url: apiRoutes.customers.export, responseHandler: 'blob' }),
+    }),
+
     deleteCustomer: builder.mutation({
       query: (id) => ({ url: apiRoutes.customers.remove(id), method: 'DELETE' }),
       invalidatesTags: [{ type: 'Customer', id: 'LIST' }],
@@ -66,4 +81,6 @@ export const {
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
   useDeleteCustomerMutation,
+  useImportCustomersMutation,
+  useExportCustomersQuery,
 } = customersApi;

@@ -1,5 +1,5 @@
 /**
- * NexERP — TopCustomers
+ * ArkCRM — TopCustomers
  * ---------------------------------------------------------------------------
  * Ranked revenue-by-customer. Used on the vendor dashboard and, with a
  * different title, inside the customer report.

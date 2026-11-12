@@ -1,5 +1,5 @@
 /**
- * NexERP — Currency helpers
+ * ArkCRM — Currency helpers
  * ---------------------------------------------------------------------------
  * Formatting, conversion and compact display for tenant amounts. The tenant's
  * base currency is resolved by useTenant() and passed in explicitly, so these

@@ -1,5 +1,5 @@
 /**
- * NexERP — MetricCard
+ * ArkCRM — MetricCard
  * ---------------------------------------------------------------------------
  * The KPI tile on the executive dashboard: a value, a delta against the
  * previous period, and a sparkline. The delta is the whole point — a number

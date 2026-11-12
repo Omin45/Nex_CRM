@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — TeamSettingsPage
+   ArkCRM — TeamSettingsPage
    --------------------------------------------------------------------------
    Roster table plus the invite dialog. The member cell (initials avatar +
    name/id stack) is the only custom layout in the table — every other column
@@ -66,4 +66,174 @@
 
 .nx-set-team__invite {
   gap: var(--nx-space-4);
+}
+
+/* ==========================================================================
+   Bringing people in
+   --------------------------------------------------------------------------
+   The two doors: the workspace code (open) and an invitation (named). Both
+   show a value the owner has to copy, so the code is set in a monospace
+   face that stays legible next to a button.
+   ========================================================================== */
+
+.nx-set-team__ways-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+  margin-bottom: var(--nx-space-4);
+}
+
+.nx-set-team__ways-title {
+  font-size: var(--nx-text-md);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-set-team__ways-sub {
+  max-width: 64ch;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+.nx-set-team__ways-note {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-set-team__ways-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--nx-space-4);
+}
+
+.nx-set-team__way {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-4);
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-set-team__way-label {
+  font-size: var(--nx-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nx-accent-strong);
+}
+
+.nx-set-team__way-note {
+  flex: 1;
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-muted);
+}
+
+/* A value the owner copies. Monospace, because it is a code and not a
+   sentence, and it wraps rather than pushing the copy button off-screen. */
+.nx-set-team__code {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nx-space-2);
+  max-width: 100%;
+}
+
+.nx-set-team__code code {
+  max-width: 100%;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-strong);
+  background: rgba(var(--nx-accent-rgb), 0.08);
+  border: 1px solid var(--nx-border-accent);
+  border-radius: var(--nx-radius-xs);
+  overflow-wrap: anywhere;
+}
+
+.nx-set-team__sent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+}
+
+/* ==========================================================================
+   The invitation list
+   ========================================================================== */
+
+.nx-set-team__invites-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-4) var(--nx-space-4) var(--nx-space-2);
+}
+
+.nx-set-team__invite-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-2);
+  margin: 0;
+  padding: 0 var(--nx-space-4) var(--nx-space-4);
+  list-style: none;
+}
+
+.nx-set-team__invite-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-set-team__invite-mail {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+  color: var(--nx-text);
+}
+
+.nx-set-team__invite-meta {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-dim);
+}
+
+.nx-set-team__invite-empty {
+  padding: 0 var(--nx-space-4) var(--nx-space-4);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-dim);
+}
+/* The role a member holds, and the one they can be moved to. A select
+   rather than a badge, because the role is editable - the badge was a
+   picture of a role, and a select is a control. */
+.nx-set-team__role-select {
+  min-width: 150px;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  font-family: var(--nx-font-sans);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-strong);
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xs);
+  cursor: pointer;
+}
+
+.nx-set-team__role-select:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.nx-set-team__role-select:focus-visible {
+  outline: 2px solid var(--nx-accent-strong);
+  outline-offset: 2px;
+}
+
+.nx-set-team__members .nx-set-team__ident {
+  flex: 1;
+  min-width: 0;
 }

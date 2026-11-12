@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Button styles
+   ArkCRM — Button styles
    Base rules, the per-variant treatments, the shimmer sweep (::after), and
    the focus ring. All motion uses --nx-transition so every control in the app
    shares one timing curve.
@@ -31,7 +31,13 @@
 }
 
 .nx-btn__label {
-  display: inline-block;
+  /* The label can hold an icon and a run of text (a play badge beside
+     "See how it works", say). Laying it out as a flex row keeps them on one
+     line and optically centred, which inline-block could not do: a
+     block-level icon inside it dropped onto its own line. */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
   /* A label with a trailing icon must never break onto a second line. */
   white-space: nowrap;
 }

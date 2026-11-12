@@ -1,5 +1,5 @@
 /**
- * NexERP — SectionGlow
+ * ArkCRM — SectionGlow
  * ---------------------------------------------------------------------------
  * The animated light behind a marketing band. Two radial orbs drift on
  * independent loops while a thin sheen pans across, which keeps the page

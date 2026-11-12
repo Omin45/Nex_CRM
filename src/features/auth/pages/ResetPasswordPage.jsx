@@ -1,5 +1,5 @@
 /**
- * NexERP — ResetPasswordPage
+ * ArkCRM — ResetPasswordPage
  * ---------------------------------------------------------------------------
  * Consumes the token from the emailed link (?token=…). The token is treated as
  * a one-shot secret: the form stays disabled until the API confirms the link is
@@ -20,6 +20,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { validateForm, password, confirmPassword, required } from '@/utils/validators';
 import { appRoutes } from '@/config/navigation.config';
 import './ForgotPasswordPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 export default function ResetPasswordPage() {
   const [params] = useSearchParams();
@@ -48,7 +49,7 @@ export default function ResetPasswordPage() {
       return 'This reset link is invalid or has expired. Request a new one.';
     }
     if (error?.status >= 500) return 'The server had a problem. Try again in a moment.';
-    return error?.data?.message ?? null;
+    return serverMessage(error, null);
   }, [error]);
 
   const handleSubmit = async (event) => {

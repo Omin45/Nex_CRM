@@ -1,5 +1,5 @@
 /**
- * NexERP — Deterministic fixture data
+ * ArkCRM — Deterministic fixture data
  * ---------------------------------------------------------------------------
  * Seed records used by mockBackend.js while VITE_USE_MOCKS is true. The goal
  * is not realism for its own sake — it is exercising every UI state: long
@@ -133,7 +133,7 @@ function person(i) {
     lastName: last,
     name: `${first} ${last}`,
     email: `${first.toLowerCase()}.${last.toLowerCase().replace(/[^a-z]/g, '')}@${pick(
-      ['gmail.com', 'outlook.com', 'yahoo.com', 'nexerp.io'],
+      ['gmail.com', 'outlook.com', 'yahoo.com', 'arkcrm.io'],
     )}`,
   };
 }
@@ -153,7 +153,7 @@ export const session = {
     firstName: 'Adaeze',
     lastName: 'Okonkwo',
     fullName: 'Adaeze Okonkwo',
-    email: 'adaeze.okonkwo@nexerp.io',
+    email: 'adaeze.okonkwo@arkcrm.io',
     phone: '+234 803 551 0192',
     role: 'VENDOR_OWNER',
     avatar: null,

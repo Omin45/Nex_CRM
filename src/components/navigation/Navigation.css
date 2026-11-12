@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Navigation component styles
+   ArkCRM — Navigation component styles
    Shared by GlobalSearchModal, NotificationDropdown, UserProfileDropdown and
    the topbar's trigger buttons.
    ========================================================================== */
@@ -70,7 +70,7 @@
   line-height: 1.15;
 }
 
-/* Spec: "The brand logo text 'NexERP' must feature an animated text gradient
+/* Spec: "The brand logo text 'ArkCRM' must feature an animated text gradient
    (using background-clip: text, transparent fill, and a moving CSS linear
    gradient animation effect)." The gradient is painted into the glyphs and
    background-position is animated, so pale blue -> cyan -> indigo flows
@@ -303,17 +303,13 @@
 .nx-dropdown__list {
   max-height: 380px;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+  scrollbar-width: none; /* Firefox */
 }
 
 .nx-dropdown__list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.nx-dropdown__list::-webkit-scrollbar-thumb {
-  background: rgba(var(--nx-accent-strong-rgb), 0.24);
-  border-radius: var(--nx-radius-pill);
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .nx-dropdown__footer {
@@ -374,6 +370,9 @@
 .nx-menu-item__body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
 }
 
 .nx-menu-item__title {
@@ -386,12 +385,13 @@
 }
 
 .nx-menu-item__description {
-  margin-top: 1px;
+  margin-top: 0;
   font-size: var(--nx-text-xs);
   color: var(--nx-text-dim);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: var(--nx-leading);
 }
 
 .nx-menu-item__meta {
@@ -575,7 +575,7 @@
 }
 
 .nx-dropdown--profile .nx-menu-item__description {
-  margin-top: 3px;
+  margin-top: 0;
   letter-spacing: 0.012em;
 }
 

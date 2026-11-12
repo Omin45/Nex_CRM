@@ -1,5 +1,5 @@
 /**
- * NexERP — useCountUp
+ * ArkCRM — useCountUp
  * ---------------------------------------------------------------------------
  * Spec: "stats strip with count-up numbers".
  *

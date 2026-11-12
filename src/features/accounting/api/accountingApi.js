@@ -1,5 +1,5 @@
 /**
- * NexERP — Accounting API
+ * ArkCRM — Accounting API
  * Endpoints: /accounting/invoices (+ payments, send), /accounting/receivables,
  * /accounting/payables, /accounting/expenses (+ approve), /accounting/ledger
  */

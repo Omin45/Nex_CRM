@@ -1,5 +1,5 @@
 /**
- * NexERP — SiteFooter
+ * ArkCRM — SiteFooter
  * ---------------------------------------------------------------------------
  * Marketing footer. Grouped links rather than one long row, because a flat list
  * of nine destinations is unusable on mobile and a poor scan target on desktop.
@@ -93,7 +93,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="nx-site-footer__base">
-        <span>© {new Date().getFullYear()} NexERP. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} ArkCRM. All rights reserved.</span>
         <span className="nx-site-footer__legal">
           <Link to="/about" className="nx-site-footer__link">
             Privacy

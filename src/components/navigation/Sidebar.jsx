@@ -1,5 +1,5 @@
 /**
- * NexERP — Sidebar
+ * ArkCRM — Sidebar
  * ---------------------------------------------------------------------------
  * Primary navigation rail. Three behaviours worth knowing:
  *
@@ -136,13 +136,13 @@ export default function Sidebar({
       >
         {/* ---- Brand ---- */}
         <div className="nx-sidebar__brand">
-          <NavLink to="/" className="nx-brand" aria-label="NexERP home">
+          <NavLink to="/" className="nx-brand" aria-label="ArkCRM home">
             <span className="nx-brand__mark" aria-hidden="true">
-              <span className="nx-brand__glyph">N</span>
+              <span className="nx-brand__glyph">A</span>
             </span>
             {!collapsed ? (
               <span className="nx-brand__text">
-                <span className="nx-brand__name">Nex<span className="text-gradient">ERP</span></span>
+                <span className="nx-brand__name">Ark<span className="text-gradient">CRM</span></span>
                 <span className="nx-brand__tagline">Commerce &amp; operations</span>
               </span>
             ) : null}

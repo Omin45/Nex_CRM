@@ -1,5 +1,5 @@
 /**
- * NexERP — StockMovementPage
+ * ArkCRM — StockMovementPage
  * ---------------------------------------------------------------------------
  * The stock movement log: every receipt, issue, transfer, adjustment and
  * return, newest first, with server-side search, paging and type filtering.
@@ -27,6 +27,7 @@ import useVendorPath from '@/hooks/useVendorPath';
 import useDataTable from '@/hooks/useDataTable';
 import { formatDate, fromNow } from '@/utils/date';
 import './StockMovementPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Movement type -> badge label and tone. Issues are the ones worth noticing. */
 const TYPE_META = {
@@ -205,7 +206,7 @@ export default function StockMovementPage() {
           <div className="nx-moves__error">
             <h1 className="nx-moves__error-title">Could not load movements</h1>
             <p className="nx-moves__error-text">
-              {error?.data?.message ?? 'The movement log is unavailable right now.'}
+              {serverMessage(error, 'The movement log is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

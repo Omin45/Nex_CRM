@@ -1,5 +1,5 @@
 /**
- * NexERP — ModulesGrid
+ * ArkCRM — ModulesGrid
  * ---------------------------------------------------------------------------
  * Spec: "a section titled 'Everything your business needs' with 8 glass cards
  * in a 4x2 grid, each with its own icon, a hover glow and a border that lights

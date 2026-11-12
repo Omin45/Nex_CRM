@@ -1,5 +1,5 @@
 /**
- * NexERP — FadeCarousel
+ * ArkCRM — FadeCarousel
  * ---------------------------------------------------------------------------
  * Spec: "a crossfade carousel (opacity + slight scale and translate, not
  * sliding) with auto-play every 5s, pause on hover, dot indicators, a thin

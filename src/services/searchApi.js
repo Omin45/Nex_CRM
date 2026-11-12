@@ -1,5 +1,5 @@
 /**
- * NexERP — Global search API
+ * ArkCRM — Global search API
  * ---------------------------------------------------------------------------
  * The backend for the ⌘K command palette. It lives in `services/` rather than a
  * feature folder because it spans every entity — customers, products,

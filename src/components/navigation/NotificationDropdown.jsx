@@ -1,5 +1,5 @@
 /**
- * NexERP — NotificationDropdown
+ * ArkCRM — NotificationDropdown
  * ---------------------------------------------------------------------------
  * The bell menu. Reads the same RTK Query cache entry as the toast stream, so
  * marking an item read here immediately clears the badge everywhere else.
@@ -54,7 +54,9 @@ export default function NotificationDropdown({ limit = 6, onNavigate = null }) {
   useEscapeKey(close, open);
 
   const { data, isLoading, isFetching } = useGetNotificationsQuery(
-    { size: 20 },
+    /* pageSize, not size: the API reads pageSize, and any other parameter is
+       treated as a filter on the rows. */
+    { pageSize: 20 },
     { skip: !open },
   );
   const { data: unread } = useGetUnreadCountQuery();

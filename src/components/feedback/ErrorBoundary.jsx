@@ -1,5 +1,5 @@
 /**
- * NexERP — ErrorBoundary
+ * ArkCRM — ErrorBoundary
  * ---------------------------------------------------------------------------
  * Class component: React has no hook equivalent for catching render errors.
  * Mounted at three levels in RootLayout — around the whole app, around each
@@ -45,7 +45,7 @@ export default class ErrorBoundary extends Component {
 
     if (import.meta.env.DEV) {
       /* eslint-disable-next-line no-console */
-      console.error(`[NexERP:${errorId}]`, error, errorInfo);
+      console.error(`[ArkCRM:${errorId}]`, error, errorInfo);
     }
   }
 

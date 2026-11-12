@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — KanbanBoard
+   ArkCRM — KanbanBoard
    --------------------------------------------------------------------------
    The sales pipeline board.
 
@@ -26,7 +26,13 @@
   /* Room for the columns' shadows, which would otherwise be clipped. */
   margin-inline: calc(-1 * var(--nx-space-2));
   padding-inline: var(--nx-space-2);
-  scrollbar-width: thin;
+  scrollbar-width: none; /* Firefox */
+}
+
+.nx-kanban::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .nx-kanban__board {

@@ -1,5 +1,5 @@
 /**
- * NexERP — usePermissions
+ * ArkCRM — usePermissions
  * ---------------------------------------------------------------------------
  * Granular RBAC checks for rendering. Every action button in the app is gated
  * through this hook (or <PermissionGate>) rather than by scattered role

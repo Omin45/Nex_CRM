@@ -1,5 +1,5 @@
 /**
- * NexERP — ProtectedRoute
+ * ArkCRM — ProtectedRoute
  * ---------------------------------------------------------------------------
  * Auth gate for the vendor and platform shells.
  *

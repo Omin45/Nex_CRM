@@ -1,5 +1,5 @@
 /**
- * NexERP — Global constants
+ * ArkCRM — Global constants
  * ---------------------------------------------------------------------------
  * API route definitions, status vocabularies, pagination defaults and the
  * navigation model. These values mirror the Spring Boot REST contract:
@@ -10,7 +10,7 @@
 /* ---------------------------------------------------------------------------
  * ENVIRONMENT
  * Vite inlines VITE_* variables at build time. `apiBaseUrl` is the Spring
- * Boot server root, e.g. "https://api.nexerp.io/api".
+ * Boot server root, e.g. "https://api.arkcrm.io/api".
  * ------------------------------------------------------------------------- */
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
@@ -37,6 +37,33 @@ export const apiRoutes = {
     resetPassword: '/auth/reset-password',
     verifyEmail: '/auth/verify-email',
     me: '/auth/me',
+    sessions: '/auth/sessions',
+    revokeSession: (id) => `/auth/sessions/${id}`,
+  },
+  /* Business workspaces. `exists` is the join check: it confirms a business
+     by name and only hands back its id and code when the code is right. */
+  tenants: {
+    create: '/tenants/create',
+    exists: '/tenants/exists',
+    me: '/tenants/me',
+    join: '/tenants/join',
+  },
+  /* The people who can sign in to a workspace. Scoped by the server to the
+     caller's own workspace - a platform administrator is in none, so sees
+     everybody. */
+  users: {
+    list: '/users?page=0&size=100',
+    update: (id) => `/users/${id}`,
+    remove: (id) => `/users/${id}`,
+  },
+  /* Workspace invitations. The owner sends one; the person arrives with the
+     link. Nothing is emailed, so the link is the invitation. */
+  invites: {
+    list: '/invites',
+    create: '/invites',
+    remove: (id) => `/invites/${id}`,
+    lookup: (token) => `/invites/lookup/${token}`,
+    accept: '/invites/accept',
   },
   vendors: {
     list: '/vendors',
@@ -52,6 +79,8 @@ export const apiRoutes = {
     create: '/customers',
     update: (id) => `/customers/${id}`,
     remove: (id) => `/customers/${id}`,
+    import: '/customers/import',
+    export: '/customers/export',
     financialSummary: (id) => `/customers/${id}/financial-summary`,
     activity: (id) => `/customers/${id}/activity`,
   },
@@ -308,13 +337,13 @@ export const TOAST_VARIANTS = {
  * same origin.
  * ------------------------------------------------------------------------- */
 export const STORAGE_KEYS = {
-  accessToken: 'nexerp.auth.accessToken',
-  refreshToken: 'nexerp.auth.refreshToken',
-  activeUser: 'nexerp.auth.user',
-  activeVendor: 'nexerp.tenant.vendor',
-  theme: 'nexerp.ui.theme',
-  sidebarCollapsed: 'nexerp.ui.sidebarCollapsed',
-  tablePreferences: 'nexerp.ui.tablePreferences',
+  accessToken: 'arkcrm.auth.accessToken',
+  refreshToken: 'arkcrm.auth.refreshToken',
+  activeUser: 'arkcrm.auth.user',
+  activeVendor: 'arkcrm.tenant.vendor',
+  theme: 'arkcrm.ui.theme',
+  sidebarCollapsed: 'arkcrm.ui.sidebarCollapsed',
+  tablePreferences: 'arkcrm.ui.tablePreferences',
 };
 
 /* ---------------------------------------------------------------------------

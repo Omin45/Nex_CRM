@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Input / form field styles
+   ArkCRM — Input / form field styles
    The control shell, the blue-accent focus ring, the invalid state and the
    message slots. Text colour is inherited from the token layer so the control
    follows the active theme automatically.
@@ -113,10 +113,12 @@ select.nx-field__input {
 
 .nx-field__icon--left {
   padding-left: var(--nx-space-3);
+  padding-right: var(--nx-space-2);
   font-size: var(--nx-text-md);
 }
 
 .nx-field__icon--right {
+  padding-left: var(--nx-space-2);
   padding-right: var(--nx-space-3);
   font-size: var(--nx-text-md);
 }

@@ -1,5 +1,5 @@
 /**
- * NexERP — passwordStrength
+ * ArkCRM — passwordStrength
  * ---------------------------------------------------------------------------
  * A 0-4 score for the register form's strength meter, plus a label and the list
  * of unmet requirements.

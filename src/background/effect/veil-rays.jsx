@@ -1,5 +1,5 @@
 /**
- * NexERP — VeilRays
+ * ArkCRM — VeilRays
  * ---------------------------------------------------------------------------
  * A section backdrop of soft light rays fanning down from the top edge behind
  * a translucent veil. Each ray sways on its own slow loop, so the band looks

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Executive dashboard
+   ArkCRM — Executive dashboard
    KPI tiles, the pipeline strip, the attention list and the quick-action
    rail. Everything here is specific to the dashboard composition; the
    primitives it leans on (Card, Badge, Button) style themselves.
@@ -119,6 +119,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--nx-space-2);
+  min-width: 0;
 }
 
 .nx-metric__label {
@@ -127,6 +128,10 @@
   letter-spacing: var(--nx-tracking-wide);
   text-transform: uppercase;
   color: var(--nx-text-dim);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-metric__icon {
@@ -151,6 +156,10 @@
   letter-spacing: var(--nx-tracking-tight);
   color: var(--nx-text-strong);
   font-variant-numeric: tabular-nums;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-metric__foot {
@@ -161,6 +170,7 @@
   gap: var(--nx-space-2);
   flex-wrap: wrap;
   margin-top: auto;
+  min-width: 0;
 }
 
 .nx-metric__delta {
@@ -187,6 +197,10 @@
 .nx-metric__hint {
   font-size: var(--nx-text-xs);
   color: var(--nx-text-faint);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* The sparkline occupies the lower-right quadrant and is masked so it fades
@@ -223,7 +237,7 @@
 
 .nx-pipeline__stage {
   display: grid;
-  grid-template-columns: 116px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(80px, 116px) minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--nx-space-3);
   padding: var(--nx-space-1) 0;
@@ -233,6 +247,7 @@
   border: none;
   border-radius: var(--nx-radius-xs);
   transition: var(--nx-transition);
+  min-width: 0;
 }
 
 .nx-pipeline__stage:hover {
@@ -245,9 +260,10 @@
   gap: var(--nx-space-2);
   font-size: var(--nx-text-sm);
   color: var(--nx-text-muted);
-  white-space: nowrap;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-pipeline__bar {
@@ -256,6 +272,7 @@
   background: var(--nx-surface-2);
   border-radius: var(--nx-radius-pill);
   overflow: hidden;
+  min-width: 0;
 }
 
 .nx-pipeline__bar-fill {
@@ -305,7 +322,7 @@
 .nx-attention__item {
   display: flex;
   align-items: center;
-  gap: var(--nx-space-3);
+  gap: var(--nx-space-2);
   padding: var(--nx-space-2) var(--nx-space-3);
   text-align: left;
   color: inherit;
@@ -314,6 +331,7 @@
   border: 1px solid transparent;
   border-radius: var(--nx-radius-sm);
   transition: var(--nx-transition);
+  min-width: 0;
 }
 
 .nx-attention__item:hover {
@@ -372,6 +390,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .nx-attention__meta {
@@ -385,6 +404,11 @@
   color: var(--nx-text-strong);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  flex-shrink: 0;
+  /* Pin the amount to the bottom-right corner of each row. */
+  align-self: flex-end;
+  margin-left: auto;
+  padding-bottom: 2px;
 }
 
 /* --------------------------------------------------------------------------
@@ -456,6 +480,7 @@
   grid-template-columns: 22px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--nx-space-3);
+  min-width: 0;
 }
 
 .nx-rank__position {
@@ -471,6 +496,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .nx-rank__bar {
@@ -644,6 +670,10 @@
 
 .nx-dash .page__header {
   animation: nx-rise 0.5s var(--nx-ease) backwards;
+}
+
+.nx-dash .page__actions {
+  gap: var(--nx-space-3);
 }
 
 .nx-dash .page__body > * {

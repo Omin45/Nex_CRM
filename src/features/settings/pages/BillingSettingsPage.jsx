@@ -1,5 +1,5 @@
 /**
- * NexERP — BillingSettingsPage
+ * ArkCRM — BillingSettingsPage
  * ---------------------------------------------------------------------------
  * `settings/billing` — what this workspace is on today. Every figure shown
  * comes from the session tenant through useTenant (plan, seats, currency,

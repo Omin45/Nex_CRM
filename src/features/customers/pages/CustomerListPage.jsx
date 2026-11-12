@@ -1,7 +1,8 @@
 /**
- * NexERP — CustomerListPage
+ * ArkCRM — CustomerListPage
  * ---------------------------------------------------------------------------
- * The customer directory: a searchable, filterable, sortable table.
+ * The customer directory: a searchable, filterable, sortable table, with the
+ * create, edit and remove flows behind it.
  *
  * Filtering is client-side. The list endpoint already accepts `search` and
  * `status`, so this could move server-side later — the call site would change
@@ -12,23 +13,36 @@
  * Outstanding balance is the column the page is really about. It is sorted
  * default-first-by, because the customer you owe money to is the one you came
  * here to find.
+ *
+ * The dialog opens on `?new=1`, which is how the dashboard's quick actions
+ * jump straight into a create form instead of only navigating here.
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiRefreshCw, FiUsers } from 'react-icons/fi';
+import { FiEdit2, FiPlus, FiRefreshCw, FiTrash2, FiUpload, FiUsers } from 'react-icons/fi';
 import DataTable from '@/components/data-display/DataTable/DataTable';
 import Badge from '@/components/ui/Badge/Badge';
 import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
 import Input from '@/components/ui/Input/Input';
-import { useGetCustomersQuery } from '../api/customersApi';
+import RecordFormModal from '@/components/ui/RecordFormModal/RecordFormModal';
+import {
+  useCreateCustomerMutation,
+  useDeleteCustomerMutation,
+  useGetCustomersQuery,
+  useImportCustomersMutation,
+  useUpdateCustomerMutation,
+} from '../api/customersApi';
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
 import { useNotify } from '@/hooks/useNotification';
+import useCreateDialog from '@/hooks/useCreateDialog';
 import useVendorPath from '@/hooks/useVendorPath';
 import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatRelativeShort } from '@/utils/date';
 import './CustomerListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Status filter tabs. `all` is the default, not a real status. */
 const STATUS_FILTERS = [
@@ -55,6 +69,120 @@ const STATUS_LABEL = {
   BLOCKED: 'Blocked',
 };
 
+const SEGMENTS = ['Enterprise', 'SMB', 'Retail', 'Distributor', 'Government'];
+
+const CITIES = ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Kano', 'Enugu', 'Benin City'];
+
+/** The fields the dialog shows. The list is data, not JSX — see RecordFormModal. */
+const FIELDS = [
+  { name: 'name', label: 'Company name', required: true, placeholder: 'Baze Trading Ltd' },
+  {
+    name: 'segment',
+    label: 'Segment',
+    type: 'select',
+    required: true,
+    options: [
+      { value: '', label: 'Select a segment' },
+      ...SEGMENTS.map((segment) => ({ value: segment, label: segment })),
+    ],
+  },
+  { name: 'contactName', label: 'Contact name', required: true, placeholder: 'Adaeze Okonkwo' },
+  { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@company.com' },
+  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+234 800 000 0000', half: true },
+  {
+    name: 'city',
+    label: 'City',
+    type: 'select',
+    half: true,
+    options: [
+      { value: '', label: 'Select a city' },
+      ...CITIES.map((city) => ({ value: city, label: city })),
+    ],
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    type: 'select',
+    half: true,
+    options: STATUS_FILTERS.filter((filter) => filter.id !== 'all').map((filter) => ({
+      value: filter.id,
+      label: filter.label,
+    })),
+  },
+  {
+    name: 'creditLimit',
+    label: 'Credit limit',
+    type: 'number',
+    inputMode: 'decimal',
+    min: '0',
+    step: '0.01',
+    placeholder: '0.00',
+    half: true,
+  },
+  { name: 'taxNumber', label: 'Tax number', placeholder: 'TIN-12345678', half: true },
+  { name: 'notes', label: 'Notes', type: 'textarea', rows: 3, placeholder: 'Anything the team should know' },
+];
+
+const EMPTY_CUSTOMER = {
+  name: '',
+  segment: 'SMB',
+  contactName: '',
+  email: '',
+  phone: '',
+  city: 'Lagos',
+  status: 'ACTIVE',
+  creditLimit: '',
+  taxNumber: '',
+  notes: '',
+};
+
+function validate(form) {
+  const errors = {};
+  if (!form.name.trim()) errors.name = 'Give the customer a name.';
+  if (!form.contactName.trim()) errors.contactName = 'Who should the team call?';
+  if (!form.email.trim()) errors.email = 'An email address is required.';
+  else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+    errors.email = 'That does not look like an email address.';
+  }
+  if (!form.segment) errors.segment = 'Choose a segment.';
+  if (form.creditLimit !== '' && Number(form.creditLimit) < 0) {
+    errors.creditLimit = 'A credit limit cannot be negative.';
+  }
+  return errors;
+}
+
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'code', label: 'Code' },
+  { key: 'name', label: 'Company' },
+  { key: 'contactName', label: 'Contact' },
+  { key: 'email', label: 'Email' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'city', label: 'City' },
+  { key: 'segment', label: 'Segment' },
+  { key: 'status', label: 'Status' },
+  { key: 'creditLimit', label: 'Credit limit' },
+  { key: 'invoiceCount', label: 'Invoices' },
+  { key: 'totalBilled', label: 'Total billed' },
+  { key: 'outstanding', label: 'Outstanding' },
+];
+
+/** Fills the form from an existing customer, for the edit flow. */
+function formFromCustomer(customer) {
+  return {
+    name: customer.name ?? '',
+    segment: customer.segment ?? 'SMB',
+    contactName: customer.contactName ?? '',
+    email: customer.email ?? '',
+    phone: customer.phone ?? '',
+    city: customer.city ?? 'Lagos',
+    status: customer.status ?? 'ACTIVE',
+    creditLimit: customer.creditLimit ? String(customer.creditLimit) : '',
+    taxNumber: customer.taxNumber ?? '',
+    notes: customer.notes ?? '',
+  };
+}
+
 export default function CustomerListPage() {
   const navigate = useNavigate();
   const notify = useNotify();
@@ -63,6 +191,44 @@ export default function CustomerListPage() {
 
   const [status, setStatus] = useState('all');
   const [search, setSearch] = useState('');
+
+  /* The customer being edited, or null when a new one is being created. */
+  const [editing, setEditing] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+
+  const [createCustomer, { isLoading: isCreating }] = useCreateCustomerMutation();
+  const [updateCustomer, { isLoading: isUpdating }] = useUpdateCustomerMutation();
+  const [deleteCustomer, { isLoading: isDeleting }] = useDeleteCustomerMutation();
+  const [importCustomers, { isLoading: isImporting }] = useImportCustomersMutation();
+  const fileInputRef = useRef(null);
+
+  const dialog = useCreateDialog({
+    initialValues: EMPTY_CUSTOMER,
+    validate,
+    onSubmit: async (form) => {
+      const payload = {
+        name: form.name.trim(),
+        segment: form.segment,
+        contactName: form.contactName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        city: form.city,
+        status: form.status,
+        creditLimit: form.creditLimit === '' ? 0 : Number(form.creditLimit),
+        taxNumber: form.taxNumber.trim(),
+        notes: form.notes.trim(),
+      };
+
+      if (editing) {
+        await updateCustomer({ id: editing.id, ...payload }).unwrap();
+        
+      } else {
+        await createCustomer(payload).unwrap();
+        
+      }
+    },
+  });
+
 
   /* One request for the whole directory rather than a request per keystroke.
      64 fixtures is well inside a single page. */
@@ -102,6 +268,63 @@ export default function CustomerListPage() {
   const handleRefresh = () => {
     refetch();
     notify.info('Refreshing customers');
+  };
+
+  /* ---- create / edit / remove ------------------------------------- */
+
+  const openCreate = () => {
+    setEditing(null);
+    dialog.show();
+  };
+
+  const openEdit = (customer) => {
+    setEditing(customer);
+    dialog.show(formFromCustomer(customer));
+  };
+
+  const closeModal = () => {
+    setEditing(null);
+    dialog.hide();
+  };
+
+  /**
+   * Uploads a customer file.
+   *
+   * <p>The service reads the header row, so a file exported from the
+   * directory comes straight back in. The counts it returns are the whole
+   * point of the operation, so they are reported.
+   */
+  const handleImport = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    try {
+      const result = await importCustomers(file).unwrap();
+      notify.success(
+        `${result.created} customer${result.created === 1 ? '' : 's'} imported` +
+          (result.failed ? ` · ${result.failed} could not be read` : ''),
+      );
+    } catch (err) {
+      notify.error(err?.data?.error ?? 'Could not import that file');
+    }
+  };
+
+  const handleDelete = async (customer) => {
+    const confirmed = window.confirm(
+      `Remove ${customer.name} from the directory?\n\nThis cannot be undone, and a customer with invoices on file cannot be removed.`,
+    );
+    if (!confirmed) return;
+
+    setDeletingId(customer.id);
+    try {
+      await deleteCustomer(customer.id).unwrap();
+      
+    } catch (err) {
+      notify.error(serverMessage(err, 'Could not remove the customer'));
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const columns = useMemo(
@@ -179,8 +402,46 @@ export default function CustomerListPage() {
           <span className="nx-cust__meta">{formatRelativeShort(customer.lastActivityAt)}</span>
         ),
       },
+      {
+        key: 'actions',
+        header: '',
+        align: 'right',
+        sortable: false,
+        hideable: false,
+        render: (customer) => (
+          <div className="nx-cust__actions">
+            <button
+              type="button"
+              className="nx-cust__action"
+              onClick={(event) => {
+                /* The row itself is a link to the customer; the buttons in it
+                   are not, so the click must not also open the record. */
+                event.stopPropagation();
+                openEdit(customer);
+              }}
+              aria-label={`Edit ${customer.name}`}
+              title="Edit customer"
+            >
+              <FiEdit2 size={14} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="nx-cust__action nx-cust__action--danger"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleDelete(customer);
+              }}
+              disabled={deletingId === customer.id}
+              aria-label={`Remove ${customer.name}`}
+              title="Remove customer"
+            >
+              <FiTrash2 size={14} aria-hidden="true" />
+            </button>
+          </div>
+        ),
+      },
     ],
-    [currency],
+    [currency, deletingId],
   );
 
   if (isError) {
@@ -190,7 +451,7 @@ export default function CustomerListPage() {
           <div className="nx-cust__error">
             <h1 className="nx-cust__error-title">Could not load customers</h1>
             <p className="nx-cust__error-text">
-              {error?.data?.message ?? 'The customer directory is unavailable right now.'}
+              {serverMessage(error, 'The customer directory is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>
@@ -221,7 +482,33 @@ export default function CustomerListPage() {
           >
             Refresh
           </Button>
-          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />}>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="customers"
+            title="Customers"
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            leftIcon={<FiUpload size={15} />}
+            loading={isImporting}
+            onClick={() => fileInputRef.current?.click()}
+            aria-label="Import customers from a file"
+          >
+            Import
+          </Button>
+          {/* The file picker is hidden: the Import button opens it. */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            className="nx-sr-only"
+            onChange={handleImport}
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />} onClick={openCreate}>
             New customer
           </Button>
         </div>
@@ -276,9 +563,32 @@ export default function CustomerListPage() {
                 ? 'Adjust the status filter or clear the search.'
                 : 'Add your first customer and it will appear here.'
             }
+            emptyAction={
+              search || status !== 'all' ? null : (
+                <Button onClick={openCreate}>Add customer</Button>
+              )
+            }
           />
         </Card>
       </div>
+
+      <RecordFormModal
+        open={dialog.open}
+        onClose={closeModal}
+        title={editing ? `Edit ${editing.name}` : 'New customer'}
+        subtitle={
+          editing
+            ? 'Update the details the team works from.'
+            : 'Add a company to the directory. The code is generated for you.'
+        }
+        submitLabel={editing ? 'Save changes' : 'Add customer'}
+        isSaving={isCreating || isUpdating || isDeleting}
+        fields={FIELDS}
+        form={dialog.form}
+        errors={dialog.errors}
+        onChange={dialog.handleChange}
+        onSubmit={dialog.submit}
+      />
     </div>
   );
 }

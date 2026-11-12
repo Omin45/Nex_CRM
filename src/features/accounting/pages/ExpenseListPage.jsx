@@ -1,5 +1,5 @@
 /**
- * NexERP — ExpenseListPage
+ * ArkCRM — ExpenseListPage
  * ---------------------------------------------------------------------------
  * The expense register: server-driven search, sort and pagination, with the
  * approval gate kept visible in the row rather than hidden in a detail screen.
@@ -32,6 +32,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, toDateInputValue } from '@/utils/date';
 import './ExpenseListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -101,13 +102,9 @@ export default function ExpenseListPage() {
       setPending({ id: expense.id, decision });
       try {
         await approveExpense({ id: expense.id, decision }).unwrap();
-        notify.success(
-          decision === 'APPROVED'
-            ? `${expense.reference} approved`
-            : `${expense.reference} rejected`,
-        );
+
       } catch (err) {
-        notify.error(err?.data?.message ?? `Could not update ${expense.reference}`);
+        notify.error(serverMessage(err, `Could not update ${expense.reference}`));
       } finally {
         setPending(null);
       }
@@ -263,10 +260,10 @@ export default function ExpenseListPage() {
         status: { label: 'Submitted', tone: 'info' },
         submittedBy,
       }).unwrap();
-      notify.success('Expense submitted for approval');
+      
       closeModal();
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not save the expense');
+      notify.error(serverMessage(err, 'Could not save the expense'));
     }
   };
 
@@ -282,7 +279,7 @@ export default function ExpenseListPage() {
           <div className="nx-exp__error">
             <h1 className="nx-exp__error-title">Could not load expenses</h1>
             <p className="nx-exp__error-text">
-              {error?.data?.message ?? 'The expense register is unavailable right now.'}
+              {serverMessage(error, 'The expense register is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>

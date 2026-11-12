@@ -1,5 +1,5 @@
 /**
- * NexERP — StockTransferPage
+ * ArkCRM — StockTransferPage
  * ---------------------------------------------------------------------------
  * Move stock between two locations. The form asks for the product, where it
  * is leaving from, where it is going and how many units — with a live preview
@@ -37,6 +37,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatDate, fromNow } from '@/utils/date';
 import { validateForm, required, quantity as quantityRule } from '@/utils/validators';
 import './StockTransferPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const EMPTY_FORM = { productId: '', fromWarehouse: '', toWarehouse: '', quantity: '' };
 
@@ -199,11 +200,11 @@ export default function StockTransferPage() {
         fromWarehouse: fromLabel,
         toWarehouse: toLabel,
       }).unwrap();
-      notify.success(`${units} units on the way to ${toLabel}`);
+      
       setForm((current) => ({ ...current, quantity: '' }));
       setErrors({});
     } catch (err) {
-      setSubmitError(err?.data?.message ?? 'Could not start the transfer.');
+      setSubmitError(serverMessage(err, 'Could not start the transfer.'));
     }
   };
 
@@ -214,7 +215,7 @@ export default function StockTransferPage() {
           <div className="nx-trf__error">
             <h1 className="nx-trf__error-title">Could not load transfers</h1>
             <p className="nx-trf__error-text">
-              {error?.data?.message ?? 'The transfer history is unavailable right now.'}
+              {serverMessage(error, 'The transfer history is unavailable right now.')}
             </p>
             <Button onClick={refetchHistory}>Try again</Button>
           </div>

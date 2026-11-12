@@ -1,5 +1,5 @@
 /**
- * NexERP — HR API
+ * ArkCRM — HR API
  * Endpoints: /hr/employees, /hr/attendance (+ summary, check-in/out),
  * /hr/leaves (+ decision)
  */
@@ -61,6 +61,12 @@ export const hrApi = createApi({
       invalidatesTags: ['Attendance'],
     }),
 
+    /** Removes a register entry that was recorded in error. */
+    deleteAttendance: builder.mutation({
+      query: (id) => ({ url: `${apiRoutes.hr.attendance}/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['Attendance'],
+    }),
+
     /* ---- leave ---- */
     getLeaves: builder.query({
       query: (params = {}) => ({ url: apiRoutes.hr.leaves, params }),
@@ -92,6 +98,7 @@ export const {
   useGetAttendanceSummaryQuery,
   useCheckInMutation,
   useCheckOutMutation,
+  useDeleteAttendanceMutation,
   useGetLeavesQuery,
   useDecideLeaveMutation,
   useCreateLeaveMutation,

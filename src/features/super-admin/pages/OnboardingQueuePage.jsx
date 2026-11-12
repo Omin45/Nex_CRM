@@ -1,5 +1,5 @@
 /**
- * NexERP — OnboardingQueuePage
+ * ArkCRM — OnboardingQueuePage
  * ---------------------------------------------------------------------------
  * Every tenant still making its way to go-live, with the step they are on,
  * who owns the migration, what is blocking it, and when it is due. Served
@@ -32,6 +32,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatDate, fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './OnboardingQueuePage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const DAY = 86_400_000;
 
@@ -209,7 +210,7 @@ export default function OnboardingQueuePage() {
           <div className="nx-onb__error">
             <h2 className="nx-onb__error-title">Could not load the queue</h2>
             <p className="nx-onb__error-text">
-              {error?.data?.message ?? 'The platform onboarding endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform onboarding endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

@@ -102,7 +102,7 @@ check('authApi exposes the revalidation query', typeof authApi.endpoints.me === 
 
 console.log('\nauth round-trip (mock)');
 const session = await store.dispatch(authApi.endpoints.login.initiate({
-  email: 'adaeze.okonkwo@nexerp.io',
+  email: 'adaeze.okonkwo@arkcrm.io',
   password: 'Password123!',
 })).unwrap();
 check('login returns a token pair', Boolean(session.accessToken), JSON.stringify(Object.keys(session)));
@@ -112,14 +112,14 @@ check('user persisted to storage', Boolean(localStorage.getItem(STORAGE_KEYS.act
 
 console.log('\nrole-aware login (mock)');
 const platform = await store.dispatch(authApi.endpoints.login.initiate({
-  email: 'tunde.aluko@nexerp.io',
+  email: 'tunde.aluko@arkcrm.io',
   password: 'Password123!',
 })).unwrap();
 check('platform admin gets the SUPER_ADMIN role', platform.user.role === 'SUPER_ADMIN');
 check('platform admin has no tenant', platform.tenant === null);
 
 const accountant = await store.dispatch(authApi.endpoints.login.initiate({
-  email: 'Femi.Adeyemi@Nexerp.io',
+  email: 'Femi.Adeyemi@arkcrm.io',
   password: 'whatever',
 })).unwrap();
 check('email lookup is case-insensitive', accountant.user.role === 'ACCOUNTANT');

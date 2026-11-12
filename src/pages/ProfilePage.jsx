@@ -1,5 +1,5 @@
 /**
- * NexERP — ProfilePage
+ * ArkCRM — ProfilePage
  * ---------------------------------------------------------------------------
  * The account screen: identity on the left, the editable contact record on the
  * right, security underneath. Both forms validate through the shared
@@ -15,7 +15,7 @@
 
 import { useEffect, useState } from 'react';
 import {
-  FiBriefcase, FiCheck, FiLock, FiMail, FiPhone, FiShield, FiUser,
+  FiBriefcase, FiCheck, FiLock, FiMail, FiMonitor, FiPhone, FiShield, FiUser,
 } from 'react-icons/fi';
 import Card from '@/components/ui/Card/Card';
 import Badge from '@/components/ui/Badge/Badge';
@@ -24,13 +24,14 @@ import Input from '@/components/ui/Input/Input';
 import LoadingState from '@/components/feedback/LoadingState';
 import PasswordStrength from '@/features/auth/components/PasswordStrength';
 import { useAuth } from '@/hooks/useAuth';
+import { useGetSessionsQuery, useRevokeSessionMutation } from '@/features/auth/api/authApi';
 import { useTenant } from '@/hooks/useTenant';
 import { useNotify } from '@/hooks/useNotification';
 import { ROLE_LABELS } from '@/config/permissions.config';
 import {
   validateForm, schemas, required, minLength, email, phone, password, confirmPassword,
 } from '@/utils/validators';
-import { formatDate } from '@/utils/date';
+import { formatDate, formatDateTime } from '@/utils/date';
 import './ProfilePage.css';
 
 /* The editable record. Kept apart from the schema so a field can never be
@@ -56,6 +57,11 @@ function toFormValues(user) {
 export default function ProfilePage() {
   const notify = useNotify();
   const { user, role, updateProfile } = useAuth();
+
+  /* Where this account is signed in. Every sign-in opens a session, so this
+     is the list of devices that can act as the person. */
+  const { data: sessions, isLoading: sessionsLoading } = useGetSessionsQuery();
+  const [revokeSession, { isLoading: revokingId }] = useRevokeSessionMutation();
   const { tenant, tenantName } = useTenant();
 
   const [values, setValues] = useState(() => toFormValues(user));
@@ -94,6 +100,21 @@ export default function ProfilePage() {
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
+  /** Signs one device out. */
+  const handleRevokeSession = async (session) => {
+    const confirmed = window.confirm(
+      `Sign out ${session.device}?\n\nThat device will need to sign in again.`,
+    );
+    if (!confirmed) return;
+
+    try {
+      await revokeSession(session.id).unwrap();
+      notify.success(`${session.device} signed out`);
+    } catch (err) {
+      notify.error(err?.data?.error ?? 'Could not sign that device out');
+    }
+  };
+
   const handlePasswordChange = (field) => (event) => {
     const { value } = event.target;
     setPasswordValues((prev) => ({ ...prev, [field]: value }));
@@ -113,7 +134,7 @@ export default function ProfilePage() {
       ...values,
       fullName: `${values.firstName} ${values.lastName}`.trim(),
     });
-    notify.success('Profile saved', { message: 'Your account details are up to date.' });
+    
   };
 
   const handlePasswordSubmit = (event) => {
@@ -130,9 +151,7 @@ export default function ProfilePage() {
     if (!valid) return;
 
     setPasswordValues({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    notify.success('Password changed', {
-      message: 'Use your new password the next time you sign in.',
-    });
+    
   };
 
   const handleDiscard = () => {
@@ -330,6 +349,53 @@ export default function ProfilePage() {
                       </Button>
                     </div>
                   </form>
+
+                  {/* The devices this account is signed in on. */}
+                  <div className="nx-profile__devices">
+                    <div className="nx-profile__devices-head">
+                      <div>
+                        <h3 className="nx-profile__form-title">Signed-in devices</h3>
+                        <p className="nx-profile__form-hint">
+                          Every place this account is signed in. Sign out anything you do not
+                          recognise.
+                        </p>
+                      </div>
+                    </div>
+
+                    {sessionsLoading ? (
+                      <p className="nx-profile__devices-empty">Checking your devices…</p>
+                    ) : !sessions?.length ? (
+                      <p className="nx-profile__devices-empty">
+                        No other devices are signed in.
+                      </p>
+                    ) : (
+                      <ul className="nx-profile__device-list">
+                        {sessions.map((session) => (
+                          <li key={session.id} className="nx-profile__device">
+                            <span className="nx-profile__device-icon" aria-hidden="true">
+                              <FiMonitor size={16} />
+                            </span>
+                            <div className="nx-profile__device-copy">
+                              <span className="nx-profile__device-name">{session.device}</span>
+                              <span className="nx-profile__device-meta">
+                                {session.ip ? `${session.ip} · ` : ''}
+                                last seen {formatDateTime(session.lastUsedAt)}
+                              </span>
+                            </div>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              loading={revokingId === session.id}
+                              onClick={() => handleRevokeSession(session)}
+                              aria-label={`Sign out ${session.device}`}
+                            >
+                              Sign out
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
                   {/* The MFA state is spelled out in words next to the pill:
                       "Enabled"/"Disabled" carries the status without colour. */}

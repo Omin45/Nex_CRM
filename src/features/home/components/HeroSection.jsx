@@ -1,5 +1,5 @@
 /**
- * NexERP — HeroSection Component
+ * ArkCRM — HeroSection Component
  * Integrated with Comet Cascade background effect and custom CRM typography.
  */
 
@@ -46,7 +46,7 @@ export default function HeroSection() {
 
         {/* Sub-headline */}
         <Reveal as="p" step={3} className="nx-hero__sub">
-          NexERP brings multi-tenant CRM, inventory, accounting, and operations into one high-performance workspace — engineered with real-time audit reliability.
+          ArkCRM brings multi-tenant CRM, inventory, accounting, and operations into one high-performance workspace — engineered with real-time audit reliability.
         </Reveal>
 
         {/* Calls to action */}

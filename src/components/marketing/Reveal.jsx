@@ -1,5 +1,5 @@
 /**
- * NexERP — Reveal
+ * ArkCRM — Reveal
  * ---------------------------------------------------------------------------
  * Thin wrapper around `useScrollReveal` so a page can write
  *

@@ -1,5 +1,5 @@
 /**
- * NexERP — Projects API
+ * ArkCRM — Projects API
  * Endpoints: /projects, /projects/:id/tasks, /projects/tasks/:id/status
  */
 

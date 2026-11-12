@@ -1,5 +1,5 @@
 /**
- * NexERP — Sales API
+ * ArkCRM — Sales API
  * Endpoints: /sales/leads (incl. the kanban stage move), /sales/quotes,
  * /sales/orders, /sales/pipeline/value
  */

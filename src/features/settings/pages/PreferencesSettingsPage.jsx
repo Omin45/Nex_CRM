@@ -1,5 +1,5 @@
 /**
- * NexERP — PreferencesSettingsPage
+ * ArkCRM — PreferencesSettingsPage
  * ---------------------------------------------------------------------------
  * `settings/preferences` — appearance, alert channels and formats for the
  * signed-in user. There is no settings endpoint to save to (settingsApi only
@@ -21,7 +21,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { oneOf, required, validateForm } from '@/utils/validators';
 import './PreferencesSettingsPage.css';
 
-const PREFS_KEY = 'nexerp.ui.preferences';
+const PREFS_KEY = 'arkcrm.ui.preferences';
 
 const THEME_OPTIONS = [
   { value: 'dark', title: 'Dark', hint: 'The default canvas — built for long sessions.' },
@@ -153,9 +153,7 @@ export default function PreferencesSettingsPage() {
 
     setSavedValues(values);
     if (savePreferences(values)) {
-      notify.success(
-        'Preferences saved in this browser for this demo — there is no settings endpoint, so nothing was sent to a server.',
-      );
+      
     } else {
       notify.error('This browser would not store the preferences — storage is blocked or full.');
     }

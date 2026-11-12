@@ -1,5 +1,5 @@
 /**
- * NexERP — Auth API (RTK Query)
+ * ArkCRM — Auth API (RTK Query)
  * ---------------------------------------------------------------------------
  * Endpoints for POST /auth/*. The login/refresh responses are the only place
  * tokens are produced, so each is cached and mirrored into localStorage by the
@@ -60,7 +60,14 @@ export const authApi = createApi({
     }),
 
     logout: builder.mutation({
-      query: () => ({ url: apiRoutes.auth.logout, method: 'POST' }),
+      /* The refresh token goes with it so the server can close that session
+         on its side too — otherwise the device stays "signed in" until the
+         token expires on its own. */
+      query: () => ({
+        url: apiRoutes.auth.logout,
+        method: 'POST',
+        body: { refreshToken: tokenStorage.getRefreshToken() },
+      }),
       // Always resolve, even if the server is unreachable — the client must
       // still drop the local session.
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
@@ -84,6 +91,18 @@ export const authApi = createApi({
     verifyEmail: builder.mutation({
       query: (token) => ({ url: apiRoutes.auth.verifyEmail, method: 'POST', body: { token } }),
     }),
+
+    /** The devices this account is signed in on. */
+    getSessions: builder.query({
+      query: () => apiRoutes.auth.sessions,
+      providesTags: ['Auth'],
+    }),
+
+    /** Signs one device out. */
+    revokeSession: builder.mutation({
+      query: (id) => ({ url: apiRoutes.auth.revokeSession(id), method: 'DELETE' }),
+      invalidatesTags: ['Auth'],
+    }),
   }),
 });
 
@@ -96,4 +115,6 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useVerifyEmailMutation,
+  useGetSessionsQuery,
+  useRevokeSessionMutation,
 } = authApi;

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — PageTransition
+   ArkCRM — PageTransition
    --------------------------------------------------------------------------
    The route-change animation. Deliberately small: a fade with an 8px rise,
    long enough to smooth the swap, short enough not to be in the way.

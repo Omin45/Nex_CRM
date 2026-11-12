@@ -1,5 +1,5 @@
 /**
- * NexERP — ScrollToTop
+ * ArkCRM — ScrollToTop
  * ---------------------------------------------------------------------------
  * Spec: "scroll-to-top on route change".
  *

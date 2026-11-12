@@ -1,5 +1,5 @@
 /**
- * NexERP — useNotification
+ * ArkCRM — useNotification
  * ---------------------------------------------------------------------------
  * Toast and real-time alert triggers. The provider lives in
  * components/feedback/NotificationToast.jsx; this hook is the public API.
@@ -12,6 +12,7 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { NotificationContext } from '@/components/feedback/NotificationToast';
 import socketService, { SOCKET_EVENTS } from '@/services/socketService';
+import { serverMessage } from '@/utils/errorMessage';
 import {
   useGetNotificationsQuery,
   useGetUnreadCountQuery,
@@ -138,7 +139,7 @@ export function useNotify() {
           if (success) toast({ variant: 'success', message: success });
           return result;
         } catch (err) {
-          toast({ variant: 'error', message: error ?? err?.data?.message ?? 'Something went wrong' });
+          toast({ variant: 'error', message: error ?? serverMessage(err, 'Something went wrong') });
           throw err;
         }
       },

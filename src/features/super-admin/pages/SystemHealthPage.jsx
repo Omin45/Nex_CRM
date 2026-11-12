@@ -1,5 +1,5 @@
 /**
- * NexERP — SystemHealthPage
+ * ArkCRM — SystemHealthPage
  * ---------------------------------------------------------------------------
  * Liveness of the platform, as the platform sees it: one aggregate status,
  * four live metrics, a per-service table and the open / recent incidents.
@@ -32,6 +32,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { formatCompactNumber, formatPercent } from '@/utils/currency';
 import { formatDateTime, fromNow } from '@/utils/date';
 import './SystemHealthPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_META = {
   operational: { label: 'All systems operational', tone: 'success' },
@@ -173,7 +174,7 @@ export default function SystemHealthPage() {
           <div className="nx-sys__error">
             <h2 className="nx-sys__error-title">Could not check system health</h2>
             <p className="nx-sys__error-text">
-              {error?.data?.message ?? 'The platform system endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform system endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

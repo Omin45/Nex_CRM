@@ -1,5 +1,5 @@
 /**
- * NexERP — Topbar
+ * ArkCRM — Topbar
  * ---------------------------------------------------------------------------
  * The app shell's header: drawer toggle (mobile), page context, the command
  * palette trigger, live-connection indicator and the account controls.

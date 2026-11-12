@@ -1,5 +1,5 @@
 /**
- * NexERP — Date & time helpers
+ * ArkCRM — Date & time helpers
  * ---------------------------------------------------------------------------
  * Thin wrappers over dayjs so every screen agrees on format, timezone
  * handling and relative wording. All formatters return strings safe to render

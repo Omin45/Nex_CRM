@@ -1,5 +1,5 @@
 /**
- * NexERP — Card
+ * ArkCRM — Card
  * ---------------------------------------------------------------------------
  * The product's base surface. Composable (Card + Card.Header + Card.Body +
  * Card.Footer) so a plain content panel and a titled dashboard widget can both

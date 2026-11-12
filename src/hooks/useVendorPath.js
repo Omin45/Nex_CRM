@@ -1,5 +1,5 @@
 /**
- * NexERP — useVendorPath
+ * ArkCRM — useVendorPath
  * ---------------------------------------------------------------------------
  * Resolves an `appRoutes.vendor` suffix into a real href for the active tenant.
  *

@@ -1,5 +1,5 @@
 /**
- * NexERP — HomePage
+ * ArkCRM — HomePage
  * ---------------------------------------------------------------------------
  * The marketing home page, assembled from the section components in
  * features/home/components/. Each section owns its own markup and CSS; this

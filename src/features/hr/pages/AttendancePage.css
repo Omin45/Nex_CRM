@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — AttendancePage
+   ArkCRM — AttendancePage
    --------------------------------------------------------------------------
    The register: identity cell, monospace punch times, an overtime column
    that shows a dash rather than a zero, and the toolbar's status select.
@@ -118,4 +118,48 @@
   max-width: 60ch;
   font-size: var(--nx-text-sm);
   color: var(--nx-text-muted);
+}
+
+/* ---- row actions --------------------------------------------------------- */
+/* Check in, check out and remove, per person. Quiet until hovered. */
+.nx-attend__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+}
+
+.nx-attend__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nx-space-7);
+  height: var(--nx-space-7);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-attend__action:hover:not(:disabled) {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-strong);
+}
+
+.nx-attend__action--danger:hover:not(:disabled) {
+  color: var(--nx-danger);
+  background: rgba(251, 113, 133, 0.12);
+  border-color: rgba(251, 113, 133, 0.35);
+}
+
+.nx-attend__action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nx-attend__action:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
 }

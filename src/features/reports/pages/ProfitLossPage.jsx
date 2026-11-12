@@ -1,11 +1,10 @@
 /**
- * NexERP — ProfitLossPage
+ * ArkCRM — ProfitLossPage
  * ---------------------------------------------------------------------------
  * Four headline numbers, a period comparison chart, and the statement itself.
  *
- * The period selector changes labels only: the mock serves one canned P&L
- * regardless of params, so the request stays param-free until the backend
- * accepts a range. The header always says which period the figures are for.
+ * The period selector drives the request: the backend computes the chosen
+ * window and the one before it, so the figures always match the heading.
  *
  * Every plotted figure also appears in the table below. Emphasis rows are
  * tinted and bolded, not colour-coded; the change column carries its +/- sign.
@@ -26,6 +25,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency, percentChange } from '@/utils/currency';
 import './ProfitLossPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const PERIODS = [
   { id: 'quarter', label: 'This quarter' },
@@ -41,10 +41,12 @@ export default function ProfitLossPage() {
   const { currency } = useTenant();
   const theme = useChartTheme();
 
-  /* Period is label state only — see the header note about the mock. */
+  /* The period is part of the request: the backend computes this window and
+     the one before it, so "vs previous period" compares like with like. */
   const [period, setPeriod] = useState('quarter');
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useGetProfitAndLossQuery();
+  const { data, isLoading, isFetching, isError, error, refetch } =
+    useGetProfitAndLossQuery({ period });
 
   const periodLabel = PERIODS.find((p) => p.id === period)?.label ?? 'This period';
 
@@ -182,7 +184,7 @@ export default function ProfitLossPage() {
             </span>
             <h1 className="page__title">Profit &amp; loss</h1>
             <p className="page__subtitle">
-              {error?.data?.message ?? 'The profit and loss statement could not be loaded.'}
+              {serverMessage(error, 'The profit and loss statement could not be loaded.')}
             </p>
           </div>
           <div className="page__actions">

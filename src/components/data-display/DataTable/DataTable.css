@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — DataTable styles
+   ArkCRM — DataTable styles
    Sections:
      1. Wrapper + scroll region + sticky header
      2. Header cells and the sort control
@@ -29,23 +29,14 @@
   position: relative;
   width: 100%;
   overflow-x: auto;
-  /* Local scrollbar styling so the table does not use the OS default. */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+  /* Scrollbar hidden: horizontal panning still works (wheel/trackpad/drag). */
+  scrollbar-width: none; /* Firefox */
 }
 
 .nx-table__scroll::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-
-.nx-table__scroll::-webkit-scrollbar-thumb {
-  background: rgba(var(--nx-accent-strong-rgb), 0.24);
-  border-radius: var(--nx-radius-pill);
-}
-
-.nx-table__scroll::-webkit-scrollbar-track {
-  background: transparent;
+  height: 0;
+  width: 0;
+  display: none;
 }
 
 /* Vertical scroll region with a capped height, so the pagination below stays

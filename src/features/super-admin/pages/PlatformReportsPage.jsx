@@ -1,5 +1,5 @@
 /**
- * NexERP — PlatformReportsPage
+ * ArkCRM — PlatformReportsPage
  * ---------------------------------------------------------------------------
  * The questions a platform operator actually asks: how much revenue the
  * whole platform books, how it splits by plan, which tenants are drifting
@@ -39,9 +39,11 @@ import BarChartCard from '@/components/data-display/Charts/BarChartCard';
 import { useGetStatsQuery, useGetVendorsQuery } from '../api/superAdminApi';
 import { useGetVendorPerformanceQuery, useGetProfitAndLossQuery, useExportReportMutation } from '@/features/reports/api/reportsApi';
 import { useNotify } from '@/hooks/useNotification';
+import { downloadBlob } from '@/utils/download';
 import { formatCurrency, percentChange } from '@/utils/currency';
 import { appRoutes } from '@/config/navigation.config';
 import './PlatformReportsPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const PLAN_LABELS = {
   STARTER: 'Starter',
@@ -220,14 +222,12 @@ export default function PlatformReportsPage() {
     setExporting(format);
     setExportError(null);
     try {
-      const payload = await runExport({ format, report: 'vendor-performance' }).unwrap();
-      /* A real backend streams a file (responseHandler: 'blob'); the mock
-         returns metadata instead — mirror the canonical Reports export flow. */
-      if (payload?.report) {
-        notify.success(`Vendor performance · ${format.toUpperCase()} — demo export, no file is generated in this mock.`);
-      }
+      const blob = await runExport({ format: 'csv', report: 'vendor-performance' }).unwrap();
+      /* The server answers with the file itself, so it is handed straight
+         to the browser. */
+      downloadBlob(blob, 'vendor-performance.csv');
     } catch (err) {
-      setExportError(err?.data?.message ?? err?.message ?? 'The export request failed.');
+      setExportError(serverMessage(err, 'The export request failed.'));
       notify.error('Export failed');
     } finally {
       setExporting(null);
@@ -255,7 +255,7 @@ export default function PlatformReportsPage() {
           <div className="nx-plat__error">
             <h2 className="nx-plat__error-title">Could not build the report</h2>
             <p className="nx-plat__error-text">
-              {statsQuery.error?.data?.message ?? perfQuery.error?.data?.message ?? 'One of the report endpoints did not respond. Try again in a moment.'}
+              {serverMessage(statsQuery.error || perfQuery.error, 'One of the report endpoints did not respond. Try again in a moment.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>

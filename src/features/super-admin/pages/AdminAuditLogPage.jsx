@@ -1,5 +1,5 @@
 /**
- * NexERP — AdminAuditLogPage
+ * ArkCRM — AdminAuditLogPage
  * ---------------------------------------------------------------------------
  * The immutable cross-tenant audit trail: every sign-in, plan change,
  * export and permission edit an operator might need to chase, served by
@@ -32,6 +32,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatDateTime, fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './AdminAuditLogPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const SEVERITY_META = {
   critical: { tone: 'danger', icon: FiAlertOctagon },
@@ -198,7 +199,7 @@ export default function AdminAuditLogPage() {
           <div className="nx-audit__error">
             <h2 className="nx-audit__error-title">Could not load the audit log</h2>
             <p className="nx-audit__error-text">
-              {error?.data?.message ?? 'The platform audit-log endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform audit-log endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

@@ -1,5 +1,5 @@
 /**
- * NexERP — ProductShowcase
+ * ArkCRM — ProductShowcase
  * ---------------------------------------------------------------------------
  * Spec: "'Trusted by teams' — a fade carousel of 4 static product mockups with
  * company names, using the FadeCarousel component (cross-fade every 5 seconds,
@@ -81,7 +81,7 @@ function ShowcaseSlide({ item }) {
         <span className="nx-showcase__dot" />
         <span className="nx-showcase__dot" />
         <span className="nx-showcase__dot" />
-        <span className="nx-showcase__url">{item.name.toLowerCase().replace(/\s+/g, '')}.nexerp.app</span>
+        <span className="nx-showcase__url">{item.name.toLowerCase().replace(/\s+/g, '')}.arkcrm.app</span>
       </div>
 
       <div className="nx-showcase__panel" data-variant={item.id} aria-hidden="true">
@@ -119,7 +119,7 @@ export default function ProductShowcase() {
 
         <Reveal step={3} from="left" distance={32}>
           <FadeCarousel
-            label="NexERP in use at four companies"
+            label="ArkCRM in use at four companies"
             className="nx-showcase__carousel"
             slides={SHOWCASE.map((item) => (
               <ShowcaseSlide key={item.id} item={item} />

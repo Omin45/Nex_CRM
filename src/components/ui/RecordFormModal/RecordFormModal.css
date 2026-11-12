@@ -1,0 +1,28 @@
+/* ArkCRM — RecordFormModal
+   ---------------------------------------------------------------------------
+   The field grid shared by every create/edit dialog. Rows hold two
+   half-width fields side by side; a lone field takes the full width. */
+
+.nx-rfm__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-4);
+}
+
+.nx-rfm__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nx-space-4);
+}
+
+.nx-rfm__field {
+  min-width: 0;
+}
+
+/* One column on a narrow screen: two cramped inputs are worse than two
+   stacked ones. */
+@media (max-width: 560px) {
+  .nx-rfm__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

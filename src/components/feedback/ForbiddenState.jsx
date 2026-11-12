@@ -1,5 +1,5 @@
 /**
- * NexERP — ForbiddenState
+ * ArkCRM — ForbiddenState
  * ---------------------------------------------------------------------------
  * Rendered by PermissionGate when the user is authenticated but lacks the
  * required permission. Distinct from a 404: the resource exists, the user
@@ -71,7 +71,7 @@ export default function ForbiddenState({
         <Button
           variant="outline"
           onClick={() => {
-            window.location.href = `mailto:${import.meta.env.VITE_SUPPORT_EMAIL ?? 'support@nexerp.io'}?subject=Access request: ${resource}`;
+            window.location.href = `mailto:${import.meta.env.VITE_SUPPORT_EMAIL ?? 'support@arkcrm.io'}?subject=Access request: ${resource}`;
           }}
         >
           Request access

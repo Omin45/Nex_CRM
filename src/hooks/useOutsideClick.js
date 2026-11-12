@@ -1,5 +1,5 @@
 /**
- * NexERP — useOutsideClick
+ * ArkCRM — useOutsideClick
  * ---------------------------------------------------------------------------
  * Closes a floating surface when the user clicks or focuses outside it.
  * Shared by the sidebar (mobile drawer), the navbar dropdowns, the filter

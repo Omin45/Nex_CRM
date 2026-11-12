@@ -1,5 +1,5 @@
 /**
- * NexERP — UserProfileDropdown
+ * ArkCRM — UserProfileDropdown
  * ---------------------------------------------------------------------------
  * The avatar menu: identity block, quick links into the user's own records,
  * theme switch, and the destructive sign-out.

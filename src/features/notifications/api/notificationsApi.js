@@ -1,5 +1,5 @@
 /**
- * NexERP — Notifications API
+ * ArkCRM — Notifications API
  * Endpoints: /notifications, /notifications/unread-count, /notifications/:id/read,
  * /notifications/read-all
  *

@@ -1,5 +1,5 @@
 /**
- * NexERP — CashFlowPage
+ * ArkCRM — CashFlowPage
  * ---------------------------------------------------------------------------
  * Cash movement in operating, investing and financing streams across the six
  * periods the mock returns.
@@ -29,6 +29,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import './CashFlowPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /* Skeleton placeholder ids — stable, so keys never fall back to the index. */
 const KPI_SLOTS = ['operating', 'investing', 'financing', 'net-movement'];
@@ -172,7 +173,7 @@ export default function CashFlowPage() {
             </span>
             <h1 className="page__title">Cash flow</h1>
             <p className="page__subtitle">
-              {error?.data?.message ?? 'The cash flow statement could not be loaded.'}
+              {serverMessage(error, 'The cash flow statement could not be loaded.')}
             </p>
           </div>
           <div className="page__actions">

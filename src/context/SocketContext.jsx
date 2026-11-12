@@ -1,5 +1,5 @@
 /**
- * NexERP — Socket context
+ * ArkCRM — Socket context
  * ---------------------------------------------------------------------------
  * Wraps the SocketService singleton in React state so any component can read
  * the live connection status and subscribe to server events with automatic
@@ -14,6 +14,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import { useDispatch } from 'react-redux';
 import socketService, { SOCKET_EVENTS } from '@/services/socketService';
 import { useIsAuthenticated } from '@/hooks/useAuth';
+import { USE_MOCK_API } from '@/config/constants';
 
 const SocketContext = createContext(null);
 
@@ -27,7 +28,12 @@ export const SOCKET_STATUS = {
 export function SocketProvider({ children }) {
   const dispatch = useDispatch();
   const isAuthenticated = useIsAuthenticated();
-  const [status, setStatus] = useState(socketService.getStatus());
+  /* In fixture mode there is no socket server to talk to; pretending the
+     channel is live keeps the demo badge accurate and silences reconnect
+     noise in the console. */
+  const [status, setStatus] = useState(
+    USE_MOCK_API ? SOCKET_STATUS.CONNECTED : socketService.getStatus(),
+  );
   const [lastEvent, setLastEvent] = useState(null);
   const [reconnectAttempts, setReconnectAttempts] = useState(0);
 
@@ -62,6 +68,10 @@ export function SocketProvider({ children }) {
   /* Open the socket only while a session exists, and tear it down on sign-out
      so a logged-out browser tab holds no authenticated connection. */
   useEffect(() => {
+    if (USE_MOCK_API) {
+      setStatus(SOCKET_STATUS.CONNECTED);
+      return undefined;
+    }
     if (isAuthenticated) {
       socketService.connect(dispatchRef.current);
     } else {

@@ -1,5 +1,5 @@
 /**
- * NexERP — App
+ * ArkCRM — App
  * ---------------------------------------------------------------------------
  * Composes the provider stack. Order is load-bearing:
  *

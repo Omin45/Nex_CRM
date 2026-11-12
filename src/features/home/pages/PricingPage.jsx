@@ -1,5 +1,5 @@
 /**
- * NexERP — PricingPage
+ * ArkCRM — PricingPage
  * ---------------------------------------------------------------------------
  * Three plans with a monthly/annual toggle.
  *

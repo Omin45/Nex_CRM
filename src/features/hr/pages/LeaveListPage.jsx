@@ -1,5 +1,5 @@
 /**
- * NexERP — LeaveListPage
+ * ArkCRM — LeaveListPage
  * ---------------------------------------------------------------------------
  * The approval queue: every request with its decision gate kept in the row —
  * Pending rows carry Approve and Reject, every other state is terminal.
@@ -28,6 +28,7 @@ import { LEAVE_STATUS } from '@/config/constants';
 import { validateForm, schemas } from '@/utils/validators';
 import { daysBetween, formatDate, toDateInputValue } from '@/utils/date';
 import './LeaveListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -67,13 +68,9 @@ export default function LeaveListPage() {
       setPending({ id: leave.id, decision });
       try {
         await decideLeave({ id: leave.id, decision }).unwrap();
-        notify.success(
-          decision === 'APPROVED'
-            ? `${leave.employee}'s leave approved`
-            : `${leave.employee}'s leave rejected`,
-        );
+        
       } catch (err) {
-        notify.error(err?.data?.message ?? 'Could not update the request');
+        notify.error(serverMessage(err, 'Could not update the request'));
       } finally {
         setPending(null);
       }
@@ -289,10 +286,10 @@ export default function LeaveListPage() {
         statusKey: 'PENDING',
         status: LEAVE_STATUS.PENDING,
       }).unwrap();
-      notify.success('Leave request submitted');
+      
       closeModal();
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not submit the request');
+      notify.error(serverMessage(err, 'Could not submit the request'));
     }
   };
 
@@ -308,7 +305,7 @@ export default function LeaveListPage() {
           <div className="nx-leave__error">
             <h1 className="nx-leave__error-title">Could not load leave requests</h1>
             <p className="nx-leave__error-text">
-              {error?.data?.message ?? 'The leave register is unavailable right now.'}
+              {serverMessage(error, 'The leave register is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>

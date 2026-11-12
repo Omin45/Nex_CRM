@@ -1,5 +1,5 @@
 /**
- * NexERP — HowItWorks
+ * ArkCRM — HowItWorks
  * ---------------------------------------------------------------------------
  * Spec: "'How it works' with 4 numbered steps (Sign up, Import your data,
  * Configure, Go live) connected by a single vertical gradient line, each step

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — CustomerListPage
+   ArkCRM — CustomerListPage
    --------------------------------------------------------------------------
    Only the pieces the shared DataTable cannot express: the identity cell, the
    two-line contact cell, and the money column.
@@ -110,6 +110,51 @@
   font-size: var(--nx-text-sm);
   color: var(--nx-text-muted);
   max-width: 60ch;
+}
+
+/* ---- row actions --------------------------------------------------------- */
+/* The row is a link to the customer; these sit inside it, so they are
+   quiet icon buttons that only reveal their colour on hover. */
+.nx-cust__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+}
+
+.nx-cust__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-cust__action:hover:not(:disabled) {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-strong);
+}
+
+.nx-cust__action--danger:hover:not(:disabled) {
+  color: var(--nx-danger);
+  background: rgba(251, 113, 133, 0.12);
+  border-color: rgba(251, 113, 133, 0.35);
+}
+
+.nx-cust__action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nx-cust__action:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================

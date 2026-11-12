@@ -1,5 +1,5 @@
 /**
- * NexERP — KanbanBoard
+ * ArkCRM — KanbanBoard
  * ---------------------------------------------------------------------------
  * Spec: "a Kanban board for the Sales pipeline using native HTML5 drag and
  * drop. Columns are pipeline stages (New, Qualified, Proposal, Negotiation,

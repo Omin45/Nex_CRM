@@ -1,5 +1,5 @@
 /**
- * NexERP — PageTransition
+ * ArkCRM — PageTransition
  * ---------------------------------------------------------------------------
  * Spec: "page transitions: a subtle fade/slide between routes".
  *

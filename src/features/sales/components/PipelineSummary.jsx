@@ -1,5 +1,5 @@
 /**
- * NexERP — PipelineSummary
+ * ArkCRM — PipelineSummary
  * ---------------------------------------------------------------------------
  * The row of stage totals above the Kanban board.
  *

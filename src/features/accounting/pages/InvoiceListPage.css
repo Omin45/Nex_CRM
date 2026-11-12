@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — InvoiceListPage
+   ArkCRM — InvoiceListPage
    --------------------------------------------------------------------------
    The invoice identity cell and the two date/number treatments that carry
    meaning beyond their value: a due date that has passed, and a balance that
@@ -121,4 +121,43 @@
   font-size: var(--nx-text-sm);
   color: var(--nx-text-muted);
   max-width: 60ch;
+}
+
+/* ---- row actions ------------------------------------------------------
+   Record a payment, send a draft. Quiet until hovered, like every other
+   icon button in the app. */
+.nx-inv-list__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-1);
+}
+
+.nx-inv-list__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nx-space-8);
+  height: var(--nx-space-8);
+  color: var(--nx-text-dim);
+  background: var(--nx-overlay);
+  border: 1px solid var(--nx-border-soft);
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: var(--nx-transition);
+}
+
+.nx-inv-list__action:hover:not(:disabled) {
+  color: var(--nx-text-inverse);
+  background: var(--nx-gradient-accent);
+  border-color: var(--nx-border-strong);
+}
+
+.nx-inv-list__action:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 2px;
+}
+
+.nx-inv-list__action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

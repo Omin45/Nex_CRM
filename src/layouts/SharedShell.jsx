@@ -1,5 +1,5 @@
 /**
- * NexERP — SharedShell
+ * ArkCRM — SharedShell
  * ---------------------------------------------------------------------------
  * Chrome for the four routes that belong to neither tenant nor platform:
  * /profile, /notifications, /activity and /help.

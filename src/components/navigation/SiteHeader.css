@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — SiteHeader
+   ArkCRM — SiteHeader
    --------------------------------------------------------------------------
    The floating pill header.
 
@@ -260,7 +260,7 @@
 }
 
 /* --- THE LOGO REVEAL ------------------------------------------------------
-   The NexERP wordmark on the left is what should catch the light when the
+   The ArkCRM wordmark on the left is what should catch the light when the
    gradient animates. The same `nx-nav-sweep` band that crosses the pill also
    passes over the logo, and a `screen` blend lets it brighten the letters
    underneath instead of covering them. Reusing the keyframes and duration

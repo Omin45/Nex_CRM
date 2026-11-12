@@ -1,5 +1,5 @@
 /**
- * NexERP — ActivityPage
+ * ArkCRM — ActivityPage
  * ---------------------------------------------------------------------------
  * The workspace audit trail as a timeline: who did what, where from, how
  * serious it was. The feed is timeline-first because this screen answers
@@ -26,6 +26,7 @@ import { useGetWorkspaceActivityQuery } from '@/services/searchApi';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useNotify } from '@/hooks/useNotification';
 import './ActivityPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /* `hr` is the fixture's category for people events — the segment label is the
    human name, the value stays the wire value. `settings` rows are only
@@ -131,7 +132,7 @@ export default function ActivityPage() {
           <div className="nx-activity__error">
             <h1 className="nx-activity__error-title">Could not load the activity feed</h1>
             <p className="nx-activity__error-text">
-              {error?.data?.message ?? 'The workspace audit trail is unavailable right now.'}
+              {serverMessage(error, 'The workspace audit trail is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

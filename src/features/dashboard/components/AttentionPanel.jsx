@@ -1,5 +1,5 @@
 /**
- * NexERP — AttentionPanel
+ * ArkCRM — AttentionPanel
  * ---------------------------------------------------------------------------
  * "Needs you today": the exceptions an operator should act on, ranked by
  * urgency. The backend composes this list; the panel only orders and styles it.

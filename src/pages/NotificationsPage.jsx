@@ -1,5 +1,5 @@
 /**
- * NexERP — NotificationsPage
+ * ArkCRM — NotificationsPage
  * ---------------------------------------------------------------------------
  * The full-page version of the bell menu: same cache entry, same row
  * conventions (glyph, title, body, relative time), but with the three numbers
@@ -29,6 +29,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { useNotify } from '@/hooks/useNotification';
 import { formatDate, fromNow } from '@/utils/date';
 import './NotificationsPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const READ_FILTERS = [
   { id: 'all', label: 'All' },
@@ -218,7 +219,7 @@ export default function NotificationsPage() {
           <div className="nx-notif__error">
             <h1 className="nx-notif__error-title">Could not load notifications</h1>
             <p className="nx-notif__error-text">
-              {error?.data?.message ?? 'The notification centre is unavailable right now.'}
+              {serverMessage(error, 'The notification centre is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

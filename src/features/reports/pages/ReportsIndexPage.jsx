@@ -1,5 +1,5 @@
 /**
- * NexERP — ReportsIndexPage
+ * ArkCRM — ReportsIndexPage
  * ---------------------------------------------------------------------------
  * The reports hub. Tiles are grouped by kind, each titled with the question
  * the report answers so a reader can choose without knowing report vocabulary.
@@ -22,11 +22,13 @@ import Button from '@/components/ui/Button/Button';
 import Badge from '@/components/ui/Badge/Badge';
 import EmptyState from '@/components/feedback/EmptyState';
 import { useExportReportMutation } from '../api/reportsApi';
+import { downloadBlob } from '@/utils/download';
 import { useNotify } from '@/hooks/useNotification';
 import useVendorPath from '@/hooks/useVendorPath';
 import { appRoutes } from '@/config/navigation.config';
 import { formatDateTime } from '@/utils/date';
 import './ReportsIndexPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Grouped tiles. `soon: true` marks the disabled, no-route tile. */
 const HUB_GROUPS = [
@@ -110,16 +112,13 @@ export default function ReportsIndexPage() {
     setLastFormat(format);
     setExportError(null);
     try {
-      const payload = await runExport({ format, report: target }).unwrap();
-      /* A real backend streams a file (responseHandler: 'blob'); the mock
-         returns metadata instead. Only trust it when it looks like metadata. */
-      const meta = payload && typeof payload === 'object' && payload.report ? payload : null;
-      setResult(meta);
-      notify.success(
-        `${targetLabel} · ${format.toUpperCase()} — demo export, no file is generated in this mock.`,
-      );
+      /* The server answers with the file itself, so it is handed straight
+         to the browser. */
+      const blob = await runExport({ format: 'csv', report: target }).unwrap();
+      downloadBlob(blob, `${target}-${format}.csv`);
+      setResult({ report: target, format, downloaded: true });
     } catch (err) {
-      setExportError(err?.data?.message ?? err?.message ?? 'The export request failed.');
+      setExportError(serverMessage(err, 'The export request failed.'));
       notify.error('Export failed');
     }
   };

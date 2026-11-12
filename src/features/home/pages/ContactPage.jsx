@@ -1,5 +1,5 @@
 /**
- * NexERP — ContactPage
+ * ArkCRM — ContactPage
  * ---------------------------------------------------------------------------
  * Contact details plus an enquiry form.
  *
@@ -21,8 +21,8 @@ import PageHeader from '../components/PageHeader';
 import './ContactPage.css';
 
 const CHANNELS = [
-  { icon: <FiMail />, label: 'Sales', value: 'sales@nexerp.app', href: 'mailto:sales@nexerp.app' },
-  { icon: <FiMail />, label: 'Support', value: 'support@nexerp.app', href: 'mailto:support@nexerp.app' },
+  { icon: <FiMail />, label: 'Sales', value: 'sales@arkcrm.app', href: 'mailto:sales@arkcrm.app' },
+  { icon: <FiMail />, label: 'Support', value: 'support@arkcrm.app', href: 'mailto:support@arkcrm.app' },
   { icon: <FiPhone />, label: 'Phone', value: '+234 700 000 0000', href: 'tel:+2347000000000' },
   { icon: <FiMapPin />, label: 'Office', value: 'Lagos, Nigeria' },
   { icon: <FiClock />, label: 'Hours', value: 'Mon–Fri, 09:00–18:00 WAT' },
@@ -109,7 +109,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Contact"
         title="Talk to a person, not a ticket queue"
-        text="Tell us what you are trying to run and we will tell you honestly whether NexERP fits. If it does not, we will say so."
+        text="Tell us what you are trying to run and we will tell you honestly whether ArkCRM fits. If it does not, we will say so."
       />
 
       <div className="nx-contact">

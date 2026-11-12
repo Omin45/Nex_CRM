@@ -1,5 +1,5 @@
 /**
- * NexERP — Support API
+ * ArkCRM — Support API
  * Endpoints: /support/tickets (+ messages, assign, close), /support/sla
  */
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — HeroSection Stylesheet
+ * ArkCRM — HeroSection Stylesheet
  * Custom Brand Palette: Crimson (255, 35, 25), Slate (65, 65, 65), Royal Blue (0, 105, 255)
  */
 
@@ -171,8 +171,13 @@ html[data-theme='light'] .nx-hero {
 }
 
 .nx-hero__play {
-  display: grid;
-  place-items: center;
+  /* Inline, not grid: the button wraps its children in a single label
+     span, so a block-level icon would drop onto its own line instead of
+     sitting beside the text. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   width: 26px;
   height: 26px;
   color: rgb(var(--nx-blue-rgb));
@@ -181,6 +186,10 @@ html[data-theme='light'] .nx-hero {
   border-radius: 50%;
   transition: all 0.2s ease;
 }
+
+/* The label holds both the play badge and the words, so it has to lay them
+   out as one line with the badge optically centred against the text. The
+   label's own flex layout comes from the Button primitive. */
 
 /* ---- trust row ----------------------------------------------------------- */
 .nx-hero__trust {

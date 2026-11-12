@@ -1,5 +1,5 @@
 /**
- * NexERP — GeneralLedgerPage
+ * ArkCRM — GeneralLedgerPage
  * ---------------------------------------------------------------------------
  * The journal: server-driven search, sort and pagination over `/accounting/ledger`,
  * with a trial balance pinned above it so the reader can confirm the books
@@ -30,6 +30,19 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import './GeneralLedgerPage.css';
+
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
+import { serverMessage } from '@/utils/errorMessage';
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'date', label: 'Date', value: (row) => formatDate(row.date) },
+  { key: 'account', label: 'Account' },
+  { key: 'reference', label: 'Reference' },
+  { key: 'description', label: 'Description' },
+  { key: 'debit', label: 'Debit' },
+  { key: 'credit', label: 'Credit' },
+  { key: 'currency', label: 'Currency' },
+];
 
 export default function GeneralLedgerPage() {
   const notify = useNotify();
@@ -134,7 +147,7 @@ export default function GeneralLedgerPage() {
           <div className="nx-gl__error">
             <h1 className="nx-gl__error-title">Could not load the ledger</h1>
             <p className="nx-gl__error-text">
-              {error?.data?.message ?? 'The journal is unavailable right now.'}
+              {serverMessage(error, 'The journal is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>
@@ -167,9 +180,12 @@ export default function GeneralLedgerPage() {
           >
             Refresh
           </Button>
-          <Button variant="outline" size="sm" leftIcon={<FiDownload size={15} />}>
-            Export
-          </Button>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="general-ledger"
+            title="General ledger"
+          />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — Application entry
+ * ArkCRM — Application entry
  * ---------------------------------------------------------------------------
  * Stylesheets are imported here, in cascade order: tokens, then the global
  * reset and base layer, then the utility and form layers. Component and feature
@@ -23,7 +23,7 @@ import '@/styles/forms.css';
 const container = document.getElementById('root');
 
 if (!container) {
-  throw new Error('NexERP could not start: #root is missing from index.html');
+  throw new Error('ArkCRM could not start: #root is missing from index.html');
 }
 
 createRoot(container).render(

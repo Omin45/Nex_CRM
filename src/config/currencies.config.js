@@ -1,5 +1,5 @@
 /**
- * NexERP — Supported currencies
+ * ArkCRM — Supported currencies
  * ---------------------------------------------------------------------------
  * Every tenant picks a base currency at onboarding; the symbol and decimal
  * precision differ per market. Formatting is centralised in utils/currency.js,

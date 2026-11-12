@@ -1,5 +1,5 @@
 /**
- * NexERP — Dashboard API
+ * ArkCRM — Dashboard API
  * ---------------------------------------------------------------------------
  * The Executive Vendor Dashboard needs KPI figures, a 12-month revenue
  * trend, an expense mix, an AR aging profile, a quick-action feed and a live

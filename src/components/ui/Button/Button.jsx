@@ -1,5 +1,5 @@
 /**
- * NexERP — Button
+ * ArkCRM — Button
  * ---------------------------------------------------------------------------
  * The single interactive primitive. Every clickable control in the app is
  * either this component or a link styled as one, which is what keeps the

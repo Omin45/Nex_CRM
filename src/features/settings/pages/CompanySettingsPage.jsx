@@ -1,5 +1,5 @@
 /**
- * NexERP — CompanySettingsPage
+ * ArkCRM — CompanySettingsPage
  * ---------------------------------------------------------------------------
  * The company details form (route suffix `settings/company`). Values are
  * prefilled from the session tenant, because that is the only place the mock
@@ -149,9 +149,7 @@ export default function CompanySettingsPage() {
 
     switchTenant({ ...tenant, ...values });
     setSavedValues(values);
-    notify.success(
-      'Company details saved for this session — the demo backend has no settings endpoint, so nothing was sent to a server.',
-    );
+    
   };
 
   const handleReset = () => {

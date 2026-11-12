@@ -1,5 +1,5 @@
 /**
- * NexERP — ProjectListPage
+ * ArkCRM — ProjectListPage
  * ---------------------------------------------------------------------------
  * The delivery portfolio: the numbers a delivery lead scans before opening
  * anything, with the table behind them.
@@ -29,6 +29,7 @@ import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, isOverdue } from '@/utils/date';
 import './ProjectListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -216,7 +217,7 @@ export default function ProjectListPage() {
           <div className="nx-proj-list__error">
             <h1 className="nx-proj-list__error-title">Could not load projects</h1>
             <p className="nx-proj-list__error-text">
-              {error?.data?.message ?? 'The project portfolio is unavailable right now.'}
+              {serverMessage(error, 'The project portfolio is unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

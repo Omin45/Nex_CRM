@@ -1,5 +1,5 @@
 /**
- * NexERP — SuperAdminDashboardPage
+ * ArkCRM — SuperAdminDashboardPage
  * ---------------------------------------------------------------------------
  * Landing screen for the platform administration surface. It answers the four
  * questions an operator opens the console to answer: how many tenants exist,
@@ -190,7 +190,7 @@ export default function SuperAdminDashboardPage() {
           <p className="page__eyebrow">Platform</p>
           <h1 className="page__title">Good day, {firstName}</h1>
           <p className="page__subtitle">
-            Every tenant on NexERP, and the recurring revenue they generate.
+            Every tenant on ArkCRM, and the recurring revenue they generate.
           </p>
         </div>
         <div className="page__actions">

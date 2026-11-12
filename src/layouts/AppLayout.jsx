@@ -1,5 +1,5 @@
 /**
- * NexERP — AppLayout
+ * ArkCRM — AppLayout
  * ---------------------------------------------------------------------------
  * The signed-in chrome. Renders the sidebar rail, the topbar and an <Outlet/>
  * for the current page, and owns the one piece of shell state that has to live

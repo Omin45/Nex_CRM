@@ -1,5 +1,5 @@
 /**
- * NexERP — Badge
+ * ArkCRM — Badge
  * ---------------------------------------------------------------------------
  * Soft status pill with a glow, used for every status vocabulary in the app
  * (PAID, OVERDUE, ACTIVE, lead stages, task statuses).

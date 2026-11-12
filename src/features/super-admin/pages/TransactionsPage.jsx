@@ -1,5 +1,5 @@
 /**
- * NexERP — TransactionsPage
+ * ArkCRM — TransactionsPage
  * ---------------------------------------------------------------------------
  * Platform money movement — every charge, top-up and refund across every
  * tenant, including failed rows. The table is one server-paged envelope
@@ -36,6 +36,7 @@ import { formatCurrency } from '@/utils/currency';
 import { formatDate, fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './TransactionsPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const TYPE_META = {
   Subscription: { tone: 'accent', icon: FiSlack },
@@ -231,7 +232,7 @@ export default function TransactionsPage() {
           <div className="nx-tx__error">
             <h2 className="nx-tx__error-title">Could not load transactions</h2>
             <p className="nx-tx__error-text">
-              {error?.data?.message ?? 'The platform transactions endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform transactions endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

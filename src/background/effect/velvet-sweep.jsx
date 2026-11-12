@@ -1,5 +1,5 @@
 /**
- * NexERP — VelvetSweep
+ * ArkCRM — VelvetSweep
  * ---------------------------------------------------------------------------
  * A section backdrop of broad, plush gradient bands crossing on opposing
  * diagonals — the "velvet" of a heavy satin sweep. Richer and more directional

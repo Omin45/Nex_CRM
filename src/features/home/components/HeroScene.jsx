@@ -1,5 +1,5 @@
 /**
- * NexERP — HeroScene
+ * ArkCRM — HeroScene
  * ---------------------------------------------------------------------------
  * The hero's floating ERP field: glass panels carrying ERP icons (invoice,
  * stock, reports, payments, customers, projects) are scattered across the

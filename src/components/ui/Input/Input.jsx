@@ -1,5 +1,5 @@
 /**
- * NexERP — Input
+ * ArkCRM — Input
  * ---------------------------------------------------------------------------
  * Labelled form control with a leading icon, an optional suffix (e.g. a
  * currency symbol), inline validation messaging and a blue-accent focus

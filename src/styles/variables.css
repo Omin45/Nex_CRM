@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — DESIGN TOKENS (single source of truth)
+   ArkCRM — DESIGN TOKENS (single source of truth)
    --------------------------------------------------------------------------
    Every colour, radius, shadow and motion value in the product resolves to a
    variable declared here. Component stylesheets must NEVER hard-code a hex

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Modal styles
+   ArkCRM — Modal styles
    Portal root, blurred scrim, the frosted panel (heavier blur than the navbar
    so it reads as sitting closer to the viewer), and the entrance choreography.
    ========================================================================== */
@@ -117,17 +117,13 @@
   min-height: 0;
   padding: var(--nx-space-5);
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--nx-accent-strong-rgb), 0.28) transparent;
+  scrollbar-width: none; /* Firefox */
 }
 
 .nx-modal__body::-webkit-scrollbar {
-  width: 8px;
-}
-
-.nx-modal__body::-webkit-scrollbar-thumb {
-  background: rgba(var(--nx-accent-strong-rgb), 0.24);
-  border-radius: var(--nx-radius-pill);
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .nx-modal__footer {

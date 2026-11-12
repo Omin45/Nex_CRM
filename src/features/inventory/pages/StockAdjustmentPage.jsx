@@ -1,5 +1,5 @@
 /**
- * NexERP — StockAdjustmentPage
+ * ArkCRM — StockAdjustmentPage
  * ---------------------------------------------------------------------------
  * Correct stock levels by hand: a short form on the left, the adjustment
  * history on the right, so the person doing a cycle count can see what has
@@ -29,6 +29,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatDate, fromNow } from '@/utils/date';
 import { validateForm, required, quantity as quantityRule } from '@/utils/validators';
 import './StockAdjustmentPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const EMPTY_FORM = { productId: '', qty: '', reason: '' };
 
@@ -178,13 +179,11 @@ export default function StockAdjustmentPage() {
         delta,
         reason: form.reason.trim(),
       }).unwrap();
-      notify.success(
-        `${selectedProduct?.name ?? 'Stock'} ${direction === 'increase' ? 'increased' : 'decreased'} by ${signedQty}`,
-      );
+      
       setForm((current) => ({ ...current, qty: '', reason: '' }));
       setErrors({});
     } catch (err) {
-      setSubmitError(err?.data?.message ?? 'Could not record the adjustment.');
+      setSubmitError(serverMessage(err, 'Could not record the adjustment.'));
     }
   };
 
@@ -195,7 +194,7 @@ export default function StockAdjustmentPage() {
           <div className="nx-adj__error">
             <h1 className="nx-adj__error-title">Could not load adjustments</h1>
             <p className="nx-adj__error-text">
-              {error?.data?.message ?? 'The adjustment history is unavailable right now.'}
+              {serverMessage(error, 'The adjustment history is unavailable right now.')}
             </p>
             <Button onClick={refetchHistory}>Try again</Button>
           </div>

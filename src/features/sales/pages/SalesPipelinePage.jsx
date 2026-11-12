@@ -1,5 +1,5 @@
 /**
- * NexERP — SalesPipelinePage
+ * ArkCRM — SalesPipelinePage
  * ---------------------------------------------------------------------------
  * The sales pipeline: aggregate tiles above a KanbanBoard.
  *
@@ -14,6 +14,9 @@
  * hand when it fails, and a card that slides to the next column and then snaps
  * back is a worse experience than one that waits. The mock round trip is
  * instant, so the cost of being correct is invisible.
+ *
+ * New leads open on `?new=1`, which is how the dashboard's quick action jumps
+ * straight into the dialog instead of only navigating here.
  */
 
 import { useMemo } from 'react';
@@ -24,12 +27,15 @@ import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
 import EmptyState from '@/components/feedback/EmptyState';
 import LoadingState from '@/components/feedback/LoadingState';
-import { useGetLeadsQuery, useMoveLeadMutation } from '../api/salesApi';
+import RecordFormModal from '@/components/ui/RecordFormModal/RecordFormModal';
+import { useCreateLeadMutation, useGetLeadsQuery, useMoveLeadMutation } from '../api/salesApi';
 import { LEAD_STAGES } from '@/config/constants';
 import { useNotify } from '@/hooks/useNotification';
+import useCreateDialog from '@/hooks/useCreateDialog';
 import { daysBetween } from '@/utils/date';
 import { formatCurrency } from '@/utils/currency';
 import './SalesPipelinePage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Whole days since a timestamp, as a non-negative integer. */
 function daysSince(value) {
@@ -38,10 +44,86 @@ function daysSince(value) {
   return Number.isFinite(days) ? Math.max(0, Math.round(days)) : null;
 }
 
+const SOURCES = ['Website', 'Referral', 'Trade show', 'Cold outreach', 'Social media', 'Existing customer'];
+
+/** The fields the new-lead dialog shows. */
+const FIELDS = [
+  { name: 'name', label: 'Contact name', required: true, placeholder: 'Adaeze Okonkwo' },
+  { name: 'company', label: 'Company', placeholder: 'Baze Trading Ltd', half: true },
+  { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@company.com', half: true },
+  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+234 800 000 0000', half: true },
+  {
+    name: 'source',
+    label: 'Source',
+    type: 'select',
+    half: true,
+    options: [{ value: '', label: 'Select a source' }, ...SOURCES.map((s) => ({ value: s, label: s }))],
+  },
+  {
+    name: 'value',
+    label: 'Deal value',
+    type: 'number',
+    inputMode: 'decimal',
+    min: '0',
+    step: '0.01',
+    placeholder: '0.00',
+    half: true,
+  },
+  {
+    name: 'stage',
+    label: 'Stage',
+    type: 'select',
+    half: true,
+    options: LEAD_STAGES.map((stage) => ({ value: stage.id, label: stage.label })),
+  },
+  { name: 'notes', label: 'Notes', type: 'textarea', rows: 3, placeholder: 'What do they need?' },
+];
+
+const EMPTY_FORM = {
+  name: '',
+  company: '',
+  email: '',
+  phone: '',
+  source: 'Website',
+  value: '',
+  stage: 'new',
+  notes: '',
+};
+
+function validate(form) {
+  const errors = {};
+  if (!form.name.trim()) errors.name = 'Who is the lead?';
+  if (!form.email.trim()) errors.email = 'An email address is required.';
+  else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+    errors.email = 'That does not look like an email address.';
+  }
+  if (form.value !== '' && Number(form.value) < 0) errors.value = 'A deal value cannot be negative.';
+  return errors;
+}
+
 export default function SalesPipelinePage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useGetLeadsQuery();
   const [moveLead, { isLoading: isMoving }] = useMoveLeadMutation();
+  const [createLead, { isLoading: isCreating }] = useCreateLeadMutation();
   const notify = useNotify();
+
+  const dialog = useCreateDialog({
+    initialValues: EMPTY_FORM,
+    validate,
+    onSubmit: async (form) => {
+      await createLead({
+        name: form.name.trim(),
+        company: form.company.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        source: form.source,
+        value: form.value === '' ? 0 : Number(form.value),
+        stage: form.stage,
+        notes: form.notes.trim(),
+      }).unwrap();
+      
+    },
+  });
 
   /* RTK Query list endpoints return a paginated envelope. `items` is the real
      key; the `?? data` fallback keeps the board working if a query ever
@@ -106,7 +188,7 @@ export default function SalesPipelinePage() {
           >
             Refresh
           </Button>
-          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />}>
+          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />} onClick={() => dialog.show()}>
             New lead
           </Button>
         </div>
@@ -118,7 +200,7 @@ export default function SalesPipelinePage() {
             <div className="nx-pipeline__error">
               <h2 className="nx-pipeline__error-title">Could not load the pipeline</h2>
               <p className="nx-pipeline__error-text">
-                {error?.data?.message ?? 'The lead list is unavailable right now.'}
+                {serverMessage(error, 'The lead list is unavailable right now.')}
               </p>
               <Button onClick={refetch}>Try again</Button>
             </div>
@@ -136,6 +218,7 @@ export default function SalesPipelinePage() {
               icon={<FiPlus size={22} />}
               title="No leads yet"
               description="Add your first lead to start tracking the pipeline. New leads start in the New Lead stage."
+              action={<Button onClick={() => dialog.show()}>Add lead</Button>}
             />
           </Card>
         ) : (
@@ -159,6 +242,20 @@ export default function SalesPipelinePage() {
           </>
         )}
       </div>
+
+      <RecordFormModal
+        open={dialog.open}
+        onClose={dialog.hide}
+        title="New lead"
+        subtitle="Add an opportunity to the board. It starts in the stage you pick."
+        submitLabel="Add lead"
+        isSaving={isCreating}
+        fields={FIELDS}
+        form={dialog.form}
+        errors={dialog.errors}
+        onChange={dialog.handleChange}
+        onSubmit={dialog.submit}
+      />
     </div>
   );
 }

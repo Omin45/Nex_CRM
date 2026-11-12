@@ -1,5 +1,5 @@
 /**
- * NexERP — Navigation model
+ * ArkCRM — Navigation model
  * ---------------------------------------------------------------------------
  * One source of truth for three consumers: the sidebar, the breadcrumb trail
  * and the route table in AppRoutes. Adding a page means adding it here once.

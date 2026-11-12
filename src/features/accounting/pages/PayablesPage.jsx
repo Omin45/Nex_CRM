@@ -1,5 +1,5 @@
 /**
- * NexERP — PayablesPage
+ * ArkCRM — PayablesPage
  * ---------------------------------------------------------------------------
  * The AP mirror of ReceivablesPage: an ageing strip over the bills a business
  * still has to settle, then the bills themselves.
@@ -31,8 +31,21 @@ import { formatCurrency } from '@/utils/currency';
 import { daysOverdue, formatDate, isOverdue } from '@/utils/date';
 import './PayablesPage.css';
 
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
+import { serverMessage } from '@/utils/errorMessage';
 /** Placeholder cards for the ageing strip while the report loads. */
 const BUCKET_SKELETONS = ['bucket-1', 'bucket-2', 'bucket-3', 'bucket-4', 'bucket-5'];
+
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'reference', label: 'Bill' },
+  { key: 'description', label: 'Description' },
+  { key: 'vendorName', label: 'Vendor' },
+  { key: 'category', label: 'Category' },
+  { key: 'expenseDate', label: 'Date', value: (row) => formatDate(row.expenseDate) },
+  { key: 'amount', label: 'Amount' },
+  { key: 'status', label: 'Status', value: (row) => row.status?.label ?? row.statusKey },
+];
 
 export default function PayablesPage() {
   const notify = useNotify();
@@ -51,9 +64,9 @@ export default function PayablesPage() {
           statusKey: 'REIMBURSED',
           status: { label: 'Reimbursed', tone: 'info' },
         }).unwrap();
-        notify.success(`${bill.reference} marked as paid`);
+        
       } catch (err) {
-        notify.error(err?.data?.message ?? `Could not update ${bill.reference}`);
+        notify.error(serverMessage(err, `Could not update ${bill.reference}`));
       } finally {
         setSavingId(null);
       }
@@ -221,7 +234,7 @@ export default function PayablesPage() {
           <div className="nx-pay__error">
             <h1 className="nx-pay__error-title">Could not load payables</h1>
             <p className="nx-pay__error-text">
-              {error?.data?.message ?? 'The payables ageing report is unavailable right now.'}
+              {serverMessage(error, 'The payables ageing report is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>
@@ -255,9 +268,12 @@ export default function PayablesPage() {
           >
             Refresh
           </Button>
-          <Button variant="outline" size="sm" leftIcon={<FiDownload size={15} />}>
-            Export
-          </Button>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="payables"
+            title="Payables"
+          />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — ForgotPasswordPage
+ * ArkCRM — ForgotPasswordPage
  * ---------------------------------------------------------------------------
  * Requests a reset link. Deliberately does not reveal whether an address is
  * registered — the backend returns 202 either way, and this screen mirrors

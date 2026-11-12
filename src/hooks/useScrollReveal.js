@@ -1,5 +1,5 @@
 /**
- * NexERP — useScrollReveal
+ * ArkCRM — useScrollReveal
  * ---------------------------------------------------------------------------
  * Spec: "sections fade up as they enter the viewport (IntersectionObserver
  * hook)".

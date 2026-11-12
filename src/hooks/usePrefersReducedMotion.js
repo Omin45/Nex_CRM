@@ -1,5 +1,5 @@
 /**
- * NexERP — usePrefersReducedMotion
+ * ArkCRM — usePrefersReducedMotion
  * ---------------------------------------------------------------------------
  * Tracks the `prefers-reduced-motion: reduce` media query.
  *

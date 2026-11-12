@@ -1,5 +1,5 @@
 /**
- * NexERP — Theme context
+ * ArkCRM — Theme context
  * ---------------------------------------------------------------------------
  * Owns the active theme and writes `data-theme` onto <html>, which is what
  * activates the light-token override block in styles/variables.css. The choice

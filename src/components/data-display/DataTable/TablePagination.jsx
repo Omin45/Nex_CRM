@@ -1,5 +1,5 @@
 /**
- * NexERP — TablePagination
+ * ArkCRM — TablePagination
  * ---------------------------------------------------------------------------
  * Range summary ("1–10 of 248"), page-size select, and a windowed pager that
  * collapses long ranges to ellipses.

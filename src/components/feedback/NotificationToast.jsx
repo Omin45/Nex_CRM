@@ -1,5 +1,5 @@
 /**
- * NexERP — NotificationToast
+ * ArkCRM — NotificationToast
  * ---------------------------------------------------------------------------
  * The toast surface and the context every `useNotification()` call reads from.
  * Mounted once by RootLayout.

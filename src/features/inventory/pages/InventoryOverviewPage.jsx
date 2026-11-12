@@ -1,5 +1,5 @@
 /**
- * NexERP — InventoryOverviewPage
+ * ArkCRM — InventoryOverviewPage
  * ---------------------------------------------------------------------------
  * The inventory landing page: headline stock figures, a value-by-category
  * chart, warehouse utilisation, and the two lists a stock controller actually
@@ -43,6 +43,7 @@ import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatRelativeShort } from '@/utils/date';
 import './InventoryOverviewPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Movement type -> badge tone. Issues are the ones worth noticing. */
 const MOVE_TONE = {
@@ -159,7 +160,7 @@ export default function InventoryOverviewPage() {
           <div className="nx-inv__error">
             <h1 className="nx-inv__error-title">Could not load inventory</h1>
             <p className="nx-inv__error-text">
-              {error?.data?.message ?? 'Stock figures are unavailable right now.'}
+              {serverMessage(error, 'Stock figures are unavailable right now.')}
             </p>
             <Button onClick={refetch}>Try again</Button>
           </div>

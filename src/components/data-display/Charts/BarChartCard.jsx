@@ -1,5 +1,5 @@
 /**
- * NexERP — BarChartCard
+ * ArkCRM — BarChartCard
  * ---------------------------------------------------------------------------
  * Categorical comparison wrapper: expense mix by category, invoices by status,
  * headcount by department, AR by aging bucket.

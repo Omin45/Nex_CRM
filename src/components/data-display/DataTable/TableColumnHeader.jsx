@@ -1,5 +1,5 @@
 /**
- * NexERP — TableColumnHeader
+ * ArkCRM — TableColumnHeader
  * ---------------------------------------------------------------------------
  * A single <th>. Renders a sort control only for sortable columns and
  * communicates the active direction to assistive technology through

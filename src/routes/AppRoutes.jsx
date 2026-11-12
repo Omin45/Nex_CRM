@@ -1,5 +1,5 @@
 /**
- * NexERP — AppRoutes
+ * ArkCRM — AppRoutes
  * ---------------------------------------------------------------------------
  * The route tree. Deliberately *data*, not a router: this file exports the
  * `routes` array only, and the browser router is constructed where it belongs,
@@ -48,6 +48,8 @@ const AuthPage = lazy(() => import('@/features/auth/pages/AuthPage'));
 const ForgotPasswordPage = lazy(() => import('@/features/auth/pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/features/auth/pages/ResetPasswordPage'));
 const VerifyEmailPage = lazy(() => import('@/features/auth/pages/VerifyEmailPage'));
+const InviteAcceptPage = lazy(() => import('@/features/auth/pages/InviteAcceptPage'));
+const JoinWorkspacePage = lazy(() => import('@/features/auth/pages/JoinWorkspacePage'));
 
 const DashboardPage = lazy(() => import('@/features/dashboard/pages/DashboardPage'));
 const CustomerListPage = lazy(() => import('@/features/customers/pages/CustomerListPage'));
@@ -148,6 +150,13 @@ export const routes = [
       { path: 'forgot-password', element: <ForgotPasswordPage /> },
       { path: 'reset-password', element: <ResetPasswordPage /> },
       { path: 'verify-email', element: <VerifyEmailPage /> },
+      /* An invitation link: public, because the person holding it has no
+         account yet. It lands in the auth shell beside the other
+         "one thing to do" screens. */
+      { path: 'invite/:token', element: <InviteAcceptPage /> },
+      /* Joining a workspace with its code, for somebody who already has an
+         account. The screen asks for a sign-in first if there is not one. */
+      { path: 'join', element: <JoinWorkspacePage /> },
     ],
   },
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — PublicLayout
+ * ArkCRM — PublicLayout
  * ---------------------------------------------------------------------------
  * Shell for every marketing page: the floating SiteHeader, the page outlet and
  * the SiteFooter, over the fixed animated mesh.

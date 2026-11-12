@@ -1,5 +1,5 @@
 /**
- * NexERP — TypeWriter
+ * ArkCRM — TypeWriter
  * ---------------------------------------------------------------------------
  * Spec: "a hero line like 'Manage your business <rotating word>', where the
  * word types and deletes in a loop (Sales, Inventory, Accounting, HR,

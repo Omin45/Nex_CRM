@@ -1,5 +1,5 @@
 /**
- * NexERP — Reports API
+ * ArkCRM — Reports API
  * Endpoints: /reports/profit-loss, /reports/balance-sheet, /reports/cash-flow,
  * /reports/tax-summary, /reports/vendor-performance, /reports/export
  *

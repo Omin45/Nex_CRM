@@ -1,5 +1,5 @@
 /**
- * NexERP — DashBackdrop
+ * ArkCRM — DashBackdrop
  * ---------------------------------------------------------------------------
  * The executive dashboard's depth layer: one perspective stage holding a
  * tilted grid plane that drifts under the KPI strip, plus two soft palette

@@ -1,5 +1,5 @@
 /**
- * NexERP — Testimonials
+ * ArkCRM — Testimonials
  * ---------------------------------------------------------------------------
  * Spec: "3 customer testimonials that cross-fade every 6 seconds, each in a
  * glass card with an avatar (initials in a gradient circle), name, role and

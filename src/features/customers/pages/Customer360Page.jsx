@@ -1,5 +1,5 @@
 /**
- * NexERP — Customer360Page
+ * ArkCRM — Customer360Page
  * ---------------------------------------------------------------------------
  * Everything about one customer in one screen: identity, money, credit, recent
  * invoices, and a timeline.
@@ -45,6 +45,7 @@ import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import './Customer360Page.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_TONE = {
   ACTIVE: 'success',
@@ -132,8 +133,7 @@ export default function Customer360Page() {
             icon={<FiFileText size={22} />}
             title="Customer not found"
             description={
-              customerError?.data?.message ??
-              `No customer matches “${customerId}”. It may have been deleted.`
+              serverMessage(customerError, `No customer matches “${customerId}”. It may have been deleted.`)
             }
             action={
               <Button variant="primary" onClick={goBack} leftIcon={<FiArrowLeft size={15} />}>

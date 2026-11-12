@@ -1,5 +1,5 @@
 /**
- * NexERP — useScrollLock
+ * ArkCRM — useScrollLock
  * ---------------------------------------------------------------------------
  * Freezes background scrolling while a full-screen overlay is open (the mobile
  * menu, a modal). Without this, scrolling behind an open menu drags the page

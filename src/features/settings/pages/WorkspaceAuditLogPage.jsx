@@ -1,5 +1,5 @@
 /**
- * NexERP — WorkspaceAuditLogPage
+ * ArkCRM — WorkspaceAuditLogPage
  * ---------------------------------------------------------------------------
  * `settings/audit-log` — who did what in this workspace, when and from where.
  * Reads the one endpoint settingsApi actually serves (`GET /settings/audit-log`)
@@ -25,8 +25,9 @@ import { useGetAuditLogQuery } from '@/features/settings/api/settingsApi';
 import { useDebounce } from '@/hooks/useDebounce';
 import { formatDateTime, fromNow } from '@/utils/date';
 import './WorkspaceAuditLogPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
-const PREFS_KEY = 'nexerp.ui.preferences';
+const PREFS_KEY = 'arkcrm.ui.preferences';
 
 const PAGE_SIZES = [10, 20];
 
@@ -181,8 +182,7 @@ export default function WorkspaceAuditLogPage() {
             <div className="nx-set-audit__error">
               <h2 className="nx-set-audit__error-title">Could not load the audit log</h2>
               <p className="nx-set-audit__error-text">
-                {error?.data?.message
-                  ?? 'The settings audit-log endpoint did not respond. Try again in a moment.'}
+                {serverMessage(error, 'The settings audit-log endpoint did not respond. Try again in a moment.')}
               </p>
               <Button leftIcon={<FiRefreshCw size={15} />} onClick={() => refetch()}>
                 Try again
@@ -226,7 +226,7 @@ export default function WorkspaceAuditLogPage() {
               <FiAlertTriangle size={16} />
             </span>
             Could not refresh — showing the last rows that loaded.
-            {error?.data?.message ? ` (${error.data.message})` : ''}
+            {serverMessage(error) ? ` (${serverMessage(error)})` : ''}
           </div>
         ) : null}
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — TaxSummaryPage
+ * ArkCRM — TaxSummaryPage
  * ---------------------------------------------------------------------------
  * The VAT position for the current period plus the filing history behind it.
  * Reachable by URL only — the sidebar has no entry; the hub links here.
@@ -24,10 +24,12 @@ import LoadingState from '@/components/feedback/LoadingState';
 import MetricCard from '@/features/dashboard/components/MetricCard';
 import { useExportReportMutation, useGetTaxSummaryQuery } from '../api/reportsApi';
 import { useNotify } from '@/hooks/useNotification';
+import { downloadBlob } from '@/utils/download';
 import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, isOverdue } from '@/utils/date';
 import './TaxSummaryPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** Status vocabulary → badge tone. Anything unrecognised stays neutral. */
 const STATUS_TONES = {
@@ -147,12 +149,10 @@ export default function TaxSummaryPage() {
   const handleExport = async () => {
     setExportError(null);
     try {
-      await runExport({ format: 'pdf', report: 'tax-summary' }).unwrap();
-      notify.success(
-        `VAT return for ${periodLabel} — demo export, no file is generated in this mock.`,
-      );
+      const blob = await runExport({ format: 'csv', report: 'tax-summary' }).unwrap();
+      downloadBlob(blob, `vat-return-${periodLabel}.csv`);
     } catch (err) {
-      setExportError(err?.data?.message ?? err?.message ?? 'The export request failed.');
+      setExportError(serverMessage(err, 'The export request failed.'));
       notify.error('Export failed');
     }
   };
@@ -167,7 +167,7 @@ export default function TaxSummaryPage() {
             </span>
             <h1 className="page__title">Tax summary</h1>
             <p className="page__subtitle">
-              {error?.data?.message ?? 'The tax summary could not be loaded.'}
+              {serverMessage(error, 'The tax summary could not be loaded.')}
             </p>
           </div>
           <div className="page__actions">

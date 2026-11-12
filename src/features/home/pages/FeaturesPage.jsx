@@ -1,5 +1,5 @@
 /**
- * NexERP — FeaturesPage
+ * ArkCRM — FeaturesPage
  * ---------------------------------------------------------------------------
  * The full feature catalogue. Each of the eight modules becomes an alternating
  * two-column band: copy and bullet list on one side, a glass panel illustration

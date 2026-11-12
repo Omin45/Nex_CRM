@@ -1,5 +1,5 @@
 /**
- * NexERP — Navbar
+ * ArkCRM — Navbar
  * ---------------------------------------------------------------------------
  * Chrome for the app shell and the auth screens.
  *
@@ -33,14 +33,14 @@ export function Brand({
   tagline = 'Commerce & operations',
 }) {
   return (
-    <Link to={to} className={cx('nx-brand', compact && 'is-compact')} aria-label="NexERP home">
+    <Link to={to} className={cx('nx-brand', compact && 'is-compact')} aria-label="ArkCRM home">
       <span className="nx-brand__mark" aria-hidden="true">
-        <span className="nx-brand__glyph">N</span>
+        <span className="nx-brand__glyph">A</span>
       </span>
 
       <span className="nx-brand__text">
         <span className="nx-brand__name">
-          Nex<span className="text-gradient">ERP</span>
+          Ark<span className="text-gradient">CRM</span>
         </span>
         {!compact ? <span className="nx-brand__tagline">{tagline}</span> : null}
       </span>

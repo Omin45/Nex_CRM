@@ -1,5 +1,5 @@
 /**
- * NexERP — Root reducer & API registry
+ * ArkCRM — Root reducer & API registry
  * ---------------------------------------------------------------------------
  * One place that knows about every slice and every RTK Query API. Adding a
  * feature means adding it to `apis` below — the reducer map, the middleware
@@ -23,10 +23,12 @@ import { reportsApi } from '@/features/reports/api/reportsApi';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 import { notificationsApi } from '@/features/notifications/api/notificationsApi';
 import { settingsApi } from '@/features/settings/api/settingsApi';
+import { tenantsApi } from '@/features/tenants/api/tenantsApi';
 import { searchApi } from '@/services/searchApi';
 
 /** Every API slice, in middleware order. */
 export const apis = [
+  tenantsApi,
   authApi,
   superAdminApi,
   customersApi,

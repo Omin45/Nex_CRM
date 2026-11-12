@@ -1,5 +1,5 @@
 /**
- * NexERP — GlobalSearchModal
+ * ArkCRM — GlobalSearchModal
  * ---------------------------------------------------------------------------
  * Enterprise-wide command palette. Debounced (so a keystroke does not hit the
  * API), keyboard-navigable (arrow keys + Enter), and scoped by entity type so

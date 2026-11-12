@@ -1,8 +1,8 @@
 /**
- * NexERP — CtaBand
+ * ArkCRM — CtaBand
  * ---------------------------------------------------------------------------
  * Spec: "a final CTA band with a gradient border, the line 'Ready to run your
- * business on NexERP?' and two buttons — 'Start free' and 'Talk to sales' —
+ * business on ArkCRM?' and two buttons — 'Start free' and 'Talk to sales' —
  * sitting above the footer."
  *
  * The "gradient border" is a two-layer technique: a gradient-filled parent with
@@ -26,7 +26,7 @@ export default function CtaBand() {
           <div className="nx-cta__frame">
             <div className="nx-cta__inner">
               <h2 className="nx-cta__heading nx-heading-fx" id="nx-cta-heading">
-                Ready to run your business on NexERP?
+                Ready to run your business on ArkCRM?
               </h2>
 
               <p className="nx-cta__text">

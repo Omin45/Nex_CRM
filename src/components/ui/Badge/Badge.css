@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — Badge styles
+   ArkCRM — Badge styles
    Tinted glass pill with a coloured text and a soft outer glow. Each tone
    overrides three custom properties (--badge-rgb, --badge-text) so a single
    rule block covers every variant.

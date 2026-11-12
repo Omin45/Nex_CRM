@@ -1,5 +1,5 @@
 /**
- * NexERP — ChartCard
+ * ArkCRM — ChartCard
  * ---------------------------------------------------------------------------
  * The shared shell every chart wrapper renders into: a titled card, a legend
  * row, and a body sized for Recharts' ResponsiveContainer.

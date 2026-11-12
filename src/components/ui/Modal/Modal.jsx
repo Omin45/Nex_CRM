@@ -1,5 +1,5 @@
 /**
- * NexERP — Modal
+ * ArkCRM — Modal
  * ---------------------------------------------------------------------------
  * Frosted floating dialog. Renders through a portal, locks body scroll, traps
  * focus, closes on Escape or scrim click, and restores focus to the trigger on

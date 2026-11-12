@@ -1,5 +1,5 @@
 /**
- * NexERP — NotFoundPage
+ * ArkCRM — NotFoundPage
  * ---------------------------------------------------------------------------
  * The 404 screen. It has to work in two situations: inside a signed-in shell
  * (so it renders as a page body, keeping the sidebar) and outside one (so it
@@ -34,7 +34,7 @@ export default function NotFoundPage() {
         <EmptyState
           icon={<FiCompass size={26} />}
           title="This page doesn't exist"
-          description={`Nothing is mapped to this address. If you followed a link from inside NexERP, it may point at a screen that has moved.`}
+          description={`Nothing is mapped to this address. If you followed a link from inside ArkCRM, it may point at a screen that has moved.`}
           action={
             <Button leftIcon={<FiHome size={15} />} onClick={() => navigate(home, { replace: true })}>
               {isAuthenticated ? 'Back to dashboard' : 'Go to sign in'}

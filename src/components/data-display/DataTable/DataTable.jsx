@@ -1,7 +1,7 @@
 /**
- * NexERP — DataTable
+ * ArkCRM — DataTable
  * ---------------------------------------------------------------------------
- * The master data table behind every list screen in NexERP (customers,
+ * The master data table behind every list screen in ArkCRM (customers,
  * invoices, products, employees, tickets …).
  *
  * Design goals:

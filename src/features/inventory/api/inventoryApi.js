@@ -1,5 +1,5 @@
 /**
- * NexERP — Inventory API
+ * ArkCRM — Inventory API
  * Endpoints: /inventory/overview, /inventory/movements, /inventory/adjustments,
  * /inventory/transfers, /products, /warehouses
  */

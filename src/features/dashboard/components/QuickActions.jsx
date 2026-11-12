@@ -1,5 +1,5 @@
 /**
- * NexERP — QuickActions
+ * ArkCRM — QuickActions
  * ---------------------------------------------------------------------------
  * Permission-filtered launcher for the six most common create flows. Declaring
  * them once here means a role only ever sees the tiles it can act on, and the

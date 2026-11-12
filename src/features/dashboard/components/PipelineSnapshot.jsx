@@ -1,5 +1,5 @@
 /**
- * NexERP — PipelineSnapshot
+ * ArkCRM — PipelineSnapshot
  * ---------------------------------------------------------------------------
  * A read-only funnel summary of the sales pipeline: one row per stage with a
  * proportional bar, plus the weighted total. It answers "where is my revenue

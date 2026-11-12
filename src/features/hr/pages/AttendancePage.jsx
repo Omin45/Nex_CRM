@@ -1,5 +1,5 @@
 /**
- * NexERP — AttendancePage
+ * ArkCRM — AttendancePage
  * ---------------------------------------------------------------------------
  * The register: who is in, who is not, and the numbers the summary endpoint
  * reports for the whole table.
@@ -8,11 +8,16 @@
  * totals). Seven statuses is more than four, so the toolbar filter is a
  * select — the convention utility.css states for anything past four. The KPI
  * tiles read the summary endpoint rather than the page; each hint says which
- * register it describes. Check in / check out only report what the API says.
+ * register it describes.
+ *
+ * Every punch is a real row: the header buttons record the signed-in user,
+ * and each row can be checked in, checked out or removed on its own. A row
+ * that was recorded in error is removed rather than left to confuse the
+ * register — which is why the delete is a first-class action here.
  */
 
 import { useMemo, useState } from 'react';
-import { FiClock, FiLogIn, FiLogOut, FiRefreshCw, FiUsers } from 'react-icons/fi';
+import { FiClock, FiLogIn, FiLogOut, FiRefreshCw, FiTrash2, FiUsers } from 'react-icons/fi';
 import DataTable from '@/components/data-display/DataTable/DataTable';
 import TableToolbar from '@/components/data-display/DataTable/TableToolbar';
 import Badge from '@/components/ui/Badge/Badge';
@@ -23,14 +28,17 @@ import MetricCard from '@/features/dashboard/components/MetricCard';
 import {
   useCheckInMutation,
   useCheckOutMutation,
+  useDeleteAttendanceMutation,
   useGetAttendanceQuery,
   useGetAttendanceSummaryQuery,
 } from '../api/hrApi';
 import { useNotify } from '@/hooks/useNotification';
+import { useAuth } from '@/hooks/useAuth';
 import useDataTable from '@/hooks/useDataTable';
 import { formatPercent } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import './AttendancePage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /* Past four options a select beats a pill row — see the header note. */
 const STATUS_OPTIONS = [
@@ -45,9 +53,13 @@ const STATUS_OPTIONS = [
 
 export default function AttendancePage() {
   const notify = useNotify();
+  const { user } = useAuth();
 
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
+  /** The row being acted on, so only its buttons spin. */
+  const [pendingId, setPendingId] = useState(null);
+  const [removingId, setRemovingId] = useState(null);
 
   const columns = useMemo(
     () => [
@@ -98,25 +110,67 @@ export default function AttendancePage() {
         key: 'overtimeHours',
         header: 'Overtime',
         align: 'right',
-        sortable: true,
         render: (entry) => (
           <span className="nx-attend__hours" data-overtime={entry.overtimeHours > 0 || undefined}>
-            {entry.overtimeHours > 0 ? `+${entry.overtimeHours}h` : '—'}
+            {entry.overtimeHours > 0 ? `+${entry.overtimeHours}h` : '-'}
           </span>
         ),
       },
       {
         key: 'status',
         header: 'Status',
-        sortable: false,
         render: (entry) => (
           <Badge tone={entry.status?.tone ?? 'neutral'} dot>
             {entry.status?.label ?? entry.statusKey}
           </Badge>
         ),
       },
+      {
+        key: 'actions',
+        header: '',
+        align: 'right',
+        sortable: false,
+        hideable: false,
+        render: (entry) => (
+          <div className="nx-attend__actions">
+            <button
+              type="button"
+              className="nx-attend__action"
+              onClick={() => handlePunch(entry, 'in')}
+              disabled={pendingId === entry.id}
+              aria-label={`Check ${entry.employee} in`}
+              title="Check in"
+            >
+              <FiLogIn size={13} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="nx-attend__action"
+              onClick={() => handlePunch(entry, 'out')}
+              disabled={pendingId === entry.id}
+              aria-label={`Check ${entry.employee} out`}
+              title="Check out"
+            >
+              <FiLogOut size={13} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="nx-attend__action nx-attend__action--danger"
+              onClick={() => handleRemove(entry)}
+              disabled={removingId === entry.id}
+              aria-label={`Remove ${entry.employee}'s entry`}
+              title="Remove entry"
+            >
+              <FiTrash2 size={13} aria-hidden="true" />
+            </button>
+          </div>
+        ),
+      },
     ],
-    [],
+    // handlePunch / handleRemove are stable enough for this table; they read
+    // the current entry, not the render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pendingId, removingId],
   );
 
   const table = useDataTable({
@@ -125,9 +179,7 @@ export default function AttendancePage() {
     initialPageSize: 15,
   });
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useGetAttendanceQuery(
-    table.queryParams,
-  );
+  const { data, isLoading, isFetching, isError, error, refetch } = useGetAttendanceQuery(table.queryParams);
   const {
     data: summary,
     isLoading: summaryLoading,
@@ -137,66 +189,66 @@ export default function AttendancePage() {
 
   const [checkIn] = useCheckInMutation();
   const [checkOut] = useCheckOutMutation();
+  const [deleteAttendance] = useDeleteAttendanceMutation();
 
   const rows = useMemo(() => data?.items ?? [], [data]);
-  const status = table.filters.statusKey ?? '';
 
-  /* The tiles describe the register through the summary endpoint, so they
-     keep their own loading and failure states — a broken summary must not
-     blank the table, and a slow table must not stall the tiles. */
   const kpis = useMemo(() => {
+    /* The tiles describe the register through the summary endpoint, so they
+       keep their own loading and failure states - a broken summary must not
+       take the table down with it. */
     const available = summary && !summaryError;
-    const tile = (key, label, value, tone, hint) => ({ key, label, value, icon: <FiClock size={14} />, tone, hint });
 
     return [
-      tile(
-        'present',
-        'Present',
-        available ? String(summary.present) : '—',
-        available && summary.present > 0 ? 'success' : 'neutral',
-        available ? 'Whole register' : 'Summary unavailable',
-      ),
-      tile(
-        'absent',
-        'Absent',
-        available ? String(summary.absent) : '—',
-        available && summary.absent > 0 ? 'danger' : 'neutral',
-        available ? 'Whole register' : 'Summary unavailable',
-      ),
-      tile(
-        'late',
-        'Late',
-        available ? String(summary.late) : '—',
-        available && summary.late > 0 ? 'warning' : 'neutral',
-        available ? 'Whole register' : 'Summary unavailable',
-      ),
-      tile(
-        'on-leave',
-        'On leave',
-        available ? String(summary.onLeave) : '—',
-        'violet',
-        available ? 'Whole register' : 'Summary unavailable',
-      ),
-      tile(
-        'rate',
-        'Attendance rate',
-        available ? formatPercent(summary.rate, 1, false) : '—',
-        'accent',
-        available ? 'Reported by the API' : 'Summary unavailable',
-      ),
+      {
+        key: 'present',
+        label: 'Present',
+        value: available ? String(summary.present) : '-',
+        tone: available && summary.present > 0 ? 'success' : 'neutral',
+        hint: available ? 'Whole register' : 'Summary unavailable',
+      },
+      {
+        key: 'absent',
+        label: 'Absent',
+        value: available ? String(summary.absent) : '-',
+        tone: available && summary.absent > 0 ? 'danger' : 'neutral',
+        hint: available ? 'Whole register' : 'Summary unavailable',
+      },
+      {
+        key: 'late',
+        label: 'Late',
+        value: available ? String(summary.late) : '-',
+        tone: available && summary.late > 0 ? 'warning' : 'neutral',
+        hint: available ? 'Whole register' : 'Summary unavailable',
+      },
+      {
+        key: 'on-leave',
+        label: 'On leave',
+        value: available ? String(summary.onLeave) : '-',
+        tone: available && summary.onLeave > 0 ? 'info' : 'neutral',
+        hint: available ? 'Whole register' : 'Summary unavailable',
+      },
+      {
+        key: 'rate',
+        label: 'Attendance rate',
+        value: available ? formatPercent(summary.rate, 1, false) : '-',
+        tone: available ? 'success' : 'neutral',
+        hint: available ? 'Reported by the API' : 'Summary unavailable',
+      },
     ];
   }, [summary, summaryError]);
 
+  /** The signed-in user, so the header buttons record their own attendance. */
+  const me = useMemo(() => (user?.email ? { email: user.email } : {}), [user]);
+
   const handleCheckIn = async () => {
     setCheckingIn(true);
-    /* The demo API acknowledges the punch but writes no row, so only the
-       summary is refreshed — inventing a table row would be a lie. */
     try {
-      await checkIn().unwrap();
-      notify.success('Checked in');
+      await checkIn(me).unwrap();
+      
       refetchSummary();
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not check in');
+      notify.error(serverMessage(err, 'Could not check in'));
     } finally {
       setCheckingIn(false);
     }
@@ -205,13 +257,49 @@ export default function AttendancePage() {
   const handleCheckOut = async () => {
     setCheckingOut(true);
     try {
-      await checkOut().unwrap();
-      notify.success('Checked out');
+      await checkOut(me).unwrap();
+      
       refetchSummary();
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not check out');
+      notify.error(serverMessage(err, 'Could not check out'));
     } finally {
       setCheckingOut(false);
+    }
+  };
+
+  /** Check one person in or out, from their row. */
+  const handlePunch = async (entry, direction) => {
+    setPendingId(entry.id);
+    try {
+      if (direction === 'in') {
+        await checkIn({ employeeId: entry.employeeId }).unwrap();
+        
+      } else {
+        await checkOut({ employeeId: entry.employeeId }).unwrap();
+        
+      }
+    } catch (err) {
+      notify.error(serverMessage(err, `Could not check ${entry.employee} ${direction}`));
+    } finally {
+      setPendingId(null);
+    }
+  };
+
+  /** Remove a register entry that was recorded in error. */
+  const handleRemove = async (entry) => {
+    const confirmed = window.confirm(
+      `Remove ${entry.employee}'s entry for ${formatDate(entry.date)}?\n\nThis cannot be undone.`,
+    );
+    if (!confirmed) return;
+
+    setRemovingId(entry.id);
+    try {
+      await deleteAttendance(entry.id).unwrap();
+      
+    } catch (err) {
+      notify.error(serverMessage(err, 'Could not remove the entry'));
+    } finally {
+      setRemovingId(null);
     }
   };
 
@@ -228,7 +316,7 @@ export default function AttendancePage() {
           <div className="nx-attend__error">
             <h1 className="nx-attend__error-title">Could not load attendance</h1>
             <p className="nx-attend__error-text">
-              {error?.data?.message ?? 'The attendance register is unavailable right now.'}
+              {serverMessage(error, 'The attendance register is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>
@@ -309,7 +397,7 @@ export default function AttendancePage() {
                 fullWidth={false}
                 label="Status"
                 name="attendance-status"
-                value={status}
+                value={table.filters.statusKey ?? ''}
                 onChange={(event) => table.setFilter('statusKey', event.target.value)}
                 options={STATUS_OPTIONS}
                 containerClassName="nx-attend__status-field"
@@ -332,15 +420,10 @@ export default function AttendancePage() {
             sortOrder={table.sortOrder}
             onSort={table.toggleSort}
             visibleColumns={table.visibleColumns}
-            isFiltered={table.isFiltered}
             itemLabel="entries"
             emptyIcon={<FiClock />}
-            emptyTitle={table.isFiltered ? 'No entries match' : 'No attendance yet'}
-            emptyDescription={
-              table.isFiltered
-                ? 'Try a different status filter or clear the search.'
-                : 'Clock-ins and imported records will appear here.'
-            }
+            emptyTitle="No attendance entries"
+            emptyDescription="Check someone in and the register fills up."
           />
         </Card>
       </div>

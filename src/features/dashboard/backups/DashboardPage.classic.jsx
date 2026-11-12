@@ -1,5 +1,5 @@
 /**
- * NexERP — DashboardPage (Executive Vendor Dashboard)
+ * ArkCRM — DashboardPage (Executive Vendor Dashboard)
  * ---------------------------------------------------------------------------
  * The landing screen after sign-in. Ordered by what an operator asks, in order:
  *
@@ -41,6 +41,7 @@ import { formatCurrency } from '@/utils/currency';
 import { DATE_RANGES } from '@/config/constants';
 import { appRoutes } from '@/config/navigation.config';
 import '../components/Dashboard.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /** "Good morning" / "afternoon" / "evening", from the visitor's clock. */
 function greeting() {
@@ -138,7 +139,7 @@ export default function DashboardPage() {
               <FiAlertCircle size={12} /> Offline
             </span>
             <h1 className="page__title">Dashboard unavailable</h1>
-            <p className="page__subtitle">{error?.data?.message ?? 'The overview could not be loaded.'}</p>
+            <p className="page__subtitle">{serverMessage(error, 'The overview could not be loaded.')}</p>
           </div>
           <div className="page__actions">
             <Button leftIcon={<FiRefreshCw size={15} />} onClick={refetch}>
@@ -243,7 +244,7 @@ export default function DashboardPage() {
             height={300}
             showLegend
             loading={isLoading}
-            error={isError ? (error?.data?.message ?? 'The trend could not be loaded') : null}
+            error={isError ? (serverMessage(error, 'The trend could not be loaded')) : null}
           />
 
           {isLoading ? (

@@ -1,7 +1,7 @@
 /**
- * NexERP — VendorListPage
+ * ArkCRM — VendorListPage
  * ---------------------------------------------------------------------------
- * The platform's tenant directory: every company on NexERP, the seats it has
+ * The platform's tenant directory: every company on ArkCRM, the seats it has
  * bought and the recurring revenue it contributes. Search, sort and paging
  * are server-driven through GET /vendors; the status segments stay local,
  * because a vendor row carries `status` as an *object* and folding it into
@@ -38,6 +38,7 @@ import { fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import { VENDOR_STATUS } from '@/config/constants';
 import './VendorListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 /* Labels match VENDOR_STATUS exactly — the filter compares them against the
    row's `status.label`, which is the only status field a vendor carries. */
@@ -162,7 +163,7 @@ export default function VendorListPage() {
         value: stats?.total,
         icon: <FiBriefcase size={14} />,
         tone: 'accent',
-        hint: 'Every company on NexERP',
+        hint: 'Every company on ArkCRM',
       },
       {
         key: 'active',
@@ -230,12 +231,12 @@ export default function VendorListPage() {
         lastActiveAt: null,
       }).unwrap();
 
-      notify.success(`${form.name.trim()} added — pending review`);
+      
       setIsOpen(false);
       setForm(EMPTY_FORM);
       setFormErrors({});
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not add the tenant');
+      notify.error(serverMessage(err, 'Could not add the tenant'));
     }
   };
 
@@ -259,7 +260,7 @@ export default function VendorListPage() {
           <div className="nx-vend__error">
             <h2 className="nx-vend__error-title">Could not load tenants</h2>
             <p className="nx-vend__error-text">
-              {error?.data?.message ?? 'The vendors endpoint did not respond. Check the API connection and try again.'}
+              {serverMessage(error, 'The vendors endpoint did not respond. Check the API connection and try again.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

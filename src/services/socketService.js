@@ -1,5 +1,5 @@
 /**
- * NexERP — WebSocket service
+ * ArkCRM — WebSocket service
  * ---------------------------------------------------------------------------
  * Manages the single socket shared by the whole app. SocketContext.jsx owns the
  * React lifecycle; this module owns the transport, the reconnect backoff and

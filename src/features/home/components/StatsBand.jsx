@@ -1,5 +1,5 @@
 /**
- * NexERP — StatsBand
+ * ArkCRM — StatsBand
  * ---------------------------------------------------------------------------
  * Spec: "a thin glass strip with four count-up statistics: 500+ companies,
  * 2.4M invoices processed, 99.9% uptime, 120+ countries."
@@ -53,7 +53,7 @@ function Stat({ icon, value, decimals, suffix, label, index }) {
 
 export default function StatsBand() {
   return (
-    <section className="nx-stats" aria-label="NexERP by the numbers">
+    <section className="nx-stats" aria-label="ArkCRM by the numbers">
       <SectionGlow tone="accent" />
       <VeilRays />
       <div className="nx-home__container">

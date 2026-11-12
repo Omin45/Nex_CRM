@@ -1,5 +1,5 @@
 /**
- * NexERP — TicketListPage
+ * ArkCRM — TicketListPage
  * ---------------------------------------------------------------------------
  * The support queue: subject, priority, SLA state, and the one action this
  * screen owns — closing a ticket that is still open.
@@ -12,7 +12,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FiActivity, FiCheckCircle, FiClock, FiFlag, FiInbox, FiRefreshCw, FiX } from 'react-icons/fi';
+import { FiActivity, FiCheckCircle, FiClock, FiFlag, FiInbox, FiPlus, FiRefreshCw, FiX } from 'react-icons/fi';
 import DataTable from '@/components/data-display/DataTable/DataTable';
 import TableToolbar from '@/components/data-display/DataTable/TableToolbar';
 import Badge from '@/components/ui/Badge/Badge';
@@ -20,13 +20,22 @@ import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
 import Input from '@/components/ui/Input/Input';
 import MetricCard from '@/features/dashboard/components/MetricCard';
-import { useCloseTicketMutation, useGetSlaMetricsQuery, useGetTicketsQuery } from '../api/supportApi';
+import {
+  useCloseTicketMutation,
+  useCreateTicketMutation,
+  useGetSlaMetricsQuery,
+  useGetTicketsQuery,
+} from '../api/supportApi';
+import { useGetCustomersQuery } from '@/features/customers/api/customersApi';
+import RecordFormModal from '@/components/ui/RecordFormModal/RecordFormModal';
 import { useNotify } from '@/hooks/useNotification';
 import useDataTable from '@/hooks/useDataTable';
+import useCreateDialog from '@/hooks/useCreateDialog';
 import { TICKET_PRIORITY } from '@/config/constants';
 import { formatPercent } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import './TicketListPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -55,6 +64,34 @@ function priorityKeyOf(ticket) {
   );
 }
 
+const TICKET_CHANNELS = ['Email', 'Portal', 'Phone', 'Chat'];
+
+const TICKET_CATEGORIES = [
+  'TECHNICAL',
+  'BILLING',
+  'SALES',
+  'GENERAL',
+  'FEATURE_REQUEST',
+  'COMPLAINT',
+];
+
+const EMPTY_TICKET = {
+  subject: '',
+  description: '',
+  customerId: '',
+  priority: 'MEDIUM',
+  channel: 'Portal',
+  category: 'GENERAL',
+};
+
+function validateTicket(form) {
+  const errors = {};
+  if (!form.subject.trim()) errors.subject = 'Summarise the request in a line.';
+  if (!form.description.trim()) errors.description = 'Describe what the customer reported.';
+  if (!form.customerId) errors.customerId = 'Choose the customer this is about.';
+  return errors;
+}
+
 export default function TicketListPage() {
   const notify = useNotify();
 
@@ -64,15 +101,86 @@ export default function TicketListPage() {
   const [closing, setClosing] = useState(null);
 
   const [closeTicket] = useCloseTicketMutation();
+  const [createTicket, { isLoading: isCreating }] = useCreateTicketMutation();
+  const { data: customerData } = useGetCustomersQuery({ page: 1, pageSize: 100 });
+
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: 'Select a customer' },
+      ...(customerData?.items ?? []).map((customer) => ({
+        value: customer.id,
+        label: customer.name,
+      })),
+    ],
+    [customerData],
+  );
+
+  const ticketFields = useMemo(
+    () => [
+      { name: 'subject', label: 'Subject', required: true, placeholder: 'Invoice PDF will not download' },
+      { name: 'description', label: 'What happened', type: 'textarea', rows: 4, required: true },
+      {
+        name: 'customerId',
+        label: 'Customer',
+        type: 'select',
+        required: true,
+        options: customerOptions,
+      },
+      {
+        name: 'priority',
+        label: 'Priority',
+        type: 'select',
+        half: true,
+        options: Object.entries(TICKET_PRIORITY).map(([key, meta]) => ({
+          value: key,
+          label: meta.label,
+        })),
+      },
+      {
+        name: 'channel',
+        label: 'Channel',
+        type: 'select',
+        half: true,
+        options: TICKET_CHANNELS.map((channel) => ({ value: channel, label: channel })),
+      },
+      {
+        name: 'category',
+        label: 'Category',
+        type: 'select',
+        half: true,
+        options: TICKET_CATEGORIES.map((category) => ({
+          value: category,
+          label: category.replace(/_/g, ' ').toLowerCase(),
+        })),
+      },
+    ],
+    [customerOptions],
+  );
+
+  const dialog = useCreateDialog({
+    initialValues: EMPTY_TICKET,
+    validate: validateTicket,
+    onSubmit: async (form) => {
+      await createTicket({
+        subject: form.subject.trim(),
+        description: form.description.trim(),
+        customerId: form.customerId,
+        priority: form.priority,
+        channel: form.channel,
+        category: form.category,
+      }).unwrap();
+      
+    },
+  });
 
   const handleClose = useCallback(
     async (ticket) => {
       setClosing(ticket.id);
       try {
         await closeTicket(ticket.id).unwrap();
-        notify.success(`${ticket.number} closed`);
+        
       } catch (err) {
-        notify.error(err?.data?.message ?? `Could not close ${ticket.number}`);
+        notify.error(serverMessage(err, `Could not close ${ticket.number}`));
       } finally {
         setClosing(null);
       }
@@ -301,7 +409,7 @@ export default function TicketListPage() {
           <div className="nx-tickets__error">
             <h1 className="nx-tickets__error-title">Could not load tickets</h1>
             <p className="nx-tickets__error-text">
-              {error?.data?.message ?? 'The support queue is unavailable right now.'}
+              {serverMessage(error, 'The support queue is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>
@@ -331,6 +439,9 @@ export default function TicketListPage() {
             aria-label="Refresh tickets"
           >
             Refresh
+          </Button>
+          <Button variant="primary" size="sm" leftIcon={<FiPlus size={15} />} onClick={() => dialog.show()}>
+            New ticket
           </Button>
         </div>
       </div>
@@ -408,6 +519,19 @@ export default function TicketListPage() {
           />
         </Card>
       </div>
+      <RecordFormModal
+        open={dialog.open}
+        onClose={dialog.hide}
+        title="New ticket"
+        subtitle="Log a customer request. It starts open and unassigned."
+        submitLabel="Open ticket"
+        isSaving={isCreating}
+        fields={ticketFields}
+        form={dialog.form}
+        errors={dialog.errors}
+        onChange={dialog.handleChange}
+        onSubmit={dialog.submit}
+      />
     </div>
   );
 }

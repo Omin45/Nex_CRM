@@ -1,5 +1,5 @@
 /**
- * NexERP — Super Admin API
+ * ArkCRM — Super Admin API
  * Platform-level (cross-tenant) endpoints. Guarded by ProtectedRoute, which
  * only mounts this slice for a SUPER_ADMIN session.
  *

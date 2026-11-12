@@ -1,5 +1,5 @@
 /**
- * NexERP — ProjectDetailPage
+ * ArkCRM — ProjectDetailPage
  * ---------------------------------------------------------------------------
  * One project in full: identity and health, the milestone strip that answers
  * "where is it in the plan", and the task table that answers "what is left".
@@ -29,6 +29,7 @@ import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import { formatDate, isOverdue } from '@/utils/date';
 import './ProjectDetailPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const TASK_STATUS_FILTERS = [
   { id: 'all', label: 'All' },
@@ -212,8 +213,7 @@ export default function ProjectDetailPage() {
             </Button>
             <h1 className="page__title">Project not found</h1>
             <p className="page__subtitle">
-              {error?.data?.message ??
-                `No project matches “${projectId}”. It may have been deleted.`}
+              {serverMessage(error, `No project matches “${projectId}”. It may have been deleted.`)}
             </p>
           </div>
           <div className="page__actions">
@@ -422,7 +422,7 @@ export default function ProjectDetailPage() {
               sortOrder={taskTable.sortOrder}
               onSort={taskTable.toggleSort}
               visibleColumns={taskTable.visibleColumns}
-              error={tasksError ? (tasksError?.data?.message ?? 'Tasks could not be loaded') : null}
+              error={tasksError ? (serverMessage(tasksError, 'Tasks could not be loaded')) : null}
               onRetry={refetchTasks}
               isFiltered={taskFiltered}
               itemLabel="tasks"

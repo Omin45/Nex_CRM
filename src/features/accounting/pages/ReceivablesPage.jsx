@@ -1,5 +1,5 @@
 /**
- * NexERP — ReceivablesPage
+ * ArkCRM — ReceivablesPage
  * ---------------------------------------------------------------------------
  * The AR ageing screen: the bucket strip comes first because "how much is late,
  * and how late" is the question this page exists to answer; the invoice table
@@ -31,8 +31,22 @@ import { formatCurrency } from '@/utils/currency';
 import { daysBetween, formatDate, isOverdue } from '@/utils/date';
 import './ReceivablesPage.css';
 
+import ExportMenu from '@/components/ui/ExportMenu/ExportMenu';
+import { serverMessage } from '@/utils/errorMessage';
 /** Placeholder cards for the ageing strip while the report loads. */
 const BUCKET_SKELETONS = ['bucket-1', 'bucket-2', 'bucket-3', 'bucket-4', 'bucket-5'];
+
+/** The columns the spreadsheet gets: plain values, not markup. */
+const EXPORT_COLUMNS = [
+  { key: 'number', label: 'Invoice' },
+  { key: 'customer', label: 'Customer' },
+  { key: 'issueDate', label: 'Issued', value: (row) => formatDate(row.issueDate) },
+  { key: 'dueDate', label: 'Due', value: (row) => formatDate(row.dueDate) },
+  { key: 'status', label: 'Status', value: (row) => row.status?.label ?? row.statusKey },
+  { key: 'balance', label: 'Balance' },
+  { key: 'paymentTerms', label: 'Terms' },
+  { key: 'owner', label: 'Owner' },
+];
 
 export default function ReceivablesPage() {
   const notify = useNotify();
@@ -198,7 +212,7 @@ export default function ReceivablesPage() {
           <div className="nx-recv__error">
             <h1 className="nx-recv__error-title">Could not load receivables</h1>
             <p className="nx-recv__error-text">
-              {error?.data?.message ?? 'The ageing report is unavailable right now.'}
+              {serverMessage(error, 'The ageing report is unavailable right now.')}
             </p>
             <Button onClick={handleRefresh}>Try again</Button>
           </div>
@@ -232,9 +246,12 @@ export default function ReceivablesPage() {
           >
             Refresh
           </Button>
-          <Button variant="outline" size="sm" leftIcon={<FiDownload size={15} />}>
-            Export
-          </Button>
+          <ExportMenu
+            columns={EXPORT_COLUMNS}
+            rows={rows}
+            filename="receivables"
+            title="Receivables"
+          />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 /**
- * NexERP — Form validation helpers
+ * ArkCRM — Form validation helpers
  * ---------------------------------------------------------------------------
  * Small, dependency-free validators returning either a boolean or an error
  * string. Each form composes them into a `rules` object consumed by the

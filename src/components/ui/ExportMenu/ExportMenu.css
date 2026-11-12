@@ -1,0 +1,91 @@
+/* ArkCRM — ExportMenu
+   ---------------------------------------------------------------------------
+   A compact dropdown that offers the three export formats. It sits inside
+   the page's action row, so it is positioned relative to its own button. */
+
+.nx-export {
+  position: relative;
+  display: inline-flex;
+}
+
+.nx-export__menu {
+  /* Fixed, because the menu is portalled to the body: the page header runs a
+     reveal animation, and a transformed ancestor traps an absolutely
+     positioned menu behind the cards below it. */
+  position: fixed;
+  z-index: 200;
+  min-width: 232px;
+  padding: var(--nx-space-2);
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  box-shadow: 0 18px 42px rgba(2, 6, 23, 0.45);
+}
+
+.nx-export__heading {
+  margin: 0 0 var(--nx-space-1);
+  padding: var(--nx-space-1) var(--nx-space-2);
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nx-export__item {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-2) var(--nx-space-2);
+  text-align: left;
+  color: var(--nx-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-sm);
+  cursor: pointer;
+  transition: background var(--nx-dur) var(--nx-ease), border-color var(--nx-dur) var(--nx-ease);
+}
+
+.nx-export__item:hover:not(:disabled) {
+  background: var(--nx-surface-2);
+  border-color: var(--nx-border);
+}
+
+.nx-export__item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nx-export__item:focus-visible {
+  outline: 2px solid var(--nx-accent);
+  outline-offset: 1px;
+}
+
+.nx-export__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  color: var(--nx-accent);
+  background: rgba(56, 189, 248, 0.12);
+  border-radius: var(--nx-radius-sm);
+}
+
+.nx-export__item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.nx-export__item-label {
+  font-size: var(--nx-text-sm);
+  font-weight: 600;
+}
+
+.nx-export__item-hint {
+  font-size: var(--nx-text-xs);
+  color: var(--nx-text-muted);
+}

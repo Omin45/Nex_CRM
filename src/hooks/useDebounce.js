@@ -1,5 +1,5 @@
 /**
- * NexERP — useDebounce
+ * ArkCRM — useDebounce
  * ---------------------------------------------------------------------------
  * Search inputs fire a keystroke-rate of requests; this delays the expensive
  * work (a query dispatch, a filter recompute) until the user pauses.

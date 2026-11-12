@@ -1,5 +1,5 @@
 /**
- * NexERP — EmptyState
+ * ArkCRM — EmptyState
  * ---------------------------------------------------------------------------
  * The "there is nothing here yet" surface. Also used for filtered-to-zero
  * results, where the copy and the action change.

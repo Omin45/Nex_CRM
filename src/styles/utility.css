@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NexERP — UTILITY LAYER
+   ArkCRM — UTILITY LAYER
    Reusable, single-purpose class helpers. Two families live here:
      1. "Shell" classes  (.page, .page__header, .grid, .toolbar) that define
         the standard page anatomy, so every feature page composes the same
@@ -11,7 +11,7 @@
 
 /* --------------------------------------------------------------------------
    BRAND WORDMARK
-   The animated "NexERP" gradient text required by the product spec. The text
+   The animated "ArkCRM" gradient text required by the product spec. The text
    fill is transparent and the gradient is clipped into the glyphs; animating
    background-position makes the colour flow through the letters. The
    keyframe (nx-brand-flow) lives in global.css.
@@ -307,10 +307,13 @@
    -------------------------------------------------------------------------- */
 .nx-segmented {
   display: inline-flex;
+  align-items: center;
+  gap: 2px;
   padding: 2px;
   background: var(--nx-overlay);
   border: 1px solid var(--nx-border-soft);
   border-radius: var(--nx-radius-pill);
+  margin-right: var(--nx-space-1);
 }
 
 .nx-segmented__item {

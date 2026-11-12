@@ -1,5 +1,5 @@
 /**
- * NexERP — Settings API
+ * ArkCRM — Settings API
  * Endpoints: /settings/audit-log
  *
  * The audit log is the only settings screen the server answers today; company,

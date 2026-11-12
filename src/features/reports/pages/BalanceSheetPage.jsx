@@ -1,5 +1,5 @@
 /**
- * NexERP — BalanceSheetPage
+ * ArkCRM — BalanceSheetPage
  * ---------------------------------------------------------------------------
  * Assets, liabilities and equity as three cards, plus a reconciliation strip
  * that says in words whether the sheet balances.
@@ -26,6 +26,7 @@ import { useNotify } from '@/hooks/useNotification';
 import { useTenant } from '@/hooks/useTenant';
 import { formatCurrency } from '@/utils/currency';
 import './BalanceSheetPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const SECTIONS = [
   {
@@ -181,7 +182,7 @@ export default function BalanceSheetPage() {
             </span>
             <h1 className="page__title">Balance sheet</h1>
             <p className="page__subtitle">
-              {error?.data?.message ?? 'The balance sheet could not be loaded.'}
+              {serverMessage(error, 'The balance sheet could not be loaded.')}
             </p>
           </div>
           <div className="page__actions">

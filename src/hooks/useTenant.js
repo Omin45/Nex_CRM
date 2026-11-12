@@ -1,5 +1,5 @@
 /**
- * NexERP — useTenant
+ * ArkCRM — useTenant
  * ---------------------------------------------------------------------------
  * Multi-tenant context wrapper. Every query is implicitly scoped to the active
  * vendor, so this hook exposes the tenant record plus the derived values the
@@ -45,7 +45,7 @@ export function useTenant() {
       tenant,
       vendorId: tenant?.id ?? fallbackVendorId,
       tenantName: tenant?.name ?? 'Unassigned tenant',
-      shortName: tenant?.shortName ?? 'NexERP',
+      shortName: tenant?.shortName ?? 'ArkCRM',
       country: tenant?.country ?? 'NG',
       plan: tenant?.plan ?? 'STARTER',
       currency,

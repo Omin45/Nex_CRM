@@ -1,5 +1,5 @@
 /**
- * NexERP — Breadcrumb
+ * ArkCRM — Breadcrumb
  * ---------------------------------------------------------------------------
  * Derives the trail from the URL, so it can never drift from the router.
  * Segments are labelled from SEGMENT_LABELS; the final crumb picks up a
@@ -89,7 +89,7 @@ export function PageBreadcrumb({ label, to }) {
   return (
     <nav className="nx-crumbs" aria-label="Breadcrumb">
       <Link to="/" className="nx-crumbs__item is-link">
-        NexERP
+        ArkCRM
       </Link>
       <span className="nx-crumbs__sep" aria-hidden="true">
         <FiChevronRight size={12} />

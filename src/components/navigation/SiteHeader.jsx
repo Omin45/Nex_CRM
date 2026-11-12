@@ -1,5 +1,5 @@
 /**
- * NexERP — SiteHeader
+ * ArkCRM — SiteHeader
  * ---------------------------------------------------------------------------
  * Spec: "a floating, centered, pill-shaped glass header that detaches from the
  * top edge with a margin. Shrinks and gains a stronger blur/border glow once
@@ -239,7 +239,7 @@ export default function SiteHeader() {
             <span className="nx-site-header__orb nx-site-header__orb--4" />
           </span>
 
-          <NavLink to="/" className="nx-site-header__logo" aria-label="NexERP home">
+          <NavLink to="/" className="nx-site-header__logo" aria-label="ArkCRM home">
             <AnimatedLogo size="sm" />
           </NavLink>
 

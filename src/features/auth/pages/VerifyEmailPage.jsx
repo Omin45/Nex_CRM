@@ -1,5 +1,5 @@
 /**
- * NexERP — VerifyEmailPage
+ * ArkCRM — VerifyEmailPage
  * ---------------------------------------------------------------------------
  * Consumes the ?token=… from the confirmation email. Self-verifying on mount,
  * with three outcomes: pending, verified, or failed-with-a-retry.

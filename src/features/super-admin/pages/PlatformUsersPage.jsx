@@ -1,7 +1,7 @@
 /**
- * NexERP — PlatformUsersPage
+ * ArkCRM — PlatformUsersPage
  * ---------------------------------------------------------------------------
- * Every account that can sign in anywhere on NexERP, with the tenant it
+ * Every account that can sign in anywhere on ArkCRM, with the tenant it
  * belongs to. Search, sort and paging run through the server
  * (GET /platform/users); the role segments stay local, because there are
  * eight roles in the vocabulary and a segmented control only has four slots —
@@ -32,6 +32,7 @@ import useDataTable from '@/hooks/useDataTable';
 import { formatDate, fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './PlatformUsersPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const ROLE_FILTERS = [
   { id: 'all', label: 'All' },
@@ -214,7 +215,7 @@ export default function PlatformUsersPage() {
           <div className="nx-pusers__error">
             <h2 className="nx-pusers__error-title">Could not load accounts</h2>
             <p className="nx-pusers__error-text">
-              {error?.data?.message ?? 'The platform users endpoint did not respond. Try again in a moment.'}
+              {serverMessage(error, 'The platform users endpoint did not respond. Try again in a moment.')}
             </p>
             <Button onClick={() => refetch()}>Try again</Button>
           </div>

@@ -1,5 +1,5 @@
 /**
- * NexERP — TableToolbar
+ * ArkCRM — TableToolbar
  * ---------------------------------------------------------------------------
  * The strip above a DataTable: free-text search, quick filter pills, a column
  * visibility menu and a refresh control. Wired to useDataTable so every list

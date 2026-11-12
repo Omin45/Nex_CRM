@@ -1,5 +1,5 @@
 /**
- * NexERP — LineChartCard
+ * ArkCRM — LineChartCard
  * ---------------------------------------------------------------------------
  * Time-series wrapper (revenue trend, cash flow, attendance over days).
  * Supports an optional gradient area fill, which is what gives the dashboard

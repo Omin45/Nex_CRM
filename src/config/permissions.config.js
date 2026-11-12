@@ -1,5 +1,5 @@
 /**
- * NexERP — RBAC permission matrix
+ * ArkCRM — RBAC permission matrix
  * ---------------------------------------------------------------------------
  * Permissions are `resource:action` strings. The backend is the source of
  * truth (it enforces the same matrix and rejects anything not listed here),
@@ -25,6 +25,19 @@ export const ROLES = {
   SUPPORT_AGENT: 'SUPPORT_AGENT',
   AUDITOR: 'AUDITOR',
   EMPLOYEE: 'EMPLOYEE',
+  PROCUREMENT_OFFICER: 'PROCUREMENT_OFFICER',
+  PROJECT_MANAGER: 'PROJECT_MANAGER',
+  MARKETING_MANAGER: 'MARKETING_MANAGER',
+  DATA_ANALYST: 'DATA_ANALYST',
+
+  /* NexCRM backend role names — aliased onto the matrices below so the same
+     accounts that exist in the database also render a populated workspace. */
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  FINANCE_MANAGER: 'FINANCE_MANAGER',
+  SUPPORT_MANAGER: 'SUPPORT_MANAGER',
+  SALES_AGENT: 'SALES_AGENT',
+  CUSTOMER: 'CUSTOMER',
 };
 
 /* ---------------------------------------------------------------------------
@@ -334,7 +347,119 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.LEAVE_VIEW,
     PERMISSIONS.PROJECT_VIEW,
   ],
+
+  /* Buys stock and keeps supplier records current. */
+  [ROLES.PROCUREMENT_OFFICER]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_TRANSFER,
+    PERMISSIONS.WAREHOUSE_MANAGE,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+  ],
+
+  /* Owns delivery: projects, tasks and their reporting. */
+  [ROLES.PROJECT_MANAGER]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.PROJECT_CREATE,
+    PERMISSIONS.PROJECT_UPDATE,
+    PERMISSIONS.TASK_MANAGE,
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+  ],
+
+  /* Runs campaigns and works the top of the funnel. */
+  [ROLES.MARKETING_MANAGER]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_CREATE,
+    PERMISSIONS.CUSTOMER_UPDATE,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.LEAD_CREATE,
+    PERMISSIONS.LEAD_UPDATE,
+    PERMISSIONS.LEAD_MOVE,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+  ],
+
+  /* Read-only numbers, everywhere the numbers live. */
+  [ROLES.DATA_ANALYST]: [
+    PERMISSIONS.VENDOR_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW,
+    PERMISSIONS.CUSTOMER_VIEW_FINANCIALS,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVOICE_VIEW,
+    PERMISSIONS.EXPENSE_VIEW,
+    PERMISSIONS.AR_VIEW,
+    PERMISSIONS.AP_VIEW,
+    PERMISSIONS.LEDGER_VIEW,
+    PERMISSIONS.LEAD_VIEW,
+    PERMISSIONS.QUOTE_VIEW,
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.EMPLOYEE_VIEW,
+    PERMISSIONS.REPORT_VIEW,
+    PERMISSIONS.REPORT_EXPORT,
+  ],
 };
+
+/* ---------------------------------------------------------------------------
+ * NEXCRM BACKEND ROLE ALIASES
+ * The Spring Boot API uses its own role vocabulary. Mapping each one onto the
+ * closest tenant role means a user authenticated by the backend still gets a
+ * complete sidebar and populated screens instead of an empty workspace.
+ * ------------------------------------------------------------------------- */
+ROLE_PERMISSIONS[ROLES.ADMIN] = ROLE_PERMISSIONS[ROLES.VENDOR_OWNER];
+
+/* A manager runs the place but does not own it. The server gives MANAGER
+   the read permissions and the report export - no people management, no
+   settings - so the sidebar says the same thing rather than offering
+   buttons that come back 403. */
+ROLE_PERMISSIONS[ROLES.MANAGER] = [
+  PERMISSIONS.VENDOR_VIEW,
+  PERMISSIONS.CUSTOMER_VIEW,
+  PERMISSIONS.LEAD_VIEW,
+  PERMISSIONS.QUOTE_VIEW,
+  PERMISSIONS.INVOICE_VIEW,
+  PERMISSIONS.INVOICE_RECORD_PAYMENT,
+  PERMISSIONS.TICKET_VIEW,
+  PERMISSIONS.REPORT_VIEW,
+  PERMISSIONS.REPORT_EXPORT,
+];
+ROLE_PERMISSIONS[ROLES.FINANCE_MANAGER] = ROLE_PERMISSIONS[ROLES.ACCOUNTANT];
+ROLE_PERMISSIONS[ROLES.SALES_AGENT] = ROLE_PERMISSIONS[ROLES.SALES_REP];
+ROLE_PERMISSIONS[ROLES.SUPPORT_MANAGER] = [
+  PERMISSIONS.CUSTOMER_VIEW,
+  PERMISSIONS.VENDOR_VIEW,
+  PERMISSIONS.TICKET_VIEW,
+  PERMISSIONS.TICKET_CREATE,
+  PERMISSIONS.TICKET_REPLY,
+  PERMISSIONS.TICKET_ASSIGN,
+  PERMISSIONS.TICKET_CLOSE,
+  PERMISSIONS.REPORT_VIEW,
+];
+/* The customer portal identity sees the tenant catalogue but only ever reads
+   its own commercial records; the backend enforces the row-level scope. */
+ROLE_PERMISSIONS[ROLES.CUSTOMER] = [
+  PERMISSIONS.CUSTOMER_VIEW,
+  PERMISSIONS.PRODUCT_VIEW,
+  PERMISSIONS.QUOTE_VIEW,
+  PERMISSIONS.INVOICE_VIEW,
+  PERMISSIONS.TICKET_VIEW,
+  PERMISSIONS.TICKET_CREATE,
+  PERMISSIONS.TICKET_REPLY,
+];
 
 /* ---------------------------------------------------------------------------
  * PLATFORM vs TENANT BOUNDARIES
@@ -367,4 +492,16 @@ export const ROLE_LABELS = {
   [ROLES.SUPPORT_AGENT]: 'Support Agent',
   [ROLES.AUDITOR]: 'Auditor',
   [ROLES.EMPLOYEE]: 'Employee',
+  [ROLES.PROCUREMENT_OFFICER]: 'Procurement Officer',
+  [ROLES.PROJECT_MANAGER]: 'Project Manager',
+  [ROLES.MARKETING_MANAGER]: 'Marketing Manager',
+  [ROLES.DATA_ANALYST]: 'Data Analyst',
+
+  /* NexCRM backend aliases */
+  [ROLES.ADMIN]: 'Administrator',
+  [ROLES.MANAGER]: 'Manager',
+  [ROLES.FINANCE_MANAGER]: 'Finance Manager',
+  [ROLES.SUPPORT_MANAGER]: 'Support Manager',
+  [ROLES.SALES_AGENT]: 'Sales Agent',
+  [ROLES.CUSTOMER]: 'Customer',
 };

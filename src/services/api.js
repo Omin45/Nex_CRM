@@ -1,5 +1,5 @@
 /**
- * NexERP — API service connector
+ * ArkCRM — API service connector
  * ---------------------------------------------------------------------------
  * The single seam between the React app and the Spring Boot backend.
  *
@@ -103,10 +103,13 @@ const realBaseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = tokenStorage.getAccessToken() ?? getState()?.auth?.accessToken;
     if (token) headers.set('authorization', `Bearer ${token}`);
-    /* Echo the active tenant so the backend can scope every query. */
-    const vendorId = localStorage.getItem(STORAGE_KEYS.activeVendor);
-    if (vendorId) headers.set('X-Vendor-Id', vendorId);
-    headers.set('X-Client', 'nexerp-web');
+    /* Echo the active workspace so the backend can scope the request. It is
+       the workspace *id* on its own: the stored tenant is a record, and
+       posting the whole thing as a header value helps nobody. */
+    const state = getState();
+    const tenantId = state?.auth?.tenant?.id ?? state?.auth?.user?.vendorId ?? null;
+    if (tenantId) headers.set('X-Vendor-Id', tenantId);
+    headers.set('X-Client', 'arkcrm-web');
     return headers;
   },
 });
@@ -141,7 +144,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     tokenStorage.clear();
     /* Signal the app to navigate to /login. */
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('nexerp:session-expired'));
+      window.dispatchEvent(new CustomEvent('arkcrm:session-expired'));
     }
     return result;
   } finally {

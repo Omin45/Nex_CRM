@@ -1,5 +1,5 @@
 /**
- * NexERP — ModuleVisual
+ * ArkCRM — ModuleVisual
  * ---------------------------------------------------------------------------
  * A miniature, decorative product UI for each module on the Features page.
  * Instead of a stock photo, each panel renders a small on-brand mock of the

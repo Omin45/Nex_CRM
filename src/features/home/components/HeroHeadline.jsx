@@ -1,5 +1,5 @@
 /**
- * NexERP — HeroHeadline
+ * ArkCRM — HeroHeadline
  * ---------------------------------------------------------------------------
  * The hero writeup is fixed:
  *

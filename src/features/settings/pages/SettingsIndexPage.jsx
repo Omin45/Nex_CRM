@@ -1,5 +1,5 @@
 /**
- * NexERP — SettingsIndexPage
+ * ArkCRM — SettingsIndexPage
  * ---------------------------------------------------------------------------
  * The settings hub for a vendor workspace (route suffix `settings`).
  *

@@ -1,5 +1,5 @@
 /**
- * NexERP — AdminVendorDetailPage
+ * ArkCRM — AdminVendorDetailPage
  * ---------------------------------------------------------------------------
  * One tenant, end to end: who runs it, what it pays, which modules it has
  * switched on, and where it sits in onboarding. This is the screen a support
@@ -44,6 +44,7 @@ import { formatCurrency } from '@/utils/currency';
 import { formatDate, fromNow } from '@/utils/date';
 import { appRoutes } from '@/config/navigation.config';
 import './AdminVendorDetailPage.css';
+import { serverMessage } from '@/utils/errorMessage';
 
 const MODULE_LABELS = {
   sales: 'Sales',
@@ -97,10 +98,10 @@ export default function AdminVendorDetailPage() {
     if (!vendor) return;
     try {
       await suspendVendor(vendor.id).unwrap();
-      notify.success(`${vendor.name} suspended`);
+      
       setConfirming(false);
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not suspend the tenant');
+      notify.error(serverMessage(err, 'Could not suspend the tenant'));
     }
   };
 
@@ -108,9 +109,9 @@ export default function AdminVendorDetailPage() {
     if (!vendor) return;
     try {
       await activateVendor(vendor.id).unwrap();
-      notify.success(`${vendor.name} restored to active`);
+      
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not restore the tenant');
+      notify.error(serverMessage(err, 'Could not restore the tenant'));
     }
   };
 
@@ -120,9 +121,9 @@ export default function AdminVendorDetailPage() {
     if (next === currentStep) return;
     try {
       await updateOnboarding({ id: onboarding.id, currentStep: next }).unwrap();
-      notify.success(`${vendor?.name ?? 'Tenant'}: step ${next} of ${steps.length} recorded`);
+      
     } catch (err) {
-      notify.error(err?.data?.message ?? 'Could not update the checklist');
+      notify.error(serverMessage(err, 'Could not update the checklist'));
     }
   };
 
