@@ -10,8 +10,10 @@
 #
 # VITE_USE_MOCKS must be "false". Left unset it defaults to true, and the
 # site would serve in-browser fixtures and never call the API at all.
-staticSites:
-  - name: nexcrm-frontend
+services:
+  - type: web
+    name: nexcrm-frontend
+    runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
     envVars:

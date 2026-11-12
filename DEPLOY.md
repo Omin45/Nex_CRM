@@ -16,7 +16,7 @@ frontend's URL in afterwards.
 |---|---|
 | Backend repo | `Omin45/Nex_CRM-Backend` (private) |
 | Frontend repo | `Omin45/Nex_CRM` (public) |
-| Database | Render MySQL (free tier expires after 30 days) |
+| Database | Render Postgres (free tier expires after 30 days) |
 
 ---
 
@@ -44,11 +44,11 @@ Render dashboard → **New → Blueprint** → pick `Omin45/Nex_CRM-Backend` →
 The blueprint creates two resources:
 
 - `nexcrm-backend` - the Spring Boot web service
-- `nexcrm-db` - the MySQL database
+- `nexcrm-db` - the Postgres database
 
-Render wires the database into the service by itself: `DB_HOST`, `DB_PORT`,
-`DB_NAME`, `DB_USERNAME` and `DB_PASSWORD` all come from the database. It
-also generates `JWT_SECRET` fresh - that key signs the access tokens, so do
+Render wires the database into the service by itself: `DB_URL`,
+`DB_USERNAME` and `DB_PASSWORD` all come from the database. It also
+generates `JWT_SECRET` fresh - that key signs the access tokens, so do
 not copy it anywhere or the sessions break.
 
 Render will ask for one value you have to supply:
@@ -73,6 +73,10 @@ and starts `java -jar target/Backend-0.0.1-SNAPSHOT.jar`.
 `ddl-auto: update` means Hibernate creates the schema on the first boot, and
 `DataSeeder` fills it with the demo business, its people and its ledger. So
 a fresh database is not empty - it arrives ready to sign in to.
+
+Render hosts Postgres, not MySQL, so the deployed database is Postgres. The
+application speaks both: the JDBC URL decides which driver answers, so the
+same build runs against MySQL on a laptop and Postgres on the host.
 
 ---
 
@@ -163,7 +167,7 @@ people. A paid instance does not sleep.
 **The free database expires after 30 days.** When it goes, the service loses
 its data and the schema is rebuilt from scratch on the next boot - so the
 app looks fine and every record is gone. For anything longer-lived, point
-`DB_HOST` and friends at a database that stays.
+`DB_URL` at a database that stays.
 
 ---
 
