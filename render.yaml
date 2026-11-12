@@ -1,0 +1,31 @@
+# ArkCRM - frontend on Render
+# ---------------------------------------------------------------------------
+# A static site: Vite builds to dist/, Render serves the files. Nothing runs
+# on the server, so this is the cheap half of the deployment.
+#
+# The two things that have to be set by hand are the addresses of the
+# deployed backend. Vite bakes these into the bundle at BUILD time, so
+# changing them means a new deploy - Render does that for you when you edit
+# an environment variable.
+#
+# VITE_USE_MOCKS must be "false". Left unset it defaults to true, and the
+# site would serve in-browser fixtures and never call the API at all.
+staticSites:
+  - name: nexcrm-frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_USE_MOCKS
+        value: "false"
+      # The deployed backend's address, e.g. https://nexcrm-backend.onrender.com/api/v1
+      - key: VITE_API_BASE_URL
+        sync: false
+      # The same host, over websockets.
+      - key: VITE_SOCKET_URL
+        sync: false
+    # A client-side router needs every path to serve index.html, or a
+    # refresh on /vendor/VND-0001/dashboard is a 404.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
