@@ -11,16 +11,28 @@
  * ENVIRONMENT
  * Vite inlines VITE_* variables at build time. `apiBaseUrl` is the Spring
  * Boot server root, e.g. "https://api.arkcrm.io/api".
+ *
+ * A build without the variable falls back to the local development server -
+ * and says so, loudly. A silent fallback is worse than a loud one: the page
+ * loads, every panel is empty, and nothing explains why.
  * ------------------------------------------------------------------------- */
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const CONFIGURED_API_URL = import.meta.env.VITE_API_BASE_URL;
+
+if (!CONFIGURED_API_URL && import.meta.env.PROD) {
+  console.warn(
+    '[ArkCRM] VITE_API_BASE_URL is not set, so the app is talking to '
+      + 'http://localhost:8081/api/v1. The build is misconfigured.',
+  );
+}
+
+export const API_BASE_URL = CONFIGURED_API_URL || 'http://localhost:8081/api/v1';
 
 /** When true, RTK Query serves fixtures instead of hitting the network. */
 export const USE_MOCK_API = import.meta.env.VITE_USE_MOCKS !== 'false';
 
 /** WebSocket endpoint appended to the API origin by SocketContext. */
 export const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL || 'ws://localhost:8080/ws';
+  import.meta.env.VITE_SOCKET_URL || 'ws://localhost:8081/ws';
 
 /* ---------------------------------------------------------------------------
  * API ROUTES
