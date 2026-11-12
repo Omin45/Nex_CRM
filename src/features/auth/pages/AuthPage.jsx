@@ -658,6 +658,15 @@ export default function AuthPage({ mode = 'login' }) {
                   </button>
                 }
               />
+
+              {/* Somebody who cannot remember the password needs a way in from
+                  here. The reset screen existed with no way to reach it from
+                  the sign-in page, so a forgotten password was a dead end. */}
+              <p className="nx-authpage__forgot">
+                <Link to={appRoutes.forgotPassword} className="nx-form__link">
+                  Forgot your password?
+                </Link>
+              </p>
             </div>
           </>
         )}

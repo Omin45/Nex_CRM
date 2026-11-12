@@ -119,6 +119,14 @@
   border-top: 1px solid var(--nx-border-soft);
 }
 
+/* ---- the forgotten password link ----------------------------------------- */
+.nx-authpage__forgot {
+  margin: 0;
+  padding-top: var(--nx-space-2);
+  font-size: var(--nx-text-sm);
+  text-align: right;
+}
+
 /* ---- register role picker ------------------------------------------------ */
 .nx-authpage__roles {
   display: flex;
