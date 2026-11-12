@@ -22,7 +22,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  FiAlertCircle, FiBriefcase, FiCheck, FiChevronDown, FiChevronUp, FiEye, FiEyeOff,
+  FiAlertCircle, FiBriefcase, FiCheck, FiEye, FiEyeOff,
   FiLock, FiMail, FiPhone, FiUser, FiUsers,
 } from 'react-icons/fi';
 import Button from '@/components/ui/Button/Button';
@@ -36,13 +36,11 @@ import { useVendorHome } from '@/hooks/useVendorPath';
 import { validateForm, schemas } from '@/utils/validators';
 import { appRoutes } from '@/config/navigation.config';
 import { ROLES, ROLE_LABELS } from '@/config/permissions.config';
-import { demoAccounts, DEMO_PASSWORD } from '@/config/demoAccounts';
+
 import { USE_MOCK_API } from '@/config/constants';
 import './AuthPage.css';
 import { serverMessage } from '@/utils/errorMessage';
 
-/** Tiles shown before "show all" is expanded — enough to cover the main roles. */
-const DEMO_PREVIEW_COUNT = 4;
 
 /**
  * The roles somebody may *join* an existing workspace under.
@@ -145,7 +143,7 @@ export default function AuthPage({ mode = 'login' }) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [showAllDemo, setShowAllDemo] = useState(false);
+
   const [login, { isLoading: isLoggingIn, error: loginError }] = useLoginMutation();
   const [register, { isLoading: isRegistering, error: registerError }] = useRegisterMutation();
   /* The workspace lookup is lazy: it only runs when a joiner asks it to. */
@@ -347,34 +345,6 @@ export default function AuthPage({ mode = 'login' }) {
   };
 
   const errorFor = (field) => (touched[field] ? errors[field] : '');
-
-  /**
-   * Fills the form from a demo tile. Deliberately does *not* auto-submit:
-   * the tile is a convenience for picking an identity, and submitting a form
-   * the user never had a chance to read is the kind of "helpfulness" that
-   * costs trust. Anything of 6+ characters still works — the mock only reads
-   * the email — but the tile fills the canonical password so a fresh visitor
-   * never has to guess.
-   */
-  const applyDemoAccount = (account) => {
-    setLoginValues((prev) => ({
-      ...prev,
-      email: account.email,
-      password: account.password ?? DEMO_PASSWORD,
-    }));
-    setTouched((prev) => ({ ...prev, email: true, password: true }));
-    setErrors((prev) => ({ ...prev, email: '', password: '' }));
-    clearError();
-  };
-
-  /* The roster is the four accounts seeded into the backend, so the same
-     list serves both modes: in mock mode it resolves to a fixture session,
-     and against the live API it resolves to a real MySQL account. */
-  const accountRoster = demoAccounts;
-
-  const visibleDemoAccounts = showAllDemo
-    ? accountRoster
-    : accountRoster.slice(0, DEMO_PREVIEW_COUNT);
 
   return (
     <div className="nx-authpage" data-mode={mode}>
@@ -713,58 +683,7 @@ export default function AuthPage({ mode = 'login' }) {
             fixture identity, and against the live backend it lists the
             accounts seeded in MySQL. Either way it is the quickest way to
             see what each role gets. */}
-        {!isRegister ? (
-          <div className="nx-authpage__demo">
-            <div className="nx-authpage__demo-head">
-              <span className="nx-authpage__demo-title">Sign in as…</span>
-              <span className="nx-authpage__demo-hint">One account per role</span>
-            </div>
 
-            <ul className="nx-authpage__demo-list">
-              {visibleDemoAccounts.map((account) => {
-                const fullName = `${account.firstName} ${account.lastName}`;
-                const isActive = loginValues.email === account.email;
-                return (
-                  <li key={account.key}>
-                    <button
-                      type="button"
-                      className="nx-authpage__demo-tile"
-                      data-active={isActive ? 'true' : undefined}
-                      onClick={() => applyDemoAccount(account)}
-                      aria-pressed={isActive}
-                      title={`${account.email} · ${account.password ?? DEMO_PASSWORD}`}
-                    >
-                      <span className="nx-authpage__demo-avatar" aria-hidden="true">
-                        {account.firstName[0]}
-                        {account.lastName[0]}
-                      </span>
-                      <span className="nx-authpage__demo-copy">
-                        <span className="nx-authpage__demo-name">{fullName}</span>
-                        <span className="nx-authpage__demo-role">{account.jobTitle}</span>
-                        <span className="nx-authpage__demo-blurb">{account.blurb}</span>
-                      </span>
-                      <span className="nx-authpage__demo-check" aria-hidden="true">
-                        <FiCheck size={13} />
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {accountRoster.length > DEMO_PREVIEW_COUNT ? (
-              <button
-                type="button"
-                className="nx-authpage__demo-more"
-                onClick={() => setShowAllDemo((prev) => !prev)}
-                aria-expanded={showAllDemo}
-              >
-                {showAllDemo ? 'Fewer accounts' : `Show all ${accountRoster.length} accounts`}
-                {showAllDemo ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
-              </button>
-            ) : null}
-          </div>
-        ) : null}
       </form>
 
       {/* ---- mode switch ---- */}

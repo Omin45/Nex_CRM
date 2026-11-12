@@ -24,6 +24,8 @@ export default function ForgotPasswordPage() {
   const [emailValue, setEmailValue] = useState('');
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
+  /* The reset code, when the server had nowhere to send it. */
+  const [code, setCode] = useState('');
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const handleSubmit = async (event) => {
@@ -34,7 +36,8 @@ export default function ForgotPasswordPage() {
     if (!valid) return;
 
     try {
-      await forgotPassword(emailValue.trim()).unwrap();
+      const result = await forgotPassword(emailValue.trim()).unwrap();
+      setCode(result?.code ?? '');
       setSent(true);
     } catch {
       /* Even a hard failure shows the same confirmation, so this screen cannot
@@ -44,20 +47,46 @@ export default function ForgotPasswordPage() {
   };
 
   if (sent) {
+    /* With a mail service the code is on its way. Without one, the server
+       hands it back, and the screen shows it - otherwise the reset could
+       never be finished. */
     return (
       <div className="nx-forgot">
-        <h1 className="nx-forgot__title">Check your inbox</h1>
+        <h1 className="nx-forgot__title">
+          {code ? 'Your reset code' : 'Check your inbox'}
+        </h1>
         <p className="nx-forgot__subtitle">
-          If an account exists for {emailValue}, a reset link is on its way. It
-          expires in 30 minutes.
+          {code
+            ? 'This deployment has no mail service, so the code comes back with the answer. It expires in 15 minutes.'
+            : `If an account exists for ${emailValue}, a reset link is on its way. It expires in 15 minutes.`}
         </p>
 
-        <div className="nx-alert nx-alert--success">
-          <span className="nx-alert__icon" aria-hidden="true">
-            <FiCheckCircle size={16} />
-          </span>
-          Reset link sent. Check spam if it has not arrived in a few minutes.
-        </div>
+        {code ? (
+          <>
+            <div className="nx-alert nx-alert--success">
+              <span className="nx-alert__icon" aria-hidden="true">
+                <FiCheckCircle size={16} />
+              </span>
+              Your reset code is <strong>{code}</strong>
+            </div>
+
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              to={`${appRoutes.resetPassword}?email=${encodeURIComponent(emailValue)}&code=${encodeURIComponent(code)}`}
+            >
+              Choose a new password
+            </Button>
+          </>
+        ) : (
+          <div className="nx-alert nx-alert--success">
+            <span className="nx-alert__icon" aria-hidden="true">
+              <FiCheckCircle size={16} />
+            </span>
+            Reset link sent. Check spam if it has not arrived in a few minutes.
+          </div>
+        )}
 
         <Button
           variant="secondary"
@@ -74,6 +103,7 @@ export default function ForgotPasswordPage() {
             className="nx-form__link"
             onClick={() => {
               setSent(false);
+              setCode('');
               setError('');
             }}
           >
